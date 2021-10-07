@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_04_072020) do
+ActiveRecord::Schema.define(version: 2021_10_07_073031) do
+
+  create_table "days", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "year_month_id", null: false
+    t.date "date", null: false
+    t.string "day_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["year_month_id"], name: "index_days_on_year_month_id"
+  end
 
   create_table "year_months", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "year", null: false
@@ -21,4 +30,5 @@ ActiveRecord::Schema.define(version: 2021_10_04_072020) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "days", "year_months"
 end
