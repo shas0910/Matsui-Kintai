@@ -21,13 +21,14 @@
 - has_many :schedule
 - has_many :travel_costs
 
-## months テーブル
+## year_months テーブル
 
-| Column     | Type    | Options                   |
-| ---------- | ------- | ------------------------- |
-| year_month | integer | null: false, unique: true |
-| first_date | date    | null: false               |
-| last_date  | date    | null: false               |
+| Column     | Type    | Options     |
+| ---------- | ------- | ----------- |
+| year       | integer | null: false |
+| month      | integer | null: false |
+| first_date | date    | null: false |
+| last_date  | date    | null: false |
 
 ### Association
 
