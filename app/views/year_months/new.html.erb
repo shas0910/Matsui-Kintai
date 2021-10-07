@@ -1,0 +1,29 @@
+<h2>月度選択</h2>
+
+<%= form_for @year_month do |f| %>
+
+  <div>
+    <%= f.label :year, "年" %>
+    <%= f.select :year, Date.today.year-2 .. Date.today.year+2, include_blank: '----' %>
+  </div>
+
+  <div>
+    <%= f.label :month %>
+    <%= f.select :month, 01 .. 12, include_blank: '----' %>
+  </div>
+
+  <div>
+    <%= f.label :first_date %>
+    <%= f.date_field :first_date %>
+  </div>
+
+  <div>
+    <%= f.label :last_date %>
+    <%= f.date_field :last_date %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+
+<% end %>
