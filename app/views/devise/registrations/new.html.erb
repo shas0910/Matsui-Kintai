@@ -1,4 +1,4 @@
-<h2>Sign up</h2>
+<h2>ユーザー新規登録</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
@@ -38,24 +38,18 @@
 　</div>
 
   <div class="field">
-    <%= f.label :created_at, class: 'control-label' %><br />
-    <%= f.date_field :created_at, class: 'form-control' %>
+    <%= f.label :入社年月日, class: 'control-label' %><br />
+    <%= f.date_field :hire_date, class: 'form-control' %>
   </div>
 
   <div class="field">
     <%= f.label :上長 %><br />
-    <%= f.text_field :email, autofocus: true, autocomplete: "email" %>
+    <%= f.text_field :approver_id %>
   </div>
 
   <div class="actions">
-    <%= f.submit "Sign up" %>
+    <%= f.submit "登録" %>
   </div>
 <% end %>
 
 <%= render "devise/shared/links" %>
-
-
-      t.string :department,         null: false
-      t.string :user_type,          null: false
-      t.date   :hire_date,          null: false
-      t.string :approver_id,        null: false
