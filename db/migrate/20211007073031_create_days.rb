@@ -4,6 +4,7 @@ class CreateDays < ActiveRecord::Migration[6.1]
       t.references :year_month, foreign_key: true, null: false
       t.date :date, null: false
       t.string :day_type, null: false
+      t.boolean :availability, null: false
 
       t.timestamps
     end

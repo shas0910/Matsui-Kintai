@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 2021_10_07_073031) do
     t.bigint "year_month_id", null: false
     t.date "date", null: false
     t.string "day_type", null: false
+    t.boolean "availability", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["year_month_id"], name: "index_days_on_year_month_id"

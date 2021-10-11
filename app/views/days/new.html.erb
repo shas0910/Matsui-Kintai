@@ -1,8 +1,8 @@
 <h2>カレンダー登録</h2>
 
-<%= form_with model: @form, url: days_path, method: :post, local: true do |form| %>
+<%= form_with model: @form, url: year_month_days_path, method: :post, local: true do |form| %>
   <%= form.fields_for :days do |f| %>
-    <% (Date.parse(session["year_month.session"][:year_month]["first_date"].to_s)..Date.parse(session["year_month.session"][:year_month]["last_date"].to_s)).each do |date| %>
+    <% (Date.parse(@year_month.first_date.to_s)..Date.parse(@year_month.last_date.to_s)).each do |date| %>
       <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
       <div>
         <%= f.check_box :availability %>

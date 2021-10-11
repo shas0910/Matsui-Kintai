@@ -1,17 +1,15 @@
 class YearMonthsController < ApplicationController
 
+  def index
+    @year_months = YearMonth.all
+  end
+
   def new
     @year_month = YearMonth.new
   end
 
   def create
-    @year_month = YearMonth.new(year_month_params)
-      unless @year_month.valid?
-        render :new and return
-      end
-    session["year_month"] = {year_month: @year_month.attributes}
-    @day = @year_month.days.build
-    render :new_days
+    @year_month = YearMonth.create(year_month_params)
   end
 
   private

@@ -1,0 +1,7 @@
+<h2>月選択</h2>
+
+<% @year_months.each do |ym| %>
+  <div>
+    <%= link_to "#{ym.year} 年 #{ym.month} 月", new_year_month_day_path(ym.id) %>
+  </div>
+<% end %>
