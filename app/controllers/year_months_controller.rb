@@ -9,7 +9,12 @@ class YearMonthsController < ApplicationController
   end
 
   def create
-    @year_month = YearMonth.create(year_month_params)
+    @year_month = YearMonth.new
+    if @year_month.update(year_month_params)
+      redirect_to year_months_path
+    else
+      render :new
+    end
   end
 
   private
@@ -17,5 +22,6 @@ class YearMonthsController < ApplicationController
   def year_month_params
     params.require(:year_month).permit(:year, :month, :first_date, :last_date)
   end
+
 
 end

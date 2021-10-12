@@ -1,29 +1,21 @@
-<h2>月度選択</h2>
+<h2>カレンダー作成</h2>
 
-<%= form_for @year_month do |f| %>
-
+<%= form_with model: @year_month do |form| %>
   <div>
-    <%= f.label :year, "年" %>
-    <%= f.select :year, Date.today.year-2 .. Date.today.year+2, include_blank: '----' %>
+    <%= form.label :year, "年度" %>
+    <%= form.select :year, Date.today.year-2 .. Date.today.year+2, include_blank: '----' %>
   </div>
-
   <div>
-    <%= f.label :month %>
-    <%= f.select :month, 01 .. 12, include_blank: '----' %>
+    <%= form.label :month %>
+    <%= form.select :month, 01 .. 12, include_blank: '----' %>
   </div>
-
   <div>
-    <%= f.label :first_date %>
-    <%= f.date_field :first_date %>
+    <%= form.label :first_date %>
+    <%= form.date_field :first_date %>
   </div>
-
   <div>
-    <%= f.label :last_date %>
-    <%= f.date_field :last_date %>
+    <%= form.label :last_date %>
+    <%= form.date_field :last_date %>
   </div>
-
-  <div>
-    <%= f.submit %>
-  </div>
-
+  <%= form.submit "作成する" %>
 <% end %>
