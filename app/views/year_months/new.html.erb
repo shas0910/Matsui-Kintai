@@ -2,20 +2,23 @@
 
 <%= form_with model: @year_month do |form| %>
   <div>
-    <%= form.label :year, "年度" %>
     <%= form.select :year, Date.today.year-2 .. Date.today.year+2, include_blank: '----' %>
+    <span>年</span>
   </div>
   <div>
-    <%= form.label :month %>
     <%= form.select :month, 01 .. 12, include_blank: '----' %>
+    <span>月</span>
   </div>
   <div>
-    <%= form.label :first_date %>
-    <%= form.date_field :first_date %>
+    <%= form.label :first_date, "開始日" %>
+    <%= form.date_field :first_date, id: "first_date" %>
   </div>
   <div>
-    <%= form.label :last_date %>
-    <%= form.date_field :last_date %>
+    <%= form.label :last_date, "終了日" %>
+    <%= form.date_field :last_date, id: "last_date" %>
+    <button type="button" id="add_item_button">カレンダー表示</button>
   </div>
+  <div id="year_month_days_box"></div>
+  <br>
   <%= form.submit "作成する" %>
 <% end %>
