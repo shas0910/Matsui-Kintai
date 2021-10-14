@@ -1,0 +1,28 @@
+<h2>カレンダー編集</h2>
+
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<%= form_with model: @year_month do |form| %>
+  <div>
+    <span>年月度 : </span>
+    <span><%= @year_month.year %>年 <%= @year_month.month %>月</span>
+  </div>
+  <div>
+    <span>開始日 : </span>
+    <span><%= @year_month.first_date %></span>
+  </div>
+  <div>
+    <span>終了日 : </span>
+    <span><%= @year_month.last_date %></span>
+  </div>
+  <p>※年月度、開始日、終了日を変更する場合は月度（year_monthモデル）ごと削除して作り直す</p>
+    <%= form.fields_for :days do |f| %>
+      <div>
+        <span><%= f.object.date %></span>
+        <span>(<%= day[f.object.date.wday] %>)</span>
+        <%= f.select :day_type, [["平日", "平日"],["法定休日","法定休日"],["法定外休日","法定外休日"]] %>
+      </div>
+    <% end %>
+  <%= form.submit "更新" %>
+  <%= link_to "月度削除", year_month_path(@year_month.id), method: :delete, data: { confirm: "日報を削除しますか？" }%>
+<% end %>
