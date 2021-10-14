@@ -21,7 +21,7 @@
 - has_many :schedule
 - has_many :travel_costs
 
-## months テーブル
+## year_months テーブル
 
 | Column     | Type    | Options     |
 | ---------- | ------- | ----------- |
