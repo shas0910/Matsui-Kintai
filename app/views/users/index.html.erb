@@ -1,0 +1,10 @@
+<h2>ユーザー一覧</h2>
+
+<% @users.each do |user| %>
+  <div>
+    <span><%= user.department %></span>
+    <%= link_to "#{user.last_name} #{user.first_name}", edit_user_path(user.id) %>
+  </div>
+<% end %>
+
+<%= link_to "ログアウト", destroy_user_session_path, method: :delete %>

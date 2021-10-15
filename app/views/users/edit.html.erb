@@ -1,8 +1,6 @@
-<h2>ユーザー新規登録</h2>
+<h1>ユーザー編集</h1>
 
-<%= form_for(@user, url: user_registration_path) do |f| %>
-  <%= render "devise/shared/error_messages", resource: @user %>
-
+<%= form_with model: @user do |f| %>
   <div class="field">
     <span>ユーザー名 : </span>
     <%= f.label :last_name, "姓" %>
@@ -54,4 +52,4 @@
   </div>
 <% end %>
 <br>
-<%= render "devise/shared/links" %>
+<%= link_to "ユーザー削除", user_path(@user.id), method: :delete %>
