@@ -12,7 +12,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     @approvers = User.where(user_type: "上長")
-    User.create
+    User.create(sign_up_params)
     redirect_to users_path
   end
 
@@ -63,9 +63,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # The path used after sign up.
-  def after_sign_up_path_for(resource)
-    redirect_to users_path
-  end
+  # def after_sign_up_path_for(resource)
+  #   redirect_to users_path
+  # end
 
   # The path used after sign up for inactive accounts.
   def after_inactive_sign_up_path_for(resource)
@@ -73,5 +73,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def sign_up(resource_name, resource)
+    
   end
 end
