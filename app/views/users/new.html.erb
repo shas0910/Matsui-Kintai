@@ -1,0 +1,55 @@
+<h2>ユーザー新規登録</h2>
+
+<%= form_for(@user, url: user_registration_path) do |f| %>
+  <%= render "devise/shared/error_messages", resource: @user %>
+
+  <div class="field">
+    <span>ユーザー名 : </span>
+    <%= f.label :last_name, "姓" %>
+    <%= f.text_field :last_name, autofocus: true, autocomplete: "last_name", placeholder: "松井" %>
+    <%= f.label :first_name, "名" %>
+    <%= f.text_field :first_name, autofocus: true, autocomplete: "first_name", placeholder: "太郎" %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :email, "メール : " %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :password, "パスワード : " %>
+    <%= f.password_field :password, autocomplete: "new-password" %>
+    <% if @minimum_password_length %>
+    <em>(<%= @minimum_password_length %> characters minimum)</em>
+    <% end %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :password_confirmation, "パスワード（確認） : " %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :department, "所属部署 : " %>
+    <%= f.select :department, [["営業部", "営業部"], ["貿易部", "貿易部"], ["システム部", "システム部"], ["その他", "その他"]], include_blank: "選択して下さい" %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :user_type, "ユーザー種別 : " %>
+    <%= f.select :user_type, [["一般", "一般"], ["上長", "上長"], ["管理者", "管理者"]], include_blank: "選択して下さい" %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :hire_date, "入社日 : ", class: 'control-label' %>
+    <%= f.date_field :hire_date, class: 'form-control' %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :approver_id, "承認者 : " %>
+    <%= f.collection_select( :approver_id, @approvers, :id, :last_name) %>
+  </div>
+  <br>
+  <div class="actions">
+    <%= f.submit "登録" %>
+  </div>
+<% end %>
