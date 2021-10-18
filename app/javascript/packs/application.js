@@ -9,6 +9,7 @@ import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import "@nathanvda/cocoon"
 import "../year-months-new"
+import "../clock"
 
 Rails.start()
 Turbolinks.start()
