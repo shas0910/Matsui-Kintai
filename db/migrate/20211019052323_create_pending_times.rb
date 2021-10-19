@@ -1,7 +1,7 @@
 class CreatePendingTimes < ActiveRecord::Migration[6.1]
   def change
     create_table :pending_times do |t|
-      # t.references :time, foreign_key: true, null: false
+      t.references :timecard, foreign_key: true, null: false
       t.time :start
       t.time :finish
       t.time :break_start
