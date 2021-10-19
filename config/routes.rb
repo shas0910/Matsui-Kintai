@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   
   resources :year_months, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :timecards, only: [:new, :create, :update] do
+  resources :timecards, only: [:index, :new, :create, :update] do
     collection do
       post 'create_start'
       post 'create_finish'

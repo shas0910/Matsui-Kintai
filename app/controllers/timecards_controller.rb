@@ -1,5 +1,9 @@
 class TimecardsController < ApplicationController
 
+  def index
+    @days = Day.where(year_month_id: Day.find_by(date: Date.today).year_month_id)
+  end
+
   def new
     @timecard = Timecard.where(user_id: current_user.id).where(day_id: Day.find_by(date: Date.today).id)
   end
