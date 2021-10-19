@@ -9,4 +9,19 @@ Rails.application.routes.draw do
   
   resources :year_months, only: [:index, :new, :create, :edit, :update, :destroy]
 
+  resources :timecards, only: [:new, :create, :update] do
+    collection do
+      post 'create_start'
+      post 'create_finish'
+      post 'create_break_start'
+      post 'create_break_finish'
+    end
+    member do
+      patch 'update_start'
+      patch 'update_finish'
+      patch 'update_break_start'
+      patch 'update_break_finish'
+    end
+  end
+
 end

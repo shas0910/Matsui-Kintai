@@ -17,7 +17,7 @@
 
 ### Association
 
-- has_many :times
+- has_many :timecards
 - has_many :schedule
 - has_many :travel_costs
 
@@ -45,10 +45,10 @@
 ### Association
 
 - belongs_to :month
-- has_many :times
+- has_many :timecards
 - has_many :schedules
 
-## times テーブル
+## timecards テーブル
 
 | Column       | Type      | Options     |
 | ------------ | --------- | ----------- |
@@ -63,13 +63,13 @@
 
 - belongs_to :user
 - belongs_to :day
-- has_many :pending_times
+- has_many :pending_timecards
 
 ## pending_times テーブル
 
 | Column             | Type      | Options     |
 | ------------------ | --------- | ----------- |
-| time               | reference | null: false |
+| timecard           | reference | null: false |
 | start              | time      |             |
 | finish             | time      |             |
 | break_start        | time      |             |
@@ -80,7 +80,7 @@
 
 ### Association
 
-- belongs_to :time
+- belongs_to :timecard
 
 ## schedules テーブル
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_07_073031) do
+ActiveRecord::Schema.define(version: 2021_10_18_003756) do
 
   create_table "days", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "year_month_id", null: false
@@ -19,6 +19,19 @@ ActiveRecord::Schema.define(version: 2021_10_07_073031) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["year_month_id"], name: "index_days_on_year_month_id"
+  end
+
+  create_table "timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "day_id", null: false
+    t.time "start"
+    t.time "finish"
+    t.time "break_start"
+    t.time "break_finish"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["day_id"], name: "index_timecards_on_day_id"
+    t.index ["user_id"], name: "index_timecards_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -49,4 +62,6 @@ ActiveRecord::Schema.define(version: 2021_10_07_073031) do
   end
 
   add_foreign_key "days", "year_months"
+  add_foreign_key "timecards", "days"
+  add_foreign_key "timecards", "users"
 end
