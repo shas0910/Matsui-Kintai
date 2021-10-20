@@ -8,23 +8,52 @@
   <span>種別</span>
   <span>スケジュール</span>
   <span>出勤</span>
+  <span>退勤</span>
   <span>休憩開始</span>
   <span>休憩終了</span>
-  <span>退勤</span>
   <% @days.each do |d| %>
     <% day = ["日","月","火","水","木","金","土"] %>
+    <% if d.timecards.find_by(user_id: current_user.id) %>
+      <% if d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+        <% tortal_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
+      <% end %>
+      <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
+        <% tortal_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
+        <% tortal_work = tortal_work - tortal_break %>
+      <% end %>
+    <% end %>
     <div>
       <span>■</span>
       <span><%= d.date %>(<%= day[d.date.wday] %>)</span>
       <span><%= d.day_type %></span>
       <span>スケジュール</span>
       <% if d.timecards.find_by(user_id: current_user.id) %>
-        <span><%= d.timecards.find_by(user_id: current_user.id).start.strftime("%H:%M") %></span>
-        <span><%= d.timecards.find_by(user_id: current_user.id).break_start.strftime("%H:%M") %></span>
-        <span><%= d.timecards.find_by(user_id: current_user.id).break_finish.strftime("%H:%M") %></span>
-        <span><%= d.timecards.find_by(user_id: current_user.id).finish.strftime("%H:%M") %></span>
+        <% if d.timecards.find_by(user_id: current_user.id).start %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).start.strftime("%H:%M") %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).finish %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).finish.strftime("%H:%M") %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).break_start.strftime("%H:%M") %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_finish %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).break_finish.strftime("%H:%M") %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
       <% else %>
-        <span></span>
+       <span>-</span>
+       <span>-</span>
+       <span>-</span>
+       <span>-</span>
       <% end %>
+      <span><%= Time.at(tortal_work.to_i).utc.strftime('%H') %></span>
     </div>
   <% end %>
