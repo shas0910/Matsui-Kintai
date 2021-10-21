@@ -24,6 +24,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :pending_times, only: [:new, :create, :update]
+  resources :pending_timecards, only: [:new, :create, :update]
 
 end
