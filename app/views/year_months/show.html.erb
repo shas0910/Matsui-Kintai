@@ -1,0 +1,145 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<h3>個人タイムカード確認</h3>
+<%= form_with model: @year_month, url: to_show_year_months_path, method: :get do |form| %>
+  <div>
+    <span><%= @year_month.first_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.first_date.wday] %>) 〜 <%= @year_month.last_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.last_date.wday] %>)</span>
+    <%= form.select :year, Date.today.year-2 .. Date.today.year+2 %>
+    <span>年</span>
+    <%= form.select :month, 01 .. 12 %>
+    <span>月</span>
+    <%= form.submit "表示" %>
+  </div>
+<% end %>
+
+<h3>日数集計</h3>
+
+<h3>日別データ</h3>
+  <span>申請</span>
+  <span>日付</span>
+  <span>種別</span>
+  <span>スケジュール</span>
+  <span>出勤</span>
+  <span>退勤</span>
+  <span>休憩開始</span>
+  <span>休憩終了</span>
+  <span>所定</span>
+  <span>所定外</span>
+  <span>残業</span>
+  <span>深夜残業</span>
+  <span>遅刻</span>
+  <span>早退</span>
+  <span>休憩</span>
+  <span>労働合計</span>
+  <span>備考</span>
+  <% @days.each do |d| %>
+    <% shoteigai = 0 %>
+    <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+      <% tortal_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
+      <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
+        <% tortal_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
+        <% tortal_work = tortal_work - tortal_break %>
+      <% end %>
+      <% if d.timecards.find_by(user_id: current_user.id).start >= Time.parse('2000-01-01 09:01') %>
+        <% late = d.timecards.find_by(user_id: current_user.id).start - Time.parse('2000-01-01 09:00') %>
+        <% if tortal_work.to_i < 28800 %>
+          <% shoteigai = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 18:00') %>
+        <% else %>
+          <% shoteigai = late %>
+        <% end %>
+      <% else %>
+        <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: current_user.id).start %>
+      <% end %>
+      <% if d.timecards.find_by(user_id: current_user.id).finish < Time.parse('2000-01-01 18:00') %>
+        <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: current_user.id).finish %>
+      <% end %>
+      <% overtime = tortal_work - 28800 %>
+      <% if d.timecards.find_by(user_id: current_user.id).finish > Time.parse('2000-01-01 22:00') %>
+        <% overtime_midnight = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 22:00') %>
+        <% overtime = overtime - overtime_midnight %>
+      <% end %>
+      <% shotei = tortal_work %>
+      <% if overtime && overtime >= 60 %>
+        <% shotei = shotei - overtime %>
+      <% end %>
+      <% if overtime_midnight && overtime_midnight >= 60 %>
+        <% shotei = shotei - overtime_midnight %>
+      <% end %>
+      <% if shoteigai >= 60 %>
+        <% shotei = shotei - shoteigai %>
+      <% end %>
+    <% end %>
+    <div>
+      <span>■</span>
+      <span><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</span>
+      <span><%= d.day_type %></span>
+      <span>スケジュール</span>
+      <% if d.timecards.find_by(user_id: current_user.id) %>
+        <% if d.timecards.find_by(user_id: current_user.id).start %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).start.strftime("%R") %></span>
+        <% else %>
+          <span>--:--</span>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).finish %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).finish.strftime("%R") %></span>
+        <% else %>
+          <span>--:--</span>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).break_start.strftime("%R") %></span>
+        <% else %>
+          <span>--:--</span>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_finish %>
+          <span><%= d.timecards.find_by(user_id: current_user.id).break_finish.strftime("%R") %></span>
+        <% else %>
+          <span>--:--</span>
+        <% end %>
+      <% else %>
+       <span>--:--</span>
+       <span>--:--</span>
+       <span>--:--</span>
+       <span>--:--</span>
+      <% end %>
+      <% if shotei && shotei >= 60 %>
+        <span><%= Time.at(shotei.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if shoteigai && shoteigai >= 60 %>
+        <span><%= Time.at(shoteigai.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if overtime && overtime >= 60 %>
+        <span><%= Time.at(overtime.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if overtime_midnight && overtime_midnight >= 60 %>
+        <span><%= Time.at(overtime_midnight.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if late && late >= 60 %>
+        <span><%= Time.at(late.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if early && early >= 60 %>
+        <span><%= Time.at(early.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if tortal_break && tortal_break >= 60 %>
+        <span><%= Time.at(tortal_break.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+      <% if tortal_work && tortal_work >= 60 %>
+        <span><%= Time.at(tortal_work.to_i).utc.strftime('%-H.%-M') %></span>
+      <% else %>
+        <span>-</span>
+      <% end %>
+    </div>
+  <% end %>

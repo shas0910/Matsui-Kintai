@@ -4,6 +4,20 @@ class YearMonthsController < ApplicationController
     @year_months = YearMonth.all
   end
 
+  def show
+    @year_month = YearMonth.find(params[:id])
+    @days = Day.where(year_month_id: params[:id])
+  end
+
+  def to_show
+    year_month = YearMonth.where(year: params[:year_month][:year]).where(month: params[:year_month][:month])
+    if year_month.exists?
+      redirect_to year_month_path(year_month.ids)
+    else
+      redirect_to year_month_path(Day.find_by(date: Date.today).year_month_id)
+    end
+  end
+
   def new
     @year_month = YearMonth.new
     @year_month.days.build
