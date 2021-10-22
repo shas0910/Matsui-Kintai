@@ -35,6 +35,20 @@ ActiveRecord::Schema.define(version: 2021_10_21_010610) do
     t.index ["timecard_id"], name: "index_pending_timecards_on_timecard_id"
   end
 
+  create_table "pending_times", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "timecard_id", null: false
+    t.time "start"
+    t.time "finish"
+    t.time "break_start"
+    t.time "break_finish"
+    t.string "status"
+    t.text "comment_request"
+    t.text "comment_permission"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["timecard_id"], name: "index_pending_times_on_timecard_id"
+  end
+
   create_table "timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "day_id", null: false
@@ -77,6 +91,7 @@ ActiveRecord::Schema.define(version: 2021_10_21_010610) do
 
   add_foreign_key "days", "year_months"
   add_foreign_key "pending_timecards", "timecards"
+  add_foreign_key "pending_times", "timecards"
   add_foreign_key "timecards", "days"
   add_foreign_key "timecards", "users"
 end

@@ -1,3 +1,34 @@
 <h1>打刻申請</h1>
-<%= @timecard %>
-<%= @day.date %>
+
+<%= form_with url: "/pending_timecards", method: :post, local: true do |form| %>
+
+  <div>
+    <span>出勤時刻</span>
+    <%= form.time_field :start %>
+  </div>
+
+  <div>
+    <span>休憩開始時刻</span>
+    <%= form.time_field :break_start, include_blank: true %>
+  </div>
+
+  <div>
+    <span>休憩終了時刻</span>
+    <%= form.time_field :break_finish, include_blank: true %>
+  </div>
+
+  <div>
+    <span>退勤時刻</span>
+    <%= form.time_field :finish, include_blank: true %>
+  </div>
+
+  <div>
+    <p>申請理由<b>（必須）</b></p>
+    <%= form.text_area :comment_request, size: "50x10" %>
+  </div>
+
+  <div>
+    <%= form.submit "申請", data: { confirm: "この内容で申請しますか？" } %>
+  </div>
+
+<% end %>
