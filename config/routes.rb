@@ -13,10 +13,14 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'requests', to: 'requests#index'
+
   resources :day do
     resources :pending_timecards, only: [:new, :create]
     resources :pending_schedules, only: [:new, :create]
   end
+
+  resources :pending_timecards, :pending_schedules, only: :destroy
 
   resources :timecards, only: [:index, :new, :create, :update] do
     collection do
