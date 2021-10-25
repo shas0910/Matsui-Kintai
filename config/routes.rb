@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   end
 
   resources :day do
+    resources :pending_timecards, only: [:new, :create]
     resources :pending_schedules, only: [:new, :create]
   end
 
