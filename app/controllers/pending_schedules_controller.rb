@@ -1,0 +1,2 @@
+class PendingSchedulesController < ApplicationController
+end

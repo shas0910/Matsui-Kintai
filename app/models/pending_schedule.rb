@@ -1,0 +1,2 @@
+class PendingSchedule < ApplicationRecord
+end
