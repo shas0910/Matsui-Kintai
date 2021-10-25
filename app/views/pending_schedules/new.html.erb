@@ -1,0 +1,17 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<h3>スケジュール申請</h3>
+<p><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</p>
+
+<%= form_with model: @pending_schedule, url: day_pending_schedules_path do |form| %>
+  <%= form.label :schedule_type, "スケジュール" %>
+  <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
+  <br>
+  <%= form.label :remark, "備考" %>
+  <%= form.text_field :remark %>
+  <br>
+  <%= form.label :comment_request, "申請メッセージ" %>
+  <%= form.text_field :comment_request %>
+  <br>
+  <%= form.submit "申請" %>
+<% end %>

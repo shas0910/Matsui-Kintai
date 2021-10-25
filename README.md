@@ -84,12 +84,12 @@
 
 ## schedules テーブル
 
-| Column   | Type      | Options     |
-| -------- | --------- | ----------- |
-| user     | reference | null: false |
-| day      | reference | null: false |
-| schedule | string    | null: false |
-| remark   | text      |             |
+| Column   | Type      | Options                        |
+| -------- | --------- | ------------------------------ |
+| user     | reference | null: false, foreign_key: true |
+| day      | reference | null: false, foreign_key: true |
+| schedule | string    |                                |
+| remark   | text      |                                |
 
 ### Association
 
@@ -99,14 +99,14 @@
 
 ## pending_schedules テーブル
 
-| Column             | Type      | Options     |
-| ------------------ | --------- | ----------- |
-| schedule           | reference | null: false |
-| schedule           | string    | null: false |
-| remark             | text      |             |
-| status             | string    | null: false |
-| comment_request    | text      |             |
-| comment_permission | text      |             |
+| Column             | Type      | Options                        |
+| ------------------ | --------- | ------------------------------ |
+| schedule           | reference | null: false, foreign_key: true |
+| schedule           | string    | null: false                    |
+| remark             | text      |                                |
+| status             | string    | null: false                    |
+| comment_request    | text      |                                |
+| comment_permission | text      |                                |
 
 ### Association
 

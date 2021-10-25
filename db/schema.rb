@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_21_010610) do
+ActiveRecord::Schema.define(version: 2021_10_25_035555) do
 
   create_table "days", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "year_month_id", null: false
@@ -31,6 +31,29 @@ ActiveRecord::Schema.define(version: 2021_10_21_010610) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["timecard_id"], name: "index_pending_timecards_on_timecard_id"
+  end
+
+  create_table "pending_schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "schedule_id", null: false
+    t.string "schedule_type", null: false
+    t.text "remark"
+    t.string "status", null: false
+    t.text "comment_request"
+    t.text "comment_permission"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["schedule_id"], name: "index_pending_schedules_on_schedule_id"
+  end
+
+  create_table "schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "day_id", null: false
+    t.string "schedule_type"
+    t.text "remark"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["day_id"], name: "index_schedules_on_day_id"
+    t.index ["user_id"], name: "index_schedules_on_user_id"
   end
 
   create_table "timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -75,6 +98,9 @@ ActiveRecord::Schema.define(version: 2021_10_21_010610) do
 
   add_foreign_key "days", "year_months"
   add_foreign_key "pending_timecards", "timecards"
+  add_foreign_key "pending_schedules", "schedules"
+  add_foreign_key "schedules", "days"
+  add_foreign_key "schedules", "users"
   add_foreign_key "timecards", "days"
   add_foreign_key "timecards", "users"
 end

@@ -7,13 +7,18 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :edit, :update, :destroy]
   
-  resources :year_months, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :year_months, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
+    collection do
+      get 'to_show'
+    end
+  end
 
   resources :day do
     resources :pending_timecards, only: [:new, :create]
+    resources :pending_schedules, only: [:new, :create]
   end
 
-  resources :timecards, only: [:new, :create, :update] do
+  resources :timecards, only: [:index, :new, :create, :update] do
     collection do
       post 'create_start'
       post 'create_finish'
