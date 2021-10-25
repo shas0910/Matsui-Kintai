@@ -13,6 +13,10 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :day do
+    resources :pending_schedules, only: [:new, :create]
+  end
+
   resources :timecards, only: [:index, :new, :create, :update] do
     collection do
       post 'create_start'

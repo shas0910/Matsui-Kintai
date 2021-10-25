@@ -7,6 +7,8 @@ class YearMonthsController < ApplicationController
   def show
     @year_month = YearMonth.find(params[:id])
     @days = Day.where(year_month_id: params[:id])
+    @timecards = Timecard.where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @schedules = Schedule.where(day_id: Day.where(year_month_id: params[:id]).ids)
   end
 
   def to_show
