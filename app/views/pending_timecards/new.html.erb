@@ -1,34 +1,24 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
 <h1>打刻申請</h1>
 
-<%= form_with url: "/pending_timecards", method: :post, local: true do |form| %>
+<p><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</p>
+
+<%= form_with model: @pending_timecard, url: day_pending_timecards_path(params[:day_id]) do |form| %>
 
   <div>
-    <span>出勤時刻</span>
-    <%= form.time_field :start %>
+    <span>打刻種別</span>
+    <%= form.select :timecard_type, [["出勤", "出勤"], ["休憩開始", "休憩開始"], ["休憩終了", "休憩終了"], ["退勤", "退勤"]], include_blank: "選択して下さい" %>
+    <%= form.time_field :pending_time %>
   </div>
 
   <div>
-    <span>休憩開始時刻</span>
-    <%= form.time_field :break_start, include_blank: true %>
-  </div>
-
-  <div>
-    <span>休憩終了時刻</span>
-    <%= form.time_field :break_finish, include_blank: true %>
-  </div>
-
-  <div>
-    <span>退勤時刻</span>
-    <%= form.time_field :finish, include_blank: true %>
-  </div>
-
-  <div>
-    <p>申請理由<b>（必須）</b></p>
+    <p>申請理由</p>
     <%= form.text_area :comment_request, size: "50x10" %>
   </div>
 
   <div>
-    <%= form.submit "申請", data: { confirm: "この内容で申請しますか？" } %>
+    <%= form.submit "申請" %>
   </div>
 
 <% end %>

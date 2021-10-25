@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   
   resources :year_months, only: [:index, :new, :create, :edit, :update, :destroy]
 
+  resources :day do
+    resources :pending_timecards, only: [:new, :create]
+  end
+
   resources :timecards, only: [:new, :create, :update] do
     collection do
       post 'create_start'
@@ -23,7 +27,5 @@ Rails.application.routes.draw do
       patch 'update_break_finish'
     end
   end
-
-  resources :pending_timecards, only: [:new, :create]
 
 end
