@@ -95,3 +95,63 @@
     <div>未承認のスケジュール申請はありません。</div>
   <% end %>
 </div>
+
+<h2>承認・棄却済申請</h2>
+
+<h3>■打刻申請</h3>
+<div>
+  <span>申請者</span>
+  <span>申請日</span>
+  <span>対象日</span>
+  <span>打刻種別</span>
+  <span>申請された打刻</span>
+  <span>申請者メッセージ</span>
+  <span>承認者メッセージ</span>
+  <span>承認 / 棄却</span>
+  <% @pending_timecards.each do |pt| %>
+    <% if pt.status == "承認" or pt.status == "棄却" %>
+      <div>
+        <span><%= User.find_by(id: Timecard.find_by(id: pt.timecard_id).user_id).last_name + " " + User.find_by(id: Timecard.find_by(id: pt.timecard_id).user_id).first_name %></span>
+        <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</span>
+        <span><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</span>
+        <span><%= pt.timecard_type %></span>
+        <span><%= pt.pending_time.strftime("%R") %></span>
+        <% if pt.comment_request %>
+          <span><%= pt.comment_request %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
+        <% if pt.comment_permission %>
+          <span><%= pt.comment_request %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
+        <span><%= pt.status %></span>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<h3>■スケジュール申請</h3>
+<div>
+  <span>申請者</span>
+  <span>申請日</span>
+  <span>対象日</span>
+  <span>申請されたスケジュール</span>
+  <span>申請者メッセージ</span>
+  <span>承認者メッセージ</span>
+  <span>承認 / 棄却</span>
+  <% @pending_schedules.each do |ps| %>
+    <% if ps.status == "承認" or ps.status == "棄却" %>
+      <div>
+        <span><%= User.find_by(id: Schedule.find_by(id: ps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: ps.schedule_id).user_id).first_name %></span>
+        <span><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</span>
+        <span><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</span>
+        <span><%= ps.schedule_type %></span>
+        <span><%= ps.comment_request %></span>
+        <span><%= ps.comment_permission %></span>
+        <span><%= ps.status %></span>
+      </div>
+    <% end %>
+  <% end %>
+</div>
