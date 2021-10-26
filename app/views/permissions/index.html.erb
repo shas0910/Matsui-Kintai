@@ -1,0 +1,59 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<h2>承認待ち申請</h2>
+<h3>■打刻申請</h3>
+
+<span>申請者</span>
+<span>申請日時</span>
+<span>対象日</span>
+<span>打刻種別</span>
+<span>申請元の打刻</span>
+<span>申請された打刻</span>
+<span>申請者メッセージ</span>
+<span>承認者メッセージ</span>
+<span>承認 / 棄却</span>
+<% if @waiting_pending_timecards.count > 0 %>
+  <% @waiting_pending_timecards.each do |wpt| %>
+    <div>
+      <span><%= User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).last_name + " " + User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).first_name %></span>
+      <span><%= wpt.created_at.strftime("%m/%d") %>(<%= day[wpt.created_at.wday] %>)</span>
+      <span><%= Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.wday] %>)</span>
+      <span><%= wpt.timecard_type %></span>
+      <% if wpt.timecard_type == "出勤" %>
+        <% if Timecard.find_by(id: wpt.timecard_id).start %>
+          <span><%= Timecard.find_by(id: wpt.timecard_id).start.strftime("%R") %></span>
+        <% else %>
+          <span>打刻なし</span>
+        <% end %>
+      <% elsif wpt.timecard_type == "退勤" %>
+        <% if Timecard.find_by(id: wpt.timecard_id).finish %>
+          <span><%= Timecard.find_by(id: wpt.timecard_id).finish.strftime("%R") %></span>
+        <% else %>
+          <span>打刻なし</span>
+        <% end %>
+      <% elsif wpt.timecard_type == "休憩開始" %>
+        <% if Timecard.find_by(id: wpt.timecard_id).break_start %>
+          <span><%= Timecard.find_by(id: wpt.timecard_id).break_start.strftime("%R") %></span>
+        <% else %>
+          <span>打刻なし</span>
+        <% end %>
+      <% elsif wpt.timecard_type == "休憩終了" %>
+        <% if Timecard.find_by(id: wpt.timecard_id).break_finish %>
+          <span><%= Timecard.find_by(id: wpt.timecard_id).break_finish.strftime("%R") %></span>
+        <% else %>
+          <span>打刻なし</span>
+        <% end %>
+      <% end %>
+      <span><%= wpt.pending_time.strftime("%R") %></span>
+      <span><%= wpt.comment_request %></span>
+      <%= form_with model: wpt, url: permission_pending_timecard_path(wpt.id) do |f| %>
+        <%= f.text_field :comment_permission %>
+        <%= f.submit "承認" %>
+        <%= f.submit "棄却" %>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <div>未承認の打刻申請はありません。</div>
+<% end %>
+
