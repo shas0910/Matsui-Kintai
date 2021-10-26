@@ -18,6 +18,12 @@ class PendingTimecardsController < ApplicationController
     redirect_to new_day_pending_timecard_path(params[:day_id])
   end
 
+  def destroy
+    pending_timecard = PendingTimecard.find_by(params[:id])
+    pending_timecard.destroy
+    redirect_to requests_path
+  end
+
   private
 
   def pending_timecard_params
