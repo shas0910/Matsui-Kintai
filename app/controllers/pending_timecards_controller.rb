@@ -33,9 +33,11 @@ class PendingTimecardsController < ApplicationController
       end
       pending_timecard.update_attribute(:status, "承認")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
+      redirect_to permission_path
     elsif params[:commit] == "棄却"
       pending_timecard.update_attribute(:status, "棄却")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
+      redirect_to permission_path
     end
   end
 
