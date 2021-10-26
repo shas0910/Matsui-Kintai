@@ -17,6 +17,22 @@ class PendingSchedulesController < ApplicationController
     redirect_to new_day_pending_schedule_path(params[:day_id])
   end
 
+  def permission
+    pending_schedule = PendingSchedule.find_by(id: params[:id])
+    schedule = Schedule.find_by(id: pending_schedule.schedule_id)
+    if params[:commit] == "承認"
+      schedule.update_attribute(:schedule_type, pending_schedule.schedule_type)
+      schedule.update_attribute(:remark, pending_schedule.remark)
+      pending_schedule.update_attribute(:status, "承認")
+      pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
+      redirect_to permission_path
+    elsif params[:commit] == "棄却"
+      pending_schedule.update_attribute(:status, "棄却")
+      pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
+      redirect_to permission_path
+    end
+  end
+
   private
 
   def pending_schedule_params
