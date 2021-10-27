@@ -7,8 +7,8 @@ class YearMonthsController < ApplicationController
   def show
     @year_month = YearMonth.find(params[:id])
     @days = Day.where(year_month_id: params[:id])
-    @timecards = Timecard.where(day_id: Day.where(year_month_id: params[:id]).ids)
-    @schedules = Schedule.where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @timecards = Timecard.where(user_id: current_user.id).where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @schedules = Schedule.where(user_id: current_user.id).where(day_id: Day.where(year_month_id: params[:id]).ids)
   end
 
   def to_show
@@ -18,6 +18,13 @@ class YearMonthsController < ApplicationController
     else
       redirect_to year_month_path(Day.find_by(date: Date.today).year_month_id)
     end
+  end
+
+  def manage
+    @year_month = YearMonth.find(params[:id])
+    @days = Day.where(year_month_id: params[:id])
+    @timecards = Timecard.where(user_id: params[:user_id]).where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @schedules = Schedule.where(user_id: params[:user_id]).where(day_id: Day.where(year_month_id: params[:id]).ids)
   end
 
   def new

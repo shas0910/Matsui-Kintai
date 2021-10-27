@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'user/:user_id/year_month/:id', to: 'year_months#manage'
+
   resources :day do
     resources :pending_timecards, only: [:new, :create]
     resources :pending_schedules, only: [:new, :create]

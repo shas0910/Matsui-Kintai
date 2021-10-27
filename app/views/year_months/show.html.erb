@@ -52,14 +52,14 @@
 <% @days.each do |d| %>
   <% shoteigai = 0 %>
   <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
-    <% tortal_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
+    <% total_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
     <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
-      <% tortal_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
-      <% tortal_work = tortal_work - tortal_break %>
+      <% total_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
+      <% total_work = total_work - total_break %>
     <% end %>
     <% if d.timecards.find_by(user_id: current_user.id).start >= Time.parse('2000-01-01 09:01') %>
       <% late = d.timecards.find_by(user_id: current_user.id).start - Time.parse('2000-01-01 09:00') %>
-      <% if tortal_work.to_i < 28800 %>
+      <% if total_work.to_i < 28800 %>
         <% shoteigai = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 18:00') %>
       <% else %>
         <% shoteigai = late %>
@@ -70,12 +70,12 @@
     <% if d.timecards.find_by(user_id: current_user.id).finish < Time.parse('2000-01-01 18:00') %>
       <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: current_user.id).finish %>
     <% end %>
-    <% overtime = tortal_work - 28800 %>
+    <% overtime = total_work - 28800 %>
     <% if d.timecards.find_by(user_id: current_user.id).finish > Time.parse('2000-01-01 22:00') %>
       <% overtime_midnight = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 22:00') %>
       <% overtime = overtime - overtime_midnight %>
     <% end %>
-    <% shotei = tortal_work %>
+    <% shotei = total_work %>
     <% if overtime && overtime >= 60 %>
       <% shotei = shotei - overtime %>
     <% end %>
@@ -154,13 +154,13 @@
     <% else %>
       <span>-</span>
     <% end %>
-    <% if tortal_break && tortal_break >= 60 %>
-      <span><%= Time.at(tortal_break.to_i).utc.strftime('%-H.%-M') %></span>
+    <% if total_break && total_break >= 60 %>
+      <span><%= Time.at(total_break.to_i).utc.strftime('%-H.%-M') %></span>
     <% else %>
       <span>-</span>
     <% end %>
-    <% if tortal_work && tortal_work >= 60 %>
-      <span><%= Time.at(tortal_work.to_i).utc.strftime('%-H.%-M') %></span>
+    <% if total_work && total_work >= 60 %>
+      <span><%= Time.at(total_work.to_i).utc.strftime('%-H.%-M') %></span>
     <% else %>
       <span>-</span>
     <% end %>

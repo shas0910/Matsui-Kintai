@@ -10,11 +10,11 @@ class TimecardsController < ApplicationController
   def create_start
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.start = Time.now
+      timecard.start = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:start, Time.now)
+      timecard.update_attribute(:start, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
@@ -22,11 +22,11 @@ class TimecardsController < ApplicationController
   def create_finish
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.finish = Time.now
+      timecard.finish = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:finish, Time.now)
+      timecard.update_attribute(:finish, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
@@ -34,11 +34,11 @@ class TimecardsController < ApplicationController
   def create_break_start
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.break_start = Time.now
+      timecard.break_start = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:break_start, Time.now)
+      timecard.update_attribute(:break_start, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
@@ -46,11 +46,11 @@ class TimecardsController < ApplicationController
   def create_break_finish
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.break_finish = Time.now
+      timecard.break_finish = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:break_finish, Time.now)
+      timecard.update_attribute(:break_finish, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
