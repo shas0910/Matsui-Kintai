@@ -1,7 +1,7 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
 <h3><%= User.find_by(id: params[:user_id]).last_name + " " + User.find_by(id: params[:user_id]).first_name %>さんのタイムカード</h3>
-<%= form_with model: @year_month, url: to_show_year_months_path, method: :get do |form| %>
+<%= form_with model: @year_month, url: "/user/#{params[:user_id]}/year_month/#{params[:id]}/to_manage", method: :get do |form| %>
   <div>
     <span><%= @year_month.first_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.first_date.wday] %>) 〜 <%= @year_month.last_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.last_date.wday] %>)</span>
     <%= form.select :year, Date.today.year-2 .. Date.today.year+2 %>
@@ -36,8 +36,8 @@
 <% overtime_midnight_total_houteigai = 0 %>
 <% late_total = 0 %>
 <% early_total = 0 %>
-<% total_work_total = 0 %>
 <% total_break_total = 0 %>
+<% total_work_total = 0 %>
 <% @days.each do |d| %>
   <% shoteigai = 0 %>
   <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start && d.timecards.find_by(user_id: params[:user_id]).finish %>
@@ -75,28 +75,82 @@
       <% shotei = shotei - shoteigai %>
     <% end %>
   <% end %>
-  <% if d.day_type = "平日" %>
-    <% shotei_total_weekday += shotei %>
-    <% shoteigai_total_weekday += shoteigai %>
-    <% overtime_total_weekday +=  %>
-    <% overtime_midnight_total_weekday = 0 %>
-  <%  %>
-
-
-  <% shotei_total_houtei = 0 %>
-  <% shotei_total_houteigai = 0 %>
-  <% shoteigai_total_houtei = 0 %>
-  <% shoteigai_total_houteigai = 0 %>
-  <% overtime_total_houtei = 0 %>
-  <% overtime_total_houteigai = 0 %>
-  <% overtime_midnight_total_houtei = 0 %>
-  <% overtime_midnight_total_houteigai = 0 %>
-  <% late_total = 0 %>
-  <% early_total = 0 %>
-  <% total_work_total = 0 %>
-  <% total_break_total = 0 %>
+  <% if shotei && shotei >= 60 %>
+    <% if d.day_type = "平日" %>
+      <% shotei_total_weekday += shotei %>
+    <% elsif d.day_type = "法定休日" %>
+      <% shotei_total_houtei += shotei %>
+    <% elsif d.day_type = "法定外休日" %>
+      <% shotei_total_houteigai += shotei %>
+    <% end %>
+  <% end %>
+  <% if shoteigai && shoteigai >= 60 %>
+    <% if d.day_type = "平日" %>
+      <% shoteigai_total_weekday += shoteigai %>
+    <% elsif d.day_type = "法定休日" %>
+      <% shoteigai_total_houtei += shoteigai %>
+    <% elsif d.day_type = "法定外休日" %>
+      <% shoteigai_total_houteigai += shoteigai %>
+    <% end %>
+  <% end %>
+  <% if overtime && overtime >= 60 %>
+    <% if d.day_type = "平日" %>
+      <% overtime_total_weekday += overtime %>
+    <% elsif d.day_type = "法定休日" %>
+      <% overtime_total_houtei += overtime %>
+    <% elsif d.day_type = "法定外休日" %>
+      <% overtime_total_houteigai += overtime %>
+    <% end %>
+  <% end %>
+  <% if overtime_midnight && overtime_midnight >= 60 %>
+    <% if d.day_type = "平日" %>
+      <% overtime_midnight_total_weekday += overtime_midnight %>
+    <% elsif d.day_type = "法定休日" %>
+      <% overtime_midnight_total_houtei += overtime_midnight %>
+    <% elsif d.day_type = "法定外休日" %>
+      <% overtime_midnight_total_houteigai += overtime_midnight %>
+    <% end %>
+  <% end %>
+  <% if late && late >= 60 %>
+    <% late_total += late %>
+  <% end %>
+  <% if early && late >= 60 %>
+    <% early_total += early %>
+  <% end %>
+  <% if total_break && total_break >= 60 %>
+    <% total_break_total += total_break %>
+  <% end %>
+  <% if total_work && total_work >= 60 %>
+    <% total_work_total += total_work %>
+  <% end %>
 <% end %>
 
+<div>
+<span>平日</span>
+<span><%= (shotei_total_weekday / 3600).floor %>.<%= (shotei_total_weekday.modulo(3600) / 60).floor %></span>
+<span><%= (shoteigai_total_weekday / 3600).floor %>.<%= (shoteigai_total_weekday.modulo(3600) / 60).floor %></span>
+<span><%= (overtime_total_weekday / 3600).floor %>.<%= (overtime_total_weekday.modulo(3600) / 60).floor %></span>
+<span><%= (overtime_midnight_total_weekday / 3600).floor %>.<%= (overtime_midnight_total_weekday.modulo(3600) / 60).floor %></span>
+</div>
+<div>
+<span>法定休日</span>
+<span><%= (shotei_total_houtei / 3600).floor %>.<%= (shotei_total_houtei.modulo(3600) / 60).floor %></span>
+<span><%= (shoteigai_total_houtei / 3600).floor %>.<%= (shoteigai_total_houtei.modulo(3600) / 60).floor %></span>
+<span><%= (overtime_total_houtei / 3600).floor %>.<%= (overtime_total_houtei.modulo(3600) / 60).floor %></span>
+<span><%= (overtime_midnight_total_houtei / 3600).floor %>.<%= (overtime_midnight_total_houtei.modulo(3600) / 60).floor %></span>
+</div>
+<div>
+<span>法定外休日</span>
+<span><%= (shotei_total_houteigai / 3600).floor %>.<%= (shotei_total_houteigai.modulo(3600) / 60).floor %></span>
+<span><%= (shoteigai_total_houteigai / 3600).floor %>.<%= (shoteigai_total_houteigai.modulo(3600) / 60).floor %></span>
+<span><%= (overtime_total_houteigai / 3600).floor %>.<%= (overtime_total_houteigai.modulo(3600) / 60).floor %></span>
+<span><%= (overtime_midnight_total_houteigai / 3600).floor %>.<%= (overtime_midnight_total_houteigai.modulo(3600) / 60).floor %></span>
+</div>
+
+<span><%= (late_total / 3600).floor %>.<%= (late_total.modulo(3600) / 60).floor %></span>
+<span><%= (early_total / 3600).floor %>.<%= (early_total.modulo(3600) / 60).floor %></span>
+<span><%= (total_break_total / 3600).floor %>.<%= (total_break_total.modulo(3600) / 60).floor %></span>
+<span><%= (total_work_total / 3600).floor %>.<%= (total_work_total.modulo(3600) / 60).floor %></span>
 
 <h3>日数集計</h3>
 <span>平日</span>
@@ -118,10 +172,11 @@
 <span><%= @schedules.where(schedule_type: "欠勤").count %></span>
 
 <h3>日別データ</h3>
-<span>申請</span>
+<span>打刻編集</span>
+<span>日程編集</span>
 <span>日付</span>
 <span>種別</span>
-<span>スケジュール</span>
+<span>日程</span>
 <span>出勤</span>
 <span>退勤</span>
 <span>休憩開始</span>
@@ -173,6 +228,7 @@
     <% end %>
   <% end %>
   <div>
+    <span>■</span>
     <span>■</span>
     <span><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</span>
     <span><%= d.day_type %></span>
@@ -247,6 +303,11 @@
     <% end %>
     <% if total_work && total_work >= 60 %>
       <span><%= Time.at(total_work.to_i).utc.strftime('%-H.%-M') %></span>
+    <% else %>
+      <span>-</span>
+    <% end %>
+    <% if d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).remark %>
+      <span><%= d.schedules.find_by(user_id: params[:user_id]).remark %></span>
     <% else %>
       <span>-</span>
     <% end %>

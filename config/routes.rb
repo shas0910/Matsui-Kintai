@@ -8,12 +8,13 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :edit, :update, :destroy]
   
   resources :year_months, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
-    collection do
+    member do
       get 'to_show'
     end
   end
 
   get 'user/:user_id/year_month/:id', to: 'year_months#manage'
+  get 'user/:user_id/year_month/:id/to_manage', to: 'year_months#to_manage'
 
   resources :day do
     resources :pending_timecards, only: [:new, :create]
