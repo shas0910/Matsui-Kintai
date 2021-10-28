@@ -2,7 +2,7 @@ class PendingTimecardsController < ApplicationController
 
   def new
     @pending_timecard = PendingTimecard.new
-    @timecard = Timecard.where(user_id: current_user.id)
+    @timecard = Timecard.where(user_id: current_user.id).find_by(day_id: params[:day_id])
     @day = Day.find(params[:day_id])
   end
 

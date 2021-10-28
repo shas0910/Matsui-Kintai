@@ -55,6 +55,13 @@ class TimecardsController < ApplicationController
     end
   end
   
+  def edit
+    @timecard = Timecard.find(params[:id])
+  end
+
+  def update
+    
+  end
 
   private
   def timecard_params

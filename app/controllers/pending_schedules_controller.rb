@@ -2,6 +2,7 @@ class PendingSchedulesController < ApplicationController
 
   def new
     @day = Day.find_by(id: params[:day_id])
+    @schedule = Schedule.where(user_id: current_user.id).find_by(day_id: params[:day_id])
     @pending_schedule = PendingSchedule.new
   end
 
