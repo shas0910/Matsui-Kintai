@@ -22,6 +22,20 @@ Rails.application.routes.draw do
 
   resources :pending_timecards, :pending_schedules, only: :destroy
 
+  resources :pending_timecards, only: :update do
+    member do
+      patch 'permission'
+    end
+  end
+
+  resources :pending_schedules, only: :update do
+    member do
+      patch 'permission'
+    end
+  end
+
+  get 'permissions', to: 'permissions#index'
+
   resources :timecards, only: [:index, :new, :create, :update] do
     collection do
       post 'create_start'

@@ -23,6 +23,29 @@ class PendingTimecardsController < ApplicationController
     pending_timecard.destroy
     redirect_to requests_path
   end
+  
+  def permission
+    pending_timecard = PendingTimecard.find_by(id: params[:id])
+    timecard = Timecard.find_by(id: pending_timecard.timecard_id)
+    if params[:commit] == "承認"
+      if pending_timecard.timecard_type == "出勤"
+        timecard.update_attribute(:start, pending_timecard.pending_time)
+      elsif pending_timecard.timecard_type == "退勤"
+        timecard.update_attribute(:finish, pending_timecard.pending_time)
+      elsif pending_timecard.timecard_type == "休憩開始"
+        timecard.update_attribute(:break_start, pending_timecard.pending_time)
+      elsif pending_timecard.timecard_type == "休憩終了"
+        timecard.update_attribute(:break_finish, pending_timecard.pending_time)
+      end
+      pending_timecard.update_attribute(:status, "承認")
+      pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
+      redirect_to permission_path
+    elsif params[:commit] == "棄却"
+      pending_timecard.update_attribute(:status, "棄却")
+      pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
+      redirect_to permission_path
+    end
+  end
 
   private
 

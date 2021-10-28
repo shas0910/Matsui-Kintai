@@ -21,18 +21,6 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
     t.index ["year_month_id"], name: "index_days_on_year_month_id"
   end
 
-  create_table "pending_timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "timecard_id", null: false
-    t.string "timecard_type", null: false
-    t.time "pending_time", null: false
-    t.string "status", null: false
-    t.text "comment_request"
-    t.text "comment_permission"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["timecard_id"], name: "index_pending_timecards_on_timecard_id"
-  end
-
   create_table "pending_schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "schedule_id", null: false
     t.string "schedule_type", null: false
@@ -43,6 +31,18 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["schedule_id"], name: "index_pending_schedules_on_schedule_id"
+  end
+
+  create_table "pending_timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "timecard_id", null: false
+    t.string "timecard_type", null: false
+    t.time "pending_time", null: false
+    t.string "status", null: false
+    t.text "comment_request"
+    t.text "comment_permission"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["timecard_id"], name: "index_pending_timecards_on_timecard_id"
   end
 
   create_table "schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
   end
 
   add_foreign_key "days", "year_months"
-  add_foreign_key "pending_timecards", "timecards"
   add_foreign_key "pending_schedules", "schedules"
+  add_foreign_key "pending_timecards", "timecards"
   add_foreign_key "schedules", "days"
   add_foreign_key "schedules", "users"
   add_foreign_key "timecards", "days"
