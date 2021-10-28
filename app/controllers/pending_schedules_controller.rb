@@ -17,6 +17,12 @@ class PendingSchedulesController < ApplicationController
     redirect_to new_day_pending_schedule_path(params[:day_id])
   end
 
+  def destroy
+    pending_schedule = PendingSchedule.find_by(params[:id])
+    pending_schedule.destroy
+    redirect_to requests_path
+  end
+  
   def permission
     pending_schedule = PendingSchedule.find_by(id: params[:id])
     schedule = Schedule.find_by(id: pending_schedule.schedule_id)
