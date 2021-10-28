@@ -3,7 +3,7 @@
 <h3>現在の申請</h3>
 <span>打刻申請一覧</span>
 <br>
-<% if @pending_schedules.exists?(status: "未承認") %>
+<% if @pending_timecards.exists?(status: "未承認") %>
   <span>申請日</span>
   <span>対象日</span>
   <span>打刻種別</span>
@@ -53,17 +53,17 @@
     </div>
   <% end %>
 <% else %>
-  <h4>打刻申請はありません</h4>
+  <h4>現在の日程申請はありません</h4>
 <% end %>
 
 <br>
-<span>スケジュール申請一覧</span>
+<span>日程申請一覧</span>
 <br>
 <% if @pending_schedules.exists?(status: "未承認") %>
   <span>申請日</span>
   <span>対象日</span>
-  <span>申請元のスケジュール</span>
-  <span>申請されたスケジュール</span>
+  <span>申請元の日程</span>
+  <span>申請された日程</span>
   <span>備考</span>
   <span>申請者メッセージ</span>
   <span>キャンセル</span>
@@ -81,54 +81,62 @@
     </div>
   <% end %>
 <% else %>
-  <h4>現在のスケジュール申請はありません</h4>
+  <h4>現在の日程申請はありません</h4>
 <% end %>
 
 <br>
 <h3>申請履歴</h3>
 <span>打刻申請一覧</span>
 <br>
-<span>申請日</span>
-<span>対象日</span>
-<span>打刻種別</span>
-<span>申請された打刻</span>
-<span>申請者メッセージ</span>
-<span>承認者メッセージ</span>
-<span>承認状態</span>
-<% @pending_timecards.each do |pt| %>
-  <div>
-    <% if pt.status != "未承認" %>
-      <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.created_id).day_id).date.wday] %>)</span>
-      <span><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.created_id).day_id).date.wday] %>)</span>
-      <span><%= pt.timecard_type %></span>
-      <span><%= pt.pending_time.strftime("%R") %></span>
-      <span><%= pt.comment_request %></span>
-      <span><%= pt.comment_permission %></span>
-      <span><%= pt.status %></span>
-    <% end %>
-  </div>
+<% if @pending_timecards.exists?(status: ["承認","棄却"]) %>
+  <span>申請日</span>
+  <span>対象日</span>
+  <span>打刻種別</span>
+  <span>申請された打刻</span>
+  <span>申請者メッセージ</span>
+  <span>承認者メッセージ</span>
+  <span>承認状態</span>
+  <% @pending_timecards.each do |pt| %>
+    <div>
+      <% if pt.status != "未承認" %>
+        <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.created_id).day_id).date.wday] %>)</span>
+        <span><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.created_id).day_id).date.wday] %>)</span>
+        <span><%= pt.timecard_type %></span>
+        <span><%= pt.pending_time.strftime("%R") %></span>
+        <span><%= pt.comment_request %></span>
+        <span><%= pt.comment_permission %></span>
+        <span><%= pt.status %></span>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <h4>打刻申請履歴はありません</h4>
 <% end %>
 
 <br>
-<span>スケジュール申請一覧</span>
+<span>日程申請一覧</span>
 <br>
-<span>申請日</span>
-<span>対象日</span>
-<span>申請されたスケジュール</span>
-<span>備考</span>
-<span>申請者メッセージ</span>
-<span>承認者メッセージ</span>
-<span>承認状態</span>
-<% @pending_schedules.each do |ps| %>
-  <div>
-    <% if ps.status != "未承認" %>
-      <span><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</span>
-      <span><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</span>
-      <span><%= ps.schedule_type %></span>
-      <span><%= ps.remark %></span>
-      <span><%= ps.comment_request %></span>
-      <span><%= ps.comment_permission %></span>
-      <span><%= ps.status %></span>
-    <% end %>
-  </div>
+<% if @pending_schedules.exists?(status: ["承認","棄却"]) %>
+  <span>申請日</span>
+  <span>対象日</span>
+  <span>申請された日程</span>
+  <span>備考</span>
+  <span>申請者メッセージ</span>
+  <span>承認者メッセージ</span>
+  <span>承認状態</span>
+  <% @pending_schedules.each do |ps| %>
+    <div>
+      <% if ps.status != "未承認" %>
+        <span><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</span>
+        <span><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</span>
+        <span><%= ps.schedule_type %></span>
+        <span><%= ps.remark %></span>
+        <span><%= ps.comment_request %></span>
+        <span><%= ps.comment_permission %></span>
+        <span><%= ps.status %></span>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <h4>日程申請履歴はありません</h4>
 <% end %>
