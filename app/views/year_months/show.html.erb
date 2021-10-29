@@ -241,10 +241,12 @@
     <span><%= d.day_type %></span>
     <% if d.schedules.find_by(user_id: current_user.id) %>
       <span><%= d.schedules.find_by(user_id: current_user.id).schedule_type %></span>
+    <% elsif d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+      <span>出勤</span>
     <% elsif d.day_type.include?("休日") %>
       <span>休日</span>
     <% else %>
-      <span>出勤</span>
+      <span>-</span>
     <% end %>
     <% if d.timecards.find_by(user_id: current_user.id) %>
       <% if d.timecards.find_by(user_id: current_user.id).start %>
