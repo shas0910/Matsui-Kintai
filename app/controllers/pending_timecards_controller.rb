@@ -7,6 +7,10 @@ class PendingTimecardsController < ApplicationController
   end
 
   def create
+    if params[:pending_timecard][:timecard_type] == "" or params[:pending_timecard][:pending_time] == ""
+      redirect_to new_day_pending_timecard_path(params[:day_id])
+      return
+    end
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: params[:day_id])
     if timecard.new_record?
       timecard.save

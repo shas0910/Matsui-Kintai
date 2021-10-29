@@ -7,6 +7,10 @@ class PendingSchedulesController < ApplicationController
   end
 
   def create
+    if params[:pending_schedule][:schedule_type] == ""
+      redirect_to new_day_pending_schedule_path(params[:day_id])
+      return
+    end
     schedule = Schedule.find_or_initialize_by(user_id: current_user.id, day_id: params[:day_id])
     if schedule.new_record?
       schedule.save
