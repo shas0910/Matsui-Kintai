@@ -21,6 +21,12 @@ Rails.application.routes.draw do
     resources :pending_schedules, only: [:new, :create]
   end
 
+  get 'user/:user_id/day/:day_id/edit_timecard', to: 'timecards#edit'
+  get 'user/:user_id/day/:day_id/edit_schedule', to: 'schedules#edit'
+
+  get 'user/:user_id/day/:day_id/update_timecard', to: 'timecards#update'
+  get 'user/:user_id/day/:day_id/update_schedule', to: 'schedules#update'
+
   resources :pending_timecards, only: :update do
     member do
       patch 'permission'
@@ -35,7 +41,7 @@ Rails.application.routes.draw do
 
   get 'permissions', to: 'permissions#index'
 
-  resources :timecards, only: [:index, :new, :create, :edit, :update] do
+  resources :timecards, only: [:index, :new, :create] do
     collection do
       post 'create_start'
       post 'create_finish'
@@ -49,7 +55,5 @@ Rails.application.routes.draw do
       patch 'update_break_finish'
     end
   end
-
-  resources :schedules, only: [:edit, :update]
 
 end

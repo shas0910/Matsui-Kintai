@@ -56,11 +56,38 @@ class TimecardsController < ApplicationController
   end
   
   def edit
-    @timecard = Timecard.find(params[:id])
+    @day = Day.find(params[:day_id])
+    @timecard = Timecard.where(day_id: params[:day_id]).find_by(user_id: params[:user_id])
+    @timecard_new = Timecard.new
   end
 
   def update
-    
+    if params[:timecard][:timecard_type] == "" or params[:timecard][:timecard_time] == ""
+      redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_timecard"
+      return
+    end
+    timecard = Timecard.find_or_initialize_by(day_id: params[:day_id], user_id: params[:user_id])
+    if timecard.new_record?
+      if params[:timecard][:timecard_type] = "出勤"
+        timecard.start = params[:timecard][:timecard_time]
+      elsif params[:timecard][:timecard_type] = "退勤"
+        timecard.finish = params[:timecard][:timecard_time]
+      elsif params[:timecard][:timecard_type] = "休憩開始"
+        timecard.break_start = params[:timecard][:timecard_time]
+      elsif params[:timecard][:timecard_type] = "休憩終了"
+        timecard.break_finish = params[:timecard][:timecard_time]
+      end
+      timecard.save
+    elsif params[:timecard][:timecard_type] = "出勤"
+      timecard.update_attribute(:start, params[:timecard][:timecard_time])
+    elsif params[:timecard][:timecard_type] = "退勤"
+      timecard.update_attribute(:finish, params[:timecard][:timecard_time])
+    elsif params[:timecard][:timecard_type] = "休憩開始"
+      timecard.update_attribute(:break_start, params[:timecard][:timecard_time])
+    elsif params[:timecard][:timecard_type] = "休憩終了"
+      timecard.update_attribute(:break_finish, params[:timecard][:timecard_time])
+    end
+    redirect_to "/user/#{params[:user_id]}/year_month/#{Day.find(params[:day_id]).year_month_id}"
   end
 
   private

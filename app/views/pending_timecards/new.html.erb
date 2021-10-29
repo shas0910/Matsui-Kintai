@@ -36,20 +36,16 @@
 
 <h3>■打刻申請</h3>
 <%= form_with model: @pending_timecard, url: day_pending_timecards_path(params[:day_id]) do |form| %>
-
   <div>
     <span>打刻種別</span>
-    <%= form.select :timecard_type, [["出勤", "出勤"], ["休憩開始", "休憩開始"], ["休憩終了", "休憩終了"], ["退勤", "退勤"]], include_blank: "選択して下さい" %>
+    <%= form.select :timecard_type, ["出勤", "退勤", "休憩開始", "休憩終了"], include_blank: "選択して下さい" %>
     <%= form.time_field :pending_time %>
   </div>
-
   <div>
-    <p>申請理由</p>
+    <p>申請メッセージ</p>
     <%= form.text_area :comment_request%>
   </div>
-
   <div>
     <%= form.submit "申請" %>
   </div>
-
 <% end %>
