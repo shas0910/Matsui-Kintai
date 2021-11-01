@@ -7,10 +7,6 @@ class PendingSchedulesController < ApplicationController
   end
 
   def create
-    if params[:pending_schedule][:schedule_type] == ""
-      redirect_to new_day_pending_schedule_path(params[:day_id])
-      return
-    end
     schedule = Schedule.find_or_initialize_by(user_id: current_user.id, day_id: params[:day_id])
     if schedule.new_record?
       schedule.save
@@ -30,12 +26,11 @@ class PendingSchedulesController < ApplicationController
       schedule.update_attribute(:remark, pending_schedule.remark)
       pending_schedule.update_attribute(:status, "承認")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
-      redirect_to permission_path
     elsif params[:commit] == "棄却"
       pending_schedule.update_attribute(:status, "棄却")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
-      redirect_to permission_path
     end
+    redirect_to permissions_path
   end
 
   private

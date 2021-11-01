@@ -1,0 +1,38 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<h1>日程編集</h1>
+<p><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</p>
+
+<h3>■現在の日程</h3>
+<% if @schedule && @schedule.schedule_type %>
+    <span><%= @schedule.schedule_type %></span>
+<% elsif @day.timecards.find_by(user_id: params[:user_id]) && @day.timecards.find_by(user_id: params[:user_id]).start && @day.timecards.find_by(user_id: params[:user_id]).finish %>
+  <span>出勤</span>
+<% elsif @day.day_type.include?("休日") %>
+  <span>休日</span>
+<% else %>
+  <span>-</span>
+<% end %>
+
+<h3>■日程申請</h3>
+<% if @schedule %>
+  <%= form_with model: @schedule, url: "/user/#{params[:user_id]}/day/#{params[:day_id]}/update_schedule", method: :get do |form| %>
+    <%= form.label :schedule_type, "日程" %>
+    <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
+    <br>
+    <%= form.label :remark, "備考" %>
+    <%= form.text_field :remark %>
+    <br>
+    <%= form.submit "申請" %>
+  <% end %>
+<% else %>
+  <%= form_with model: @schedule_new, url: "/user/#{params[:user_id]}/day/#{params[:day_id]}/update_schedule", method: :get do |form| %>
+    <%= form.label :schedule_type, "日程" %>
+    <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
+    <br>
+    <%= form.label :remark, "備考" %>
+    <%= form.text_field :remark %>
+    <br>
+    <%= form.submit "申請" %>
+  <% end %>
+<% end %>

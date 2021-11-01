@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
 
   create_table "pending_schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "schedule_id", null: false
-    t.string "schedule_type", null: false
+    t.string "schedule_type"
     t.text "remark"
     t.string "status", null: false
     t.text "comment_request"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
   create_table "pending_timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "timecard_id", null: false
     t.string "timecard_type", null: false
-    t.time "pending_time", null: false
+    t.time "pending_time"
     t.string "status", null: false
     t.text "comment_request"
     t.text "comment_permission"

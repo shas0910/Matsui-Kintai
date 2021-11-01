@@ -62,7 +62,7 @@ class TimecardsController < ApplicationController
   end
 
   def update
-    if params[:timecard][:timecard_type] == "" or params[:timecard][:timecard_time] == ""
+    if params[:timecard][:timecard_type] == ""
       redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_timecard"
       return
     end

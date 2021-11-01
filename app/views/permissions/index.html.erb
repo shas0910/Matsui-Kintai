@@ -45,7 +45,11 @@
             <span>打刻なし</span>
           <% end %>
         <% end %>
-        <span><%= wpt.pending_time.strftime("%R") %></span>
+        <% if wpt.pending_time %>
+          <span><%= wpt.pending_time.strftime("%R") %></span>
+        <% else %>
+          <span>打刻なし</span>
+        <% end %>
         <span><%= wpt.comment_request %></span>
         <%= form_with model: wpt, url: permission_pending_timecard_path(wpt.id) do |f| %>
           <%= f.text_field :comment_permission %>
@@ -115,7 +119,11 @@
         <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</span>
         <span><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</span>
         <span><%= pt.timecard_type %></span>
-        <span><%= pt.pending_time.strftime("%R") %></span>
+        <% if pt.pending_time %>
+          <span><%= pt.pending_time.strftime("%R") %></span>
+        <% else %>
+          <span>打刻なし</span>
+        <% end %>
         <% if pt.comment_request %>
           <span><%= pt.comment_request %></span>
         <% else %>

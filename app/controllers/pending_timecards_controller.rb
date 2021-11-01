@@ -7,7 +7,7 @@ class PendingTimecardsController < ApplicationController
   end
 
   def create
-    if params[:pending_timecard][:timecard_type] == "" or params[:pending_timecard][:pending_time] == ""
+    if params[:pending_timecard][:timecard_type] == ""
       redirect_to new_day_pending_timecard_path(params[:day_id])
       return
     end
@@ -37,12 +37,11 @@ class PendingTimecardsController < ApplicationController
       end
       pending_timecard.update_attribute(:status, "承認")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
-      redirect_to permission_path
     elsif params[:commit] == "棄却"
       pending_timecard.update_attribute(:status, "棄却")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
-      redirect_to permission_path
     end
+    redirect_to permissions_path
   end
 
   private
