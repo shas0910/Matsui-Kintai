@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   get 'user/:user_id/year_month/:id', to: 'year_months#manage'
   get 'user/:user_id/year_month/:id/to_manage', to: 'year_months#to_manage'
 
+  get 'requests', to: 'requests#index'
+
   resources :day do
     resources :pending_timecards, only: [:new, :create]
     resources :pending_schedules, only: [:new, :create]
@@ -27,13 +29,13 @@ Rails.application.routes.draw do
   get 'user/:user_id/day/:day_id/update_timecard', to: 'timecards#update'
   get 'user/:user_id/day/:day_id/update_schedule', to: 'schedules#update'
 
-  resources :pending_timecards, only: :update do
+  resources :pending_timecards, only: [:update, :destroy] do
     member do
       patch 'permission'
     end
   end
 
-  resources :pending_schedules, only: :update do
+  resources :pending_schedules, only: [:update, :destroy] do
     member do
       patch 'permission'
     end
