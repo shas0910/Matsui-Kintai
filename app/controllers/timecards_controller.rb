@@ -10,11 +10,11 @@ class TimecardsController < ApplicationController
   def create_start
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.start = Time.now
+      timecard.start = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:start, Time.now)
+      timecard.update_attribute(:start, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
@@ -22,11 +22,11 @@ class TimecardsController < ApplicationController
   def create_finish
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.finish = Time.now
+      timecard.finish = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:finish, Time.now)
+      timecard.update_attribute(:finish, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
@@ -34,11 +34,11 @@ class TimecardsController < ApplicationController
   def create_break_start
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.break_start = Time.now
+      timecard.break_start = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:break_start, Time.now)
+      timecard.update_attribute(:break_start, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
@@ -46,15 +46,49 @@ class TimecardsController < ApplicationController
   def create_break_finish
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if timecard.new_record?
-      timecard.break_finish = Time.now
+      timecard.break_finish = Time.now.change(sec: 00)
       timecard.save
       redirect_to new_timecard_path
     else
-      timecard.update_attribute(:break_finish, Time.now)
+      timecard.update_attribute(:break_finish, Time.now.change(sec: 00))
       redirect_to new_timecard_path
     end
   end
   
+  def edit
+    @day = Day.find(params[:day_id])
+    @timecard = Timecard.where(day_id: params[:day_id]).find_by(user_id: params[:user_id])
+    @timecard_new = Timecard.new
+  end
+
+  def update
+    if params[:timecard][:timecard_type] == ""
+      redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_timecard"
+      return
+    end
+    timecard = Timecard.find_or_initialize_by(day_id: params[:day_id], user_id: params[:user_id])
+    if timecard.new_record?
+      if params[:timecard][:timecard_type] = "出勤"
+        timecard.start = params[:timecard][:timecard_time]
+      elsif params[:timecard][:timecard_type] = "退勤"
+        timecard.finish = params[:timecard][:timecard_time]
+      elsif params[:timecard][:timecard_type] = "休憩開始"
+        timecard.break_start = params[:timecard][:timecard_time]
+      elsif params[:timecard][:timecard_type] = "休憩終了"
+        timecard.break_finish = params[:timecard][:timecard_time]
+      end
+      timecard.save
+    elsif params[:timecard][:timecard_type] = "出勤"
+      timecard.update_attribute(:start, params[:timecard][:timecard_time])
+    elsif params[:timecard][:timecard_type] = "退勤"
+      timecard.update_attribute(:finish, params[:timecard][:timecard_time])
+    elsif params[:timecard][:timecard_type] = "休憩開始"
+      timecard.update_attribute(:break_start, params[:timecard][:timecard_time])
+    elsif params[:timecard][:timecard_type] = "休憩終了"
+      timecard.update_attribute(:break_finish, params[:timecard][:timecard_time])
+    end
+    redirect_to "/user/#{params[:user_id]}/year_month/#{Day.find(params[:day_id]).year_month_id}"
+  end
 
   private
   def timecard_params

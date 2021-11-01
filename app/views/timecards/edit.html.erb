@@ -1,0 +1,60 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<h1>打刻編集</h1>
+
+<p><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</p>
+<h3>■現在の打刻</h3>
+<span>出勤</span>
+<span>退勤</span>
+<span>休憩開始</span>
+<span>休憩終了</span>
+<br>
+<% if @timecard %>
+  <% if @timecard.start %>
+    <span><%= @timecard.start.strftime("%R") %></span>
+  <% else %>
+    <span>--:--</span>
+  <% end %>
+  <% if @timecard.finish %>
+    <span><%= @timecard.finish.strftime("%R") %></span>
+  <% else %>
+    <span>--:--</span>
+  <% end %>
+  <% if @timecard.break_start %>
+    <span><%= @timecard.break_start.strftime("%R") %></span>
+  <% else %>
+    <span>--:--</span>
+  <% end %>
+  <% if @timecard.break_finish %>
+    <span><%= @timecard.break_finish.strftime("%R") %></span>
+  <% else %>
+    <span>--:--</span>
+  <% end %>
+<% else %>
+  <span>--:--</span><span>--:--</span><span>--:--</span><span>--:--</span>
+<% end %>
+
+<h3>■打刻編集</h3>
+<% if @timecard %>
+  <%= form_with model: @timecard, url: "/user/#{params[:user_id]}/day/#{params[:day_id]}/update_timecard", method: :get do |form| %>
+    <div>
+      <span>打刻種別</span>
+      <%= form.select :timecard_type, ["出勤", "退勤", "休憩開始", "休憩終了"], include_blank: "選択して下さい" %>
+      <%= form.time_field :timecard_time %>
+    </div>
+    <div>
+      <%= form.submit "保存" %>
+    </div>
+  <% end %>
+<% else %>
+  <%= form_with model: @timecard_new, url: "/user/#{params[:user_id]}/day/#{params[:day_id]}/update_timecard", method: :get do |form| %>
+    <div>
+      <span>打刻種別</span>
+      <%= form.select :timecard_type, ["出勤", "退勤", "休憩開始", "休憩終了"], include_blank: "選択して下さい" %>
+      <%= form.time_field :timecard_time %>
+    </div>
+    <div>
+      <%= form.submit "保存" %>
+    </div>
+  <% end %>
+<% end %>

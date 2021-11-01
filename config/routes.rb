@@ -8,10 +8,13 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :edit, :update, :destroy]
   
   resources :year_months, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
-    collection do
+    member do
       get 'to_show'
     end
   end
+
+  get 'user/:user_id/year_month/:id', to: 'year_months#manage'
+  get 'user/:user_id/year_month/:id/to_manage', to: 'year_months#to_manage'
 
   get 'requests', to: 'requests#index'
 
@@ -20,15 +23,19 @@ Rails.application.routes.draw do
     resources :pending_schedules, only: [:new, :create]
   end
 
-  resources :pending_timecards, :pending_schedules, only: :destroy
+  get 'user/:user_id/day/:day_id/edit_timecard', to: 'timecards#edit'
+  get 'user/:user_id/day/:day_id/edit_schedule', to: 'schedules#edit'
 
-  resources :pending_timecards, only: :update do
+  get 'user/:user_id/day/:day_id/update_timecard', to: 'timecards#update'
+  get 'user/:user_id/day/:day_id/update_schedule', to: 'schedules#update'
+
+  resources :pending_timecards, only: [:update, :destroy] do
     member do
       patch 'permission'
     end
   end
 
-  resources :pending_schedules, only: :update do
+  resources :pending_schedules, only: [:update, :destroy] do
     member do
       patch 'permission'
     end
@@ -36,7 +43,7 @@ Rails.application.routes.draw do
 
   get 'permissions', to: 'permissions#index'
 
-  resources :timecards, only: [:index, :new, :create, :update] do
+  resources :timecards, only: [:index, :new, :create] do
     collection do
       post 'create_start'
       post 'create_finish'

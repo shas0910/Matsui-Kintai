@@ -1,7 +1,7 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
-<h3><%= User.find_by(id: current_user.id).last_name + " " + User.find_by(id: current_user.id).first_name %>さんのタイムカード</h3>
-<%= form_with model: @year_month, url: to_show_year_month_path(params[:id]), method: :get do |form| %>
+<h3><%= User.find_by(id: params[:user_id]).last_name + " " + User.find_by(id: params[:user_id]).first_name %>さんのタイムカード</h3>
+<%= form_with model: @year_month, url: "/user/#{params[:user_id]}/year_month/#{params[:id]}/to_manage", method: :get do |form| %>
   <div>
     <span><%= @year_month.first_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.first_date.wday] %>) 〜 <%= @year_month.last_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.last_date.wday] %>)</span>
     <%= form.select :year, Date.today.year-2 .. Date.today.year+2 %>
@@ -42,28 +42,28 @@
 <% holiday_count = 0 %>
 <% @days.each do |d| %>
   <% shoteigai = 0 %>
-  <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
-    <% total_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
-    <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
-      <% total_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
+  <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start && d.timecards.find_by(user_id: params[:user_id]).finish %>
+    <% total_work = (d.timecards.find_by(user_id: params[:user_id]).finish - d.timecards.find_by(user_id: params[:user_id]).start) %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).break_start && d.timecards.find_by(user_id: params[:user_id]).break_finish %>
+      <% total_break = d.timecards.find_by(user_id: params[:user_id]).break_finish - d.timecards.find_by(user_id: params[:user_id]).break_start %>
       <% total_work = total_work - total_break %>
     <% end %>
-    <% if d.timecards.find_by(user_id: current_user.id).start >= Time.parse('2000-01-01 09:01') %>
-      <% late = d.timecards.find_by(user_id: current_user.id).start - Time.parse('2000-01-01 09:00') %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).start >= Time.parse('2000-01-01 09:01') %>
+      <% late = d.timecards.find_by(user_id: params[:user_id]).start - Time.parse('2000-01-01 09:00') %>
       <% if total_work.to_i < 28800 %>
-        <% shoteigai = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 18:00') %>
+        <% shoteigai = d.timecards.find_by(user_id: params[:user_id]).finish - Time.parse('2000-01-01 18:00') %>
       <% else %>
         <% shoteigai = late %>
       <% end %>
     <% else %>
-      <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: current_user.id).start %>
+      <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: params[:user_id]).start %>
     <% end %>
-    <% if d.timecards.find_by(user_id: current_user.id).finish < Time.parse('2000-01-01 18:00') %>
-      <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: current_user.id).finish %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).finish < Time.parse('2000-01-01 18:00') %>
+      <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: params[:user_id]).finish %>
     <% end %>
     <% overtime = total_work - 28800 %>
-    <% if d.timecards.find_by(user_id: current_user.id).finish > Time.parse('2000-01-01 22:00') %>
-      <% overtime_midnight = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 22:00') %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).finish > Time.parse('2000-01-01 22:00') %>
+      <% overtime_midnight = d.timecards.find_by(user_id: params[:user_id]).finish - Time.parse('2000-01-01 22:00') %>
       <% overtime = overtime - overtime_midnight %>
     <% end %>
     <% shotei = total_work %>
@@ -179,8 +179,8 @@
 <span><%= @schedules.where(schedule_type: "欠勤").count %></span>
 
 <h3>日別データ</h3>
-<span>打刻申請</span>
-<span>日程申請</span>
+<span>打刻編集</span>
+<span>日程編集</span>
 <span>日付</span>
 <span>種別</span>
 <span>日程</span>
@@ -199,28 +199,28 @@
 <span>備考</span>
 <% @days.each do |d| %>
   <% shoteigai = 0 %>
-  <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
-    <% total_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
-    <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
-      <% total_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
+  <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start && d.timecards.find_by(user_id: params[:user_id]).finish %>
+    <% total_work = (d.timecards.find_by(user_id: params[:user_id]).finish - d.timecards.find_by(user_id: params[:user_id]).start) %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).break_start && d.timecards.find_by(user_id: params[:user_id]).break_finish %>
+      <% total_break = d.timecards.find_by(user_id: params[:user_id]).break_finish - d.timecards.find_by(user_id: params[:user_id]).break_start %>
       <% total_work = total_work - total_break %>
     <% end %>
-    <% if d.timecards.find_by(user_id: current_user.id).start >= Time.parse('2000-01-01 09:01') %>
-      <% late = d.timecards.find_by(user_id: current_user.id).start - Time.parse('2000-01-01 09:00') %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).start >= Time.parse('2000-01-01 09:01') %>
+      <% late = d.timecards.find_by(user_id: params[:user_id]).start - Time.parse('2000-01-01 09:00') %>
       <% if total_work.to_i < 28800 %>
-        <% shoteigai = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 18:00') %>
+        <% shoteigai = d.timecards.find_by(user_id: params[:user_id]).finish - Time.parse('2000-01-01 18:00') %>
       <% else %>
         <% shoteigai = late %>
       <% end %>
     <% else %>
-      <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: current_user.id).start %>
+      <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: params[:user_id]).start %>
     <% end %>
-    <% if d.timecards.find_by(user_id: current_user.id).finish < Time.parse('2000-01-01 18:00') %>
-      <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: current_user.id).finish %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).finish < Time.parse('2000-01-01 18:00') %>
+      <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: params[:user_id]).finish %>
     <% end %>
     <% overtime = total_work - 28800 %>
-    <% if d.timecards.find_by(user_id: current_user.id).finish > Time.parse('2000-01-01 22:00') %>
-      <% overtime_midnight = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 22:00') %>
+    <% if d.timecards.find_by(user_id: params[:user_id]).finish > Time.parse('2000-01-01 22:00') %>
+      <% overtime_midnight = d.timecards.find_by(user_id: params[:user_id]).finish - Time.parse('2000-01-01 22:00') %>
       <% overtime = overtime - overtime_midnight %>
     <% end %>
     <% shotei = total_work %>
@@ -235,37 +235,37 @@
     <% end %>
   <% end %>
   <div>
-    <%= link_to "打刻申請", new_day_pending_timecard_path(d.id) %>
-    <%= link_to "日程申請", new_day_pending_schedule_path(d.id) %>
+    <%= link_to "打刻編集", "/user/#{params[:user_id]}/day/#{d.id}/edit_timecard" %>
+    <%= link_to "日程編集", "/user/#{params[:user_id]}/day/#{d.id}/edit_schedule" %>
     <span><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</span>
     <span><%= d.day_type %></span>
-    <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
-      <span><%= d.schedules.find_by(user_id: current_user.id).schedule_type %></span>
-    <% elsif d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+    <% if d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).schedule_type.present? %>
+      <span><%= d.schedules.find_by(user_id: params[:user_id]).schedule_type %></span>
+    <% elsif d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start && d.timecards.find_by(user_id: params[:user_id]).finish %>
       <span>出勤</span>
     <% elsif d.day_type.include?("休日") %>
       <span>休日</span>
     <% else %>
       <span>-</span>
     <% end %>
-    <% if d.timecards.find_by(user_id: current_user.id) %>
-      <% if d.timecards.find_by(user_id: current_user.id).start %>
-        <span><%= d.timecards.find_by(user_id: current_user.id).start.strftime("%R") %></span>
+    <% if d.timecards.find_by(user_id: params[:user_id]) %>
+      <% if d.timecards.find_by(user_id: params[:user_id]).start %>
+        <span><%= d.timecards.find_by(user_id: params[:user_id]).start.strftime("%R") %></span>
       <% else %>
         <span>--:--</span>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).finish %>
-        <span><%= d.timecards.find_by(user_id: current_user.id).finish.strftime("%R") %></span>
+      <% if d.timecards.find_by(user_id: params[:user_id]).finish %>
+        <span><%= d.timecards.find_by(user_id: params[:user_id]).finish.strftime("%R") %></span>
       <% else %>
         <span>--:--</span>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).break_start %>
-        <span><%= d.timecards.find_by(user_id: current_user.id).break_start.strftime("%R") %></span>
+      <% if d.timecards.find_by(user_id: params[:user_id]).break_start %>
+        <span><%= d.timecards.find_by(user_id: params[:user_id]).break_start.strftime("%R") %></span>
       <% else %>
         <span>--:--</span>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).break_finish %>
-        <span><%= d.timecards.find_by(user_id: current_user.id).break_finish.strftime("%R") %></span>
+      <% if d.timecards.find_by(user_id: params[:user_id]).break_finish %>
+        <span><%= d.timecards.find_by(user_id: params[:user_id]).break_finish.strftime("%R") %></span>
       <% else %>
         <span>--:--</span>
       <% end %>
@@ -315,8 +315,8 @@
     <% else %>
       <span>-</span>
     <% end %>
-    <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).remark %>
-      <span><%= d.schedules.find_by(user_id: current_user.id).remark %></span>
+    <% if d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).remark %>
+      <span><%= d.schedules.find_by(user_id: params[:user_id]).remark %></span>
     <% else %>
       <span>-</span>
     <% end %>

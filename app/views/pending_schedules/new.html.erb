@@ -1,10 +1,22 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
-<h3>スケジュール申請</h3>
+<h1>日程申請</h1>
 <p><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</p>
 
+<h3>■現在の日程</h3>
+<% if @schedule && @schedule.schedule_type %>
+    <span><%= @schedule.schedule_type %></span>
+<% elsif @day.timecards.find_by(user_id: current_user.id) && @day.timecards.find_by(user_id: current_user.id).start && @day.timecards.find_by(user_id: current_user.id).finish %>
+  <span>出勤</span>
+<% elsif @day.day_type.include?("休日") %>
+  <span>休日</span>
+<% else %>
+  <span>-</span>
+<% end %>
+
+<h3>■日程申請</h3>
 <%= form_with model: @pending_schedule, url: day_pending_schedules_path do |form| %>
-  <%= form.label :schedule_type, "スケジュール" %>
+  <%= form.label :schedule_type, "日程" %>
   <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
   <br>
   <%= form.label :remark, "備考" %>

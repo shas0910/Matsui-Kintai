@@ -2,11 +2,15 @@ class PendingTimecardsController < ApplicationController
 
   def new
     @pending_timecard = PendingTimecard.new
-    @timecard = Timecard.where(user_id: current_user.id)
+    @timecard = Timecard.where(user_id: current_user.id).find_by(day_id: params[:day_id])
     @day = Day.find(params[:day_id])
   end
 
   def create
+    if params[:pending_timecard][:timecard_type] == ""
+      redirect_to new_day_pending_timecard_path(params[:day_id])
+      return
+    end
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: params[:day_id])
     if timecard.new_record?
       timecard.save
@@ -39,12 +43,11 @@ class PendingTimecardsController < ApplicationController
       end
       pending_timecard.update_attribute(:status, "承認")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
-      redirect_to permission_path
     elsif params[:commit] == "棄却"
       pending_timecard.update_attribute(:status, "棄却")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
-      redirect_to permission_path
     end
+    redirect_to permissions_path
   end
 
   private

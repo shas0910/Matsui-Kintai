@@ -7,16 +7,32 @@ class YearMonthsController < ApplicationController
   def show
     @year_month = YearMonth.find(params[:id])
     @days = Day.where(year_month_id: params[:id])
-    @timecards = Timecard.where(day_id: Day.where(year_month_id: params[:id]).ids)
-    @schedules = Schedule.where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @timecards = Timecard.where(user_id: current_user.id).where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @schedules = Schedule.where(user_id: current_user.id).where(day_id: Day.where(year_month_id: params[:id]).ids)
   end
 
   def to_show
-    year_month = YearMonth.where(year: params[:year_month][:year]).where(month: params[:year_month][:month])
-    if year_month.exists?
-      redirect_to year_month_path(year_month.ids)
+    year_month = YearMonth.where(year: params[:year_month][:year]).find_by(month: params[:year_month][:month])
+    if year_month
+      redirect_to year_month_path(year_month.id)
     else
-      redirect_to year_month_path(Day.find_by(date: Date.today).year_month_id)
+      redirect_to year_month_path(params[:id])
+    end
+  end
+
+  def manage
+    @year_month = YearMonth.find(params[:id])
+    @days = Day.where(year_month_id: params[:id])
+    @timecards = Timecard.where(user_id: params[:user_id]).where(day_id: Day.where(year_month_id: params[:id]).ids)
+    @schedules = Schedule.where(user_id: params[:user_id]).where(day_id: Day.where(year_month_id: params[:id]).ids)
+  end
+
+  def to_manage
+    year_month = YearMonth.where(year: params[:year_month][:year]).find_by(month: params[:year_month][:month])
+    if year_month
+      redirect_to "/user/#{params[:user_id]}/year_month/#{year_month.id}"
+    else
+      redirect_to "/user/#{params[:user_id]}/year_month/#{params[:id]}"
     end
   end
 

@@ -2,6 +2,7 @@ class PendingSchedulesController < ApplicationController
 
   def new
     @day = Day.find_by(id: params[:day_id])
+    @schedule = Schedule.where(user_id: current_user.id).find_by(day_id: params[:day_id])
     @pending_schedule = PendingSchedule.new
   end
 
@@ -31,12 +32,11 @@ class PendingSchedulesController < ApplicationController
       schedule.update_attribute(:remark, pending_schedule.remark)
       pending_schedule.update_attribute(:status, "承認")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
-      redirect_to permission_path
     elsif params[:commit] == "棄却"
       pending_schedule.update_attribute(:status, "棄却")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
-      redirect_to permission_path
     end
+    redirect_to permissions_path
   end
 
   private
