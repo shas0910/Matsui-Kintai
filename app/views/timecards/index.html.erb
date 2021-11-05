@@ -1,0 +1,9 @@
+<%= render "shared/header_common" %>
+
+<h2>タイムカード一覧・編集</h2>
+
+<% @users.each do |u| %>
+  <div>
+    <%= link_to "#{u.last_name} #{u.first_name}", "/user/#{u.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" %>
+  </div>
+<% end %>
