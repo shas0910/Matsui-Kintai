@@ -79,15 +79,21 @@
         <span><%= User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).first_name %></span>
         <span><%= wps.created_at.strftime("%m/%d") %>(<%= day[wps.created_at.wday] %>)</span>
         <span><%= Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).date.wday] %>)</span>
-        <% if Schedule.find_by(id: wps.schedule_id).schedule_type %>
+        <% if Schedule.find_by(id: wps.schedule_id).schedule_type.present? %>
           <span><%= Schedule.find_by(id: wps.schedule_id).schedule_type %></span>
-        <% elsif Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).day_type.include?("休日") %>
-          <span>休日</span>
         <% else %>
-          <span>出勤</span>
+          <span>なし</span>
         <% end %>
-        <span><%= wps.schedule_type %></span>
-        <span><%= wps.comment_request %></span>
+        <% if wps.schedule_type.present? %>
+          <span><%= wps.schedule_type %></span>
+        <% else %>
+          <span>なし</span>
+        <% end %>
+        <% if wps.comment_request.present? %>
+          <span><%= wps.comment_request %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
         <%= form_with model: wps, url: permission_pending_schedule_path(wps.id) do |f| %>
           <%= f.text_field :comment_permission %>
           <%= f.submit "承認" %>
@@ -124,13 +130,13 @@
         <% else %>
           <span>打刻なし</span>
         <% end %>
-        <% if pt.comment_request %>
+        <% if pt.comment_request.present? %>
           <span><%= pt.comment_request %></span>
         <% else %>
           <span>-</span>
         <% end %>
-        <% if pt.comment_permission %>
-          <span><%= pt.comment_request %></span>
+        <% if pt.comment_permission.present? %>
+          <span><%= pt.comment_permission %></span>
         <% else %>
           <span>-</span>
         <% end %>
@@ -155,9 +161,21 @@
         <span><%= User.find_by(id: Schedule.find_by(id: ps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: ps.schedule_id).user_id).first_name %></span>
         <span><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</span>
         <span><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</span>
-        <span><%= ps.schedule_type %></span>
-        <span><%= ps.comment_request %></span>
-        <span><%= ps.comment_permission %></span>
+        <% if ps.schedule_type.present? %>
+          <span><%= ps.schedule_type %></span>
+        <% else %>
+          <span>なし</span>
+        <% end %>
+        <% if ps.comment_request.present? %>
+          <span><%= ps.comment_request %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
+        <% if ps.comment_permission.present? %>
+          <span><%= ps.comment_permission %></span>
+        <% else %>
+          <span>-</span>
+        <% end %>
         <span><%= ps.status %></span>
       </div>
     <% end %>

@@ -1,8 +1,7 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
-<h3>現在の申請</h3>
-<span>打刻申請一覧</span>
-<br>
+<h3>未承認の申請</h3>
+<h4>打刻申請一覧</h4>
 <% if @pending_timecards.exists?(status: "未承認") %>
   <span>申請日</span>
   <span>対象日</span>
@@ -19,25 +18,25 @@
         <span><%= pt.timecard_type %></span>
         <% if pt.timecard_type == "出勤" %>
           <% if Timecard.find_by(id: pt.timecard_id).start %>
-            <span><%=  %></span>
+            <span><%= Timecard.find_by(id: pt.timecard_id).start.strftime("%R") %></span>
           <% else %>
             <span>打刻なし</span>
           <% end %>
         <% elsif pt.timecard_type == "退勤" %>
           <% if Timecard.find_by(id: pt.timecard_id).finish %>
-            <span><%=  %></span>
+            <span><%= Timecard.find_by(id: pt.timecard_id).finish.strftime("%R") %></span>
           <% else %>
             <span>打刻なし</span>
           <% end %>
         <% elsif pt.timecard_type == "休憩開始" %>
           <% if Timecard.find_by(id: pt.timecard_id).break_start %>
-            <span><%=  %></span>
+            <span><%= Timecard.find_by(id: pt.timecard_id).break_start.strftime("%R") %></span>
           <% else %>
             <span>打刻なし</span>
           <% end %>
         <% elsif pt.timecard_type == "休憩終了" %>
           <% if Timecard.find_by(id: pt.timecard_id).break_finish %>
-            <span><%= Timecard.find_by(id: pt.timecard_id).break_finish %></span>
+            <span><%= Timecard.find_by(id: pt.timecard_id).break_finish.strftime("%R") %></span>
           <% else %>
             <span>打刻なし</span>
           <% end %>
@@ -53,12 +52,11 @@
     </div>
   <% end %>
 <% else %>
-  <h4>現在の日程申請はありません</h4>
+  <span>未承認の打刻申請はありません</span>
 <% end %>
 
 <br>
-<span>日程申請一覧</span>
-<br>
+<h4>日程申請一覧</h4>
 <% if @pending_schedules.exists?(status: "未承認") %>
   <span>申請日</span>
   <span>対象日</span>
@@ -81,13 +79,12 @@
     </div>
   <% end %>
 <% else %>
-  <h4>現在の日程申請はありません</h4>
+  <span>未承認の日程申請はありません</span>
 <% end %>
 
 <br>
 <h3>申請履歴</h3>
-<span>打刻申請一覧</span>
-<br>
+<h4>打刻申請一覧</h4>
 <% if @pending_timecards.exists?(status: ["承認","棄却"]) %>
   <span>申請日</span>
   <span>対象日</span>
@@ -99,10 +96,14 @@
   <% @pending_timecards.each do |pt| %>
     <div>
       <% if pt.status != "未承認" %>
-        <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.created_id).day_id).date.wday] %>)</span>
-        <span><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.created_id).day_id).date.wday] %>)</span>
+        <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</span>
+        <span><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</span>
         <span><%= pt.timecard_type %></span>
-        <span><%= pt.pending_time.strftime("%R") %></span>
+        <% if pt.pending_time %>
+          <span><%= pt.pending_time.strftime("%R") %></span>
+        <% else %>
+          <span>なし</span>
+        <% end %>
         <span><%= pt.comment_request %></span>
         <span><%= pt.comment_permission %></span>
         <span><%= pt.status %></span>
@@ -110,12 +111,11 @@
     </div>
   <% end %>
 <% else %>
-  <h4>打刻申請履歴はありません</h4>
+  <span>打刻申請履歴はありません</span>
 <% end %>
 
 <br>
-<span>日程申請一覧</span>
-<br>
+<h4>日程申請一覧</h4>
 <% if @pending_schedules.exists?(status: ["承認","棄却"]) %>
   <span>申請日</span>
   <span>対象日</span>
@@ -129,7 +129,11 @@
       <% if ps.status != "未承認" %>
         <span><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</span>
         <span><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</span>
-        <span><%= ps.schedule_type %></span>
+        <% if ps.schedule_type.present? %>
+          <span><%= ps.schedule_type %></span>
+        <% else %>
+          <span>なし</span>
+        <% end %>
         <span><%= ps.remark %></span>
         <span><%= ps.comment_request %></span>
         <span><%= ps.comment_permission %></span>
@@ -138,5 +142,5 @@
     </div>
   <% end %>
 <% else %>
-  <h4>日程申請履歴はありません</h4>
+  <span>日程申請履歴はありません</span>
 <% end %>
