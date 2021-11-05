@@ -1,5 +1,7 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
+<%= render "shared/header_common" %>
+
 <h3><%= User.find_by(id: current_user.id).last_name + " " + User.find_by(id: current_user.id).first_name %>さんのタイムカード</h3>
 <%= form_with model: @year_month, url: to_show_year_month_path(params[:id]), method: :get do |form| %>
   <div>

@@ -17,6 +17,11 @@
   <% elsif current_user.user_type == "上長" %>
     <span><%= current_user.department %></span>
     <span><%= current_user.last_name + " " + current_user.first_name %></span>
+    <span>一般</span>
+    <%= link_to "#" do %>
+      <i class="fas fa-toggle-off"></i>
+    <% end %>
+    <span>管理</span>
     <%= link_to new_timecard_path do %>
       <i class="far fa-clock"></i>
     <% end %>

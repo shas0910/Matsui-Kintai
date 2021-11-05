@@ -1,5 +1,7 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
+<%= render "shared/header_common" %>
+
 <h3>未承認の申請</h3>
 <h4>打刻申請一覧</h4>
 <% if @pending_timecards.exists?(status: "未承認") %>
