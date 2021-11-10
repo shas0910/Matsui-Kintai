@@ -1,0 +1,382 @@
+<% if current_user.user_type == "一般" %>
+  <div>
+    <% approval_count = 0 %>
+    <% reject_count = 0 %>
+    <% @pending_timecards.each do |pt| %>
+      <% if pt.status == "承認" %>
+        <% approval_count += 1 %>
+      <% elsif pt.status == "棄却" %>
+        <% reject_count += 1 %>
+      <% end %>
+    <% end %>
+    <% @pending_schedules.each do |ps| %>
+      <% if ps.status == "承認" %>
+        <% approval_count += 1 %>
+      <% elsif ps.status == "棄却" %>
+        <% reject_count += 1 %>
+      <% end %>
+    <% end %>
+    <div>
+      <% if approval_count > 0 %>
+        <span><%= approval_count %>件の申請が承認されました（24時間以内）</span>
+      <% end %>
+    </div>
+    <div>
+      <% if reject_count > 0 %>
+        <span><%= reject_count %>件の申請が棄却されました（24時間以内）</span>
+      <% end %>
+    </div>
+  </div>
+  <div>
+    <% days = @days.where(date: current_user.hire_date..) %>
+    <% days.each do |d| %>
+      <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
+      <% if d.day_type == "平日" %>
+        <% if d.schedules.find_by(user_id: current_user.id).nil? || d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.blank? %>
+          <% unless d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+            <span>打刻エラーがあります</span>
+            <% break %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# 休日に休暇日程をとっている %>
+      <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 休暇日程をとっている日に打刻 %>
+      <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+        <% if d.timecards.find_by(user_id: current_user.id).start.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).finish.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+      <% end %>
+      <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.present? %>
+        <% unless d.timecards.find_by(user_id: current_user.id).start < d.timecards.find_by(user_id: current_user.id).finish %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start.present? && d.timecards.find_by(user_id: current_user.id).break_finish.present? %>
+          <% unless d.timecards.find_by(user_id: current_user.id).start < d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_start < d.timecards.find_by(user_id: current_user.id).break_finish && d.timecards.find_by(user_id: current_user.id).break_finish < d.timecards.find_by(user_id: current_user.id).finish %>
+            <span>打刻エラーがあります</span>
+            <% break %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# 出勤があって退勤がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 退勤があって出勤がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).finish.present? && d.timecards.find_by(user_id: current_user.id).start.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 休始があって休終がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_start.present? && d.timecards.find_by(user_id: current_user.id).break_finish.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 休終があって休始がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_finish.present? && d.timecards.find_by(user_id: current_user.id).break_start.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+    <% end %>
+  </div>
+<% elsif current_user.user_type == "上長" %>
+  <div>
+    <% unapproved_count = @pending_timecards_member.count + @pending_schedules_member.count %>
+    <% if unapproved_count > 0 %>
+      <span><%= unapproved_count %>件の未承認の申請があります</span>
+    <% end %>
+  </div>
+  <div>
+    <% isBreak = false %>
+    <% @members.each do |m| %>
+      <% days_members = @days.where(date: m.hire_date..) %>
+      <% days_members.each do |d| %>
+        <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
+        <% if d.day_type == "平日" %>
+          <% if d.schedules.find_by(user_id: m.id).nil? || d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.blank? %>
+            <% unless d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).finish %>
+              <span>打刻エラーがあります（メンバー）</span>
+              <% isBreak = true %>
+              <% break %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%# 休日に休暇日程をとっている %>
+        <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 休暇日程をとっている日に打刻 %>
+        <% if d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
+          <% if d.timecards.find_by(user_id: m.id).start.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).finish.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+        <% end %>
+        <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+          <% unless d.timecards.find_by(user_id: m.id).start < d.timecards.find_by(user_id: m.id).finish %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).break_start.present? && d.timecards.find_by(user_id: m.id).break_finish.present? %>
+            <% unless d.timecards.find_by(user_id: m.id).start < d.timecards.find_by(user_id: m.id).break_start && d.timecards.find_by(user_id: m.id).break_start < d.timecards.find_by(user_id: m.id).break_finish && d.timecards.find_by(user_id: m.id).break_finish < d.timecards.find_by(user_id: m.id).finish %>
+              <span>打刻エラーがあります（メンバー）</span>
+              <% isBreak = true %>
+              <% break %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%# 出勤があって退勤がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 退勤があって出勤がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).finish.present? && d.timecards.find_by(user_id: m.id).start.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 休始があって休終がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).break_start.present? && d.timecards.find_by(user_id: m.id).break_finish.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 休終があって休始がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).break_finish.present? && d.timecards.find_by(user_id: m.id).break_start.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+      <% end %>
+      <% break if isBreak %>
+    <% end %>
+  </div>
+  <div>
+    <% approval_count = 0 %>
+    <% reject_count = 0 %>
+    <% @pending_timecards.each do |pt| %>
+      <% if pt.status == "承認" %>
+        <% approval_count += 1 %>
+      <% elsif pt.status == "棄却" %>
+        <% reject_count += 1 %>
+      <% end %>
+    <% end %>
+    <% @pending_schedules.each do |ps| %>
+      <% if ps.status == "承認" %>
+        <% approval_count += 1 %>
+      <% elsif ps.status == "棄却" %>
+        <% reject_count += 1 %>
+      <% end %>
+    <% end %>
+    <div>
+      <% if approval_count > 0 %>
+        <span><%= approval_count %>件の申請が承認されました（24時間以内）</span>
+      <% end %>
+    </div>
+    <div>
+      <% if reject_count > 0 %>
+        <span><%= reject_count %>件の申請が棄却されました（24時間以内）</span>
+      <% end %>
+    </div>
+  </div>
+  <div>
+    <% days = @days.where(date: current_user.hire_date..) %>
+    <% days.each do |d| %>
+      <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
+      <% if d.day_type == "平日" %>
+        <% if d.schedules.find_by(user_id: current_user.id).nil? || d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.blank? %>
+          <% unless d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+            <span>打刻エラーがあります（個人）</span>
+            <% break %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# 休日に休暇日程をとっている %>
+      <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+        <span>打刻エラーがあります（個人）</span>
+        <% break %>
+      <% end %>
+      <%# 休暇日程をとっている日に打刻 %>
+      <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+        <% if d.timecards.find_by(user_id: current_user.id).start.present? %>
+          <span>打刻エラーがあります（個人）</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).finish.present? %>
+          <span>打刻エラーがあります（個人）</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+          <span>打刻エラーがあります（個人）</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+          <span>打刻エラーがあります（個人）</span>
+          <% break %>
+        <% end %>
+      <% end %>
+      <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.present? %>
+        <% unless d.timecards.find_by(user_id: current_user.id).start < d.timecards.find_by(user_id: current_user.id).finish %>
+          <span>打刻エラーがあります（個人）</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: current_user.id).break_start.present? && d.timecards.find_by(user_id: current_user.id).break_finish.present? %>
+          <% unless d.timecards.find_by(user_id: current_user.id).start < d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_start < d.timecards.find_by(user_id: current_user.id).break_finish && d.timecards.find_by(user_id: current_user.id).break_finish < d.timecards.find_by(user_id: current_user.id).finish %>
+            <span>打刻エラーがあります（個人）</span>
+            <% break %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# 出勤があって退勤がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.blank? %>
+        <span>打刻エラーがあります（個人）</span>
+        <% break %>
+      <% end %>
+      <%# 退勤があって出勤がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).finish.present? && d.timecards.find_by(user_id: current_user.id).start.blank? %>
+        <span>打刻エラーがあります（個人）</span>
+        <% break %>
+      <% end %>
+      <%# 休始があって休終がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_start.present? && d.timecards.find_by(user_id: current_user.id).break_finish.blank? %>
+        <span>打刻エラーがあります（個人）</span>
+        <% break %>
+      <% end %>
+      <%# 休終があって休始がない %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_finish.present? && d.timecards.find_by(user_id: current_user.id).break_start.blank? %>
+        <span>打刻エラーがあります（個人）</span>
+        <% break %>
+      <% end %>
+    <% end %>
+  </div>
+<% elsif current_user.user_type == "管理者" %>
+  <div>
+    <% isBreak = false %>
+    <% @users.each do |m| %>
+      <% days_members = @days.where(date: m.hire_date..) %>
+      <% days_members.each do |d| %>
+        <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
+        <% if d.day_type == "平日" %>
+          <% if d.schedules.find_by(user_id: m.id).nil? || d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.blank? %>
+            <% unless d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).finish %>
+              <span>打刻エラーがあります（メンバー）</span>
+              <% isBreak = true %>
+              <% break %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%# 休日に休暇日程をとっている %>
+        <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 休暇日程をとっている日に打刻 %>
+        <% if d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
+          <% if d.timecards.find_by(user_id: m.id).start.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).finish.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+        <% end %>
+        <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+          <% unless d.timecards.find_by(user_id: m.id).start < d.timecards.find_by(user_id: m.id).finish %>
+            <span>打刻エラーがあります（メンバー）</span>
+            <% isBreak = true %>
+            <% break %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: m.id).break_start.present? && d.timecards.find_by(user_id: m.id).break_finish.present? %>
+            <% unless d.timecards.find_by(user_id: m.id).start < d.timecards.find_by(user_id: m.id).break_start && d.timecards.find_by(user_id: m.id).break_start < d.timecards.find_by(user_id: m.id).break_finish && d.timecards.find_by(user_id: m.id).break_finish < d.timecards.find_by(user_id: m.id).finish %>
+              <span>打刻エラーがあります（メンバー）</span>
+              <% isBreak = true %>
+              <% break %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%# 出勤があって退勤がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 退勤があって出勤がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).finish.present? && d.timecards.find_by(user_id: m.id).start.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 休始があって休終がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).break_start.present? && d.timecards.find_by(user_id: m.id).break_finish.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+        <%# 休終があって休始がない %>
+        <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).break_finish.present? && d.timecards.find_by(user_id: m.id).break_start.blank? %>
+          <span>打刻エラーがあります（メンバー）</span>
+          <% isBreak = true %>
+          <% break %>
+        <% end %>
+      <% end %>
+      <% break if isBreak %>
+    <% end %>
+  </div>
+<% end %>

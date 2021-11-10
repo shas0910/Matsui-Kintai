@@ -1,9 +1,82 @@
 <%= render "shared/header_common" %>
+<% if current_user.user_type == "上長" %>
+  <% @users = @users.where(approver_id: current_user.id) %>
+<% end %>
 
-<h2>タイムカード一覧・編集</h2>
+<h2>タイムカード一覧・編集</h2>
 
-<% @users.each do |u| %>
+<% @users.each do |m| %>
   <div>
-    <%= link_to "#{u.last_name} #{u.first_name}", "/user/#{u.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" %>
+    <%= link_to "#{m.last_name} #{m.first_name}", "/user/#{m.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" %>
+    <% days_members = @days.where(date: m.hire_date..) %>
+    <% days_members.each do |d| %>
+      <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
+      <% if d.day_type == "平日" %>
+        <% if d.schedules.find_by(user_id: m.id).nil? || d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.blank? %>
+          <% unless d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).finish %>
+            <span>打刻エラーがあります</span>
+            <% break %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# 休日に休暇日程をとっている %>
+      <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
+        <span>打刻エラーがあります</span>
+        <% isBreak = true %>
+        <% break %>
+      <% end %>
+      <%# 休暇日程をとっている日に打刻 %>
+      <% if d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
+        <% if d.timecards.find_by(user_id: m.id).start.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: m.id).finish.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+      <% end %>
+      <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
+      <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+        <% unless d.timecards.find_by(user_id: m.id).start < d.timecards.find_by(user_id: m.id).finish %>
+          <span>打刻エラーがあります</span>
+          <% break %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: m.id).break_start.present? && d.timecards.find_by(user_id: m.id).break_finish.present? %>
+          <% unless d.timecards.find_by(user_id: m.id).start < d.timecards.find_by(user_id: m.id).break_start && d.timecards.find_by(user_id: m.id).break_start < d.timecards.find_by(user_id: m.id).break_finish && d.timecards.find_by(user_id: m.id).break_finish < d.timecards.find_by(user_id: m.id).finish %>
+            <span>打刻エラーがあります</span>
+            <% break %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# 出勤があって退勤がない %>
+      <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 退勤があって出勤がない %>
+      <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).finish.present? && d.timecards.find_by(user_id: m.id).start.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 休始があって休終がない %>
+      <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).break_start.present? && d.timecards.find_by(user_id: m.id).break_finish.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+      <%# 休終があって休始がない %>
+      <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).break_finish.present? && d.timecards.find_by(user_id: m.id).break_start.blank? %>
+        <span>打刻エラーがあります</span>
+        <% break %>
+      <% end %>
+    <% end %>
   </div>
 <% end %>
