@@ -1,8 +1,8 @@
 class Day < ApplicationRecord
 
   belongs_to :year_month
-  has_many :timecards
-  has_many :schedules
+  has_many :timecards, dependent: :destroy
+  has_many :schedules, dependent: :destroy
 
   validates :date, :day_type, presence: true
   validates :date, uniqueness: true

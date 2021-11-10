@@ -38,5 +38,23 @@
     <%= link_to setting_path do %>
       <i class="fas fa-cog"></i>
     <% end %>
+  <% elsif current_user.user_type == "管理者" %>
+    <span>管理者</span>
+    <span><%= current_user.last_name + " " + current_user.first_name %></span>
+    <%= link_to new_timecard_path do %>
+      <i class="fas fa-home"></i>
+    <% end %>
+    <%= link_to timecards_path do %>
+      <i class="fas fa-user-clock"></i>
+    <% end %>
+    <%= link_to permissions_path do %>
+      <i class="far fa-check-square"></i>
+    <% end %>
+    <%= link_to "#" do %>
+      <i class="fas fa-chart-bar"></i>
+    <% end %>
+    <%= link_to setting_path do %>
+      <i class="fas fa-cog"></i>
+    <% end %>
   <% end %>
 </div>

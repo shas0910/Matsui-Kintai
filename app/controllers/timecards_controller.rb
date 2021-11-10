@@ -1,11 +1,19 @@
 class TimecardsController < ApplicationController
 
   def index
-    @users = User.where(approver_id: current_user.id)
+    @users = User.where.not(user_type: "管理者")
+    @days = Day.where(date: ...Date.today)
   end
 
   def new
     @timecard = Timecard.where(user_id: current_user.id).where(day_id: Day.find_by(date: Date.today).id)
+    @days = Day.where(date: ...Date.today)
+    @pending_timecards = PendingTimecard.where(updated_at: 1.day.ago..).where(timecard_id: Timecard.where(user_id: current_user.id).ids)
+    @pending_schedules = PendingSchedule.where(updated_at: 1.day.ago..).where(schedule_id: Schedule.where(user_id: current_user.id).ids)
+    @pending_timecards_member = PendingTimecard.where(timecard_id: Timecard.where(user_id: User.where(approver_id: current_user.id).ids).ids).where(status: "未承認")
+    @pending_schedules_member = PendingSchedule.where(schedule_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids).where(status: "未承認")
+    @members = User.where(approver_id: current_user.id)
+    @users = User.where.not(user_type: "管理者")
   end
 
   def create_start
