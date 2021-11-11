@@ -1,3 +1,187 @@
 // Place all the styles related to the timecards controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+// === /timecards/new ===
+.stamping-wrapper {
+  width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.clock-outer {
+  height: 175px;
+  vertical-align: middle;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#clock-date {
+  font-size: 25px;
+}
+
+#clock-time {
+  font-size: 75px;
+  line-height: 1.2;
+}
+
+.stamping {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.btn,
+a.btn,
+button.btn {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+}
+
+a.btn-border {
+  margin-bottom: 12px;
+  padding: 0;
+
+  -webkit-transition: all 0.3s;
+
+  transition: all 0.3s;
+
+  border-radius: 0;
+}
+
+a.btn-border span {
+  width: 225px;
+
+  position: relative;
+
+  display: block;
+
+  padding: 15px 0;
+
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 0.5rem;
+}
+
+a.btn-start span {
+  background: #7fbfff;
+}
+
+a.btn-finish span {
+  background: #ff7f7f;
+}
+
+a.btn-break_start span {
+  background: #bfff7f;
+}
+
+a.btn-break_finish span {
+  background: #bfff7f;
+}
+
+a.btn-border:before {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 14px;
+
+  content: "";
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+
+  border: 2px solid #000;
+  border-top: 1px solid #000;
+  border-radius: 0 0 0.5rem 0.5rem;
+
+  -webkit-backface-visibility: hidden;
+
+  backface-visibility: hidden;
+}
+
+a.btn-start:before {
+  background: #5e8cbb;
+}
+
+a.btn-finish:before {
+  background: #b85b5b;
+}
+
+a.btn-break_start:before {
+  background: #8cbb5d;
+}
+
+a.btn-break_finish:before {
+  background: #8cbb5d;
+}
+
+a.btn-border:hover {
+  -webkit-transform: translate(0, 3px);
+  transform: translate(0, 3px);
+}
+
+a.btn-border:hover:before {
+  bottom: -5px;
+}
+
+a.btn-border:active {
+  -webkit-transform: translate(0, 7px);
+  transform: translate(0, 7px);
+}
+
+a.btn-border:active:before {
+  bottom: -1px;
+}
+
+.stamping i {
+  padding-right: 10px;
+}
+
+.alert-wrapper {
+  width: 500px;
+  margin: 30px auto;
+  border: black solid 1px;
+  font-size: 20px;
+}
+
+.alert-wrapper i {
+  padding-right: 10px;
+}
+
+.alert-wrapper a {
+  text-decoration: none;
+}
+
+.alert-title {
+  border-bottom: 1px black solid;
+  padding: 0 20px;
+}
+
+.alert-link div {
+  padding: 0 20px;
+}
+
+.alert-link div:hover {
+  background-color: lightgray;
+}

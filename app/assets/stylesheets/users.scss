@@ -1,3 +1,48 @@
 // Place all the styles related to the users controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+// === /users/sign_in ===
+
+.login-wrapper {
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: url(/assets/pixta_27395884_L.jpg)
+  center / cover;
+}
+
+.login-logo {
+  text-align: center;
+}
+
+.login-logo img {
+  height: 100px;
+}
+
+.login-wrapper h3 {
+  text-align: center;
+}
+
+.login-title {
+  text-align: center;
+}
+
+.login-form-wrapper {
+  width: 500px;
+  margin: 0 auto;
+  padding: 30px 100px 80px;
+  border: 1px solid black;
+  box-shadow: 10px 5px 5px black;
+  background-color: rgba(255,255,255,0.8);
+}
+
+.login-form-group {
+  margin-bottom: 15px;
+}
+
+.login-form {
+  width: 100%;
+  font-size: 18px;
+}

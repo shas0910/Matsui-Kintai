@@ -1,24 +1,34 @@
-<h2>ログイン</h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div>
-    <%= f.label :email, "メールアドレス" %><br>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+<div class="login-wrapper">
+  <br>
+  <div class="login-logo">
+    <%= image_tag 'sld_logo 3.png' %>
   </div>
+  <br>
+  <h3>勤怠管理システム</h3>
+  <br>
 
-  <div>
-    <%= f.label :password, "パスワード" %><br>
-    <%= f.password_field :password, autocomplete: "current-password" %>
+  <div class="login-form-wrapper">
+    <h2 class="login-title">ログイン</h2>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="login-form-group">
+        <%= f.label :email, "メールアドレス", class: "login-form-label" %><br>
+        <%= f.email_field :email, class: "login-form", autofocus: true, autocomplete: "email", class: "login-form" %>
+      </div>
+      <div class="login-form-group">
+        <%= f.label :password, "パスワード", class: "login-form-label" %><br>
+        <%= f.password_field :password, autocomplete: "current-password", class: "login-form" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="login-form-group">
+          <%= f.check_box :remember_me %>
+          <%= f.label :remember_me, "ログイン状態を保存" %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.submit "ログイン", class: "login-form" %>
+      </div>
+    <% end %>
   </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div>
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end %>
-
-  <div>
-    <%= f.submit "ログイン" %>
-  </div>
-<% end %>
+</div>

@@ -1,14 +1,45 @@
 <%= render "shared/header_common" %>
 
 <% if current_user.user_type == "一般" || current_user.user_type == "上長" %>
-  <div id="datetime"></div>
-  <%= link_to "出勤", create_start_timecards_path, method: :post %>
-  <%= link_to "休憩開始", create_break_start_timecards_path, method: :post %>
-  <%= link_to "休憩終了", create_break_finish_timecards_path, method: :post %>
-  <%= link_to "退勤", create_finish_timecards_path, method: :post %>
+  <div class="stamping-wrapper">
+    <div class="clock-outer">
+      <div id="clock-date"></div>
+      <div id="clock-time"></div>
+    </div>
+    <div class="stamping">
+      <section>
+        <%= link_to create_start_timecards_path, method: :post, class: "btn btn-border btn-start" do %>
+          <span><i class="fas fa-sun"></i>出勤</span>
+        <% end %>
+      </section>
+      <section>
+        <%= link_to create_finish_timecards_path, method: :post, class: "btn btn-border btn-finish" do %>
+          <span><i class="fas fa-moon"></i></i>退勤</span>
+        <% end %>
+      </section>
+    </div>
+    <div class="stamping">
+      <section>
+        <%= link_to create_break_start_timecards_path, method: :post, class: "btn btn-border btn-break_start" do %>
+          <span><i class="fas fa-coffee"></i>休憩開始</span>
+        <% end %>
+      </section>
+      <section>
+        <%= link_to create_break_finish_timecards_path, method: :post, class: "btn btn-border btn-break_finish" do %>
+          <span><i class="fas fa-coffee"></i>休憩終了</span>
+        <% end %>
+      </section>
+    </div>
+  </div>
 <% elsif current_user.user_type == "管理者" %>
   
-
 <% end %>
 
-<%= render "shared/alert_common" %>
+<div class="alert-wrapper">
+  <div class="alert-title">
+    <span>アラート一覧</span>
+  </div>
+  <div class="alert-link">
+    <%= render "shared/alert_common" %>
+  </div>
+</div>
