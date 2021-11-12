@@ -2,8 +2,10 @@
 
 <%= render "shared/header_common" %>
 
+<h2>申請一覧（個人）</h2>
 <h3>未承認の申請</h3>
-<h4>打刻申請一覧</h4>
+
+<div>■打刻申請</div>
 <% if @pending_timecards.exists?(status: "未承認") %>
   <span>申請日</span>
   <span>対象日</span>
@@ -58,7 +60,7 @@
 <% end %>
 
 <br>
-<h4>日程申請一覧</h4>
+<div>■日程申請</div>
 <% if @pending_schedules.exists?(status: "未承認") %>
   <span>申請日</span>
   <span>対象日</span>
@@ -85,8 +87,9 @@
 <% end %>
 
 <br>
-<h3>申請履歴</h3>
-<h4>打刻申請一覧</h4>
+<h3>承認・棄却済申請</h3>
+
+<div>■打刻申請</div>
 <% if @pending_timecards.exists?(status: ["承認","棄却"]) %>
   <span>申請日</span>
   <span>対象日</span>
@@ -117,7 +120,7 @@
 <% end %>
 
 <br>
-<h4>日程申請一覧</h4>
+<div>■日程申請</div>
 <% if @pending_schedules.exists?(status: ["承認","棄却"]) %>
   <span>申請日</span>
   <span>対象日</span>

@@ -1,20 +1,28 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
-<h2>承認待ち申請</h2>
+<%= render "shared/header_common" %>
 
-<h3>■打刻申請</h3>
-<div>
-  <span>申請者</span>
-  <span>申請日</span>
-  <span>対象日</span>
-  <span>打刻種別</span>
-  <span>申請元の打刻</span>
-  <span>申請された打刻</span>
-  <span>申請者メッセージ</span>
-  <span>承認者メッセージ</span>
-  <span>承認 / 棄却</span>
-  <% if @waiting_pending_timecards.count > 0 %>
-    <% @waiting_pending_timecards.each do |wpt| %>
+<h2>申請一覧（メンバー）</h2>
+<h3>承認待ち申請</h3>
+
+<span>■打刻申請</span>
+<% if current_user.user_type == "上長" %>
+  <% waiting_pending_timecards = @waiting_pending_timecards.where(timecard_id: Timecard.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
+<% elsif current_user.user_type == "管理者" %>
+  <% waiting_pending_timecards = @waiting_pending_timecards %>
+<% end %>
+<% if waiting_pending_timecards.present? %>
+  <div>
+    <span>申請者</span>
+    <span>申請日</span>
+    <span>対象日</span>
+    <span>打刻種別</span>
+    <span>申請元の打刻</span>
+    <span>申請された打刻</span>
+    <span>申請者メッセージ</span>
+    <span>承認者メッセージ</span>
+    <span>承認 / 棄却</span>
+    <% waiting_pending_timecards.each do |wpt| %>
       <div>
         <span><%= User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).last_name + " " + User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).first_name %></span>
         <span><%= wpt.created_at.strftime("%m/%d") %>(<%= day[wpt.created_at.wday] %>)</span>
@@ -58,22 +66,27 @@
         <% end %>
       </div>
     <% end %>
-  <% else %>
-    <div>未承認の打刻申請はありません。</div>
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <div>未承認の打刻申請はありません</div>
+<% end %>
 
-<h3>■スケジュール申請</h3>
-<div>
-  <span>申請者</span>
-  <span>申請日</span>
-  <span>対象日</span>
-  <span>申請元のスケジュール</span>
-  <span>申請されたスケジュール</span>
-  <span>申請者メッセージ</span>
-  <span>承認者メッセージ</span>
-  <span>承認 / 棄却</span>
-  <% if @waiting_pending_schedules.count > 0 %>
+<span>■日程申請</span>
+<% if current_user.user_type == "上長" %>
+  <% waiting_pending_schedules = @waiting_pending_schedules.where(schedule_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
+<% elsif current_user.user_type == "管理者" %>
+  <% waiting_pending_schedules = @waiting_pending_schedules %>
+<% end %>
+<% if @waiting_pending_schedules.present? %>
+  <div>
+    <span>申請者</span>
+    <span>申請日</span>
+    <span>対象日</span>
+    <span>申請元の日程</span>
+    <span>申請された日程</span>
+    <span>申請者メッセージ</span>
+    <span>承認者メッセージ</span>
+    <span>承認 / 棄却</span>
     <% @waiting_pending_schedules.each do |wps| %>
       <div>
         <span><%= User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).first_name %></span>
@@ -101,25 +114,30 @@
         <% end %>
       </div>
     <% end %>
-  <% else %>
-    <div>未承認のスケジュール申請はありません。</div>
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <div>未承認の日程申請はありません</div>
+<% end %>
 
-<h2>承認・棄却済申請</h2>
+<h3>承認・棄却済申請</h3>
 
-<h3>■打刻申請</h3>
-<div>
-  <span>申請者</span>
-  <span>申請日</span>
-  <span>対象日</span>
-  <span>打刻種別</span>
-  <span>申請された打刻</span>
-  <span>申請者メッセージ</span>
-  <span>承認者メッセージ</span>
-  <span>承認 / 棄却</span>
-  <% @pending_timecards.each do |pt| %>
-    <% if pt.status == "承認" or pt.status == "棄却" %>
+<span>■打刻申請</span>
+<% if current_user.user_type == "上長" %>
+  <% pending_timecards = @pending_timecards.where(timecard_id: Timecard.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
+<% elsif current_user.user_type == "管理者" %>
+  <% pending_timecards = @pending_timecards %>
+<% end %>
+<% @pending_timecards.each do |pt| %>
+  <% if pt.status == "承認" or pt.status == "棄却" %>
+    <div>
+      <span>申請者</span>
+      <span>申請日</span>
+      <span>対象日</span>
+      <span>打刻種別</span>
+      <span>申請された打刻</span>
+      <span>申請者メッセージ</span>
+      <span>承認者メッセージ</span>
+      <span>承認 / 棄却</span>
       <div>
         <span><%= User.find_by(id: Timecard.find_by(id: pt.timecard_id).user_id).last_name + " " + User.find_by(id: Timecard.find_by(id: pt.timecard_id).user_id).first_name %></span>
         <span><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</span>
@@ -142,21 +160,28 @@
         <% end %>
         <span><%= pt.status %></span>
       </div>
-    <% end %>
+    </div>
+  <% else %>
+    <div>打刻申請履歴はありません</div>
   <% end %>
-</div>
+<% end %>
 
-<h3>■スケジュール申請</h3>
-<div>
-  <span>申請者</span>
-  <span>申請日</span>
-  <span>対象日</span>
-  <span>申請されたスケジュール</span>
-  <span>申請者メッセージ</span>
-  <span>承認者メッセージ</span>
-  <span>承認 / 棄却</span>
-  <% @pending_schedules.each do |ps| %>
-    <% if ps.status == "承認" or ps.status == "棄却" %>
+<span>■日程申請</span>
+<% if current_user.user_type == "上長" %>
+  <% pending_schedules = @pending_schedules.where(timecard_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
+<% elsif current_user.user_type == "管理者" %>
+  <% pending_schedules = @pending_schedules %>
+<% end %>
+<% @pending_schedules.each do |ps| %>
+  <% if ps.status == "承認" or ps.status == "棄却" %>
+    <div>
+      <span>申請者</span>
+      <span>申請日</span>
+      <span>対象日</span>
+      <span>申請された日程</span>
+      <span>申請者メッセージ</span>
+      <span>承認者メッセージ</span>
+      <span>承認 / 棄却</span>
       <div>
         <span><%= User.find_by(id: Schedule.find_by(id: ps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: ps.schedule_id).user_id).first_name %></span>
         <span><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</span>
@@ -178,6 +203,8 @@
         <% end %>
         <span><%= ps.status %></span>
       </div>
-    <% end %>
+    </div>
+  <% else %>
+    <div>日程申請履歴はありません</div>
   <% end %>
-</div>
+<% end %>
