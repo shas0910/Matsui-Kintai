@@ -18,7 +18,7 @@ body {
   overflow-y: scroll;
 }
 
-/* ===header=== */
+/* === header === */
 
 .header-common {
   position: fixed;
@@ -64,7 +64,7 @@ body {
   height: 50px;
 }
 
-/* ===font-awesome=== */
+/* === font-awesome === */
 
 .fa-clock {
   color: blue;
@@ -96,4 +96,62 @@ body {
 
 .fa-cog {
   color: gray;
+}
+
+/* === タイムカードページ === */
+
+.timecard-wrapper {
+  padding: 0 20px 50px;
+}
+
+.timecard-wrapper h2 i.fa-calendar-alt {
+  padding-right: 10px;
+}
+
+.timecard-current {
+  font-size: 30px;
+  padding-right: 20px;
+}
+
+table {
+  margin: 20px 0;
+}
+
+table * {
+  border: 1px black solid;
+  padding: 5px 7px ;
+  min-width: 75px;
+}
+
+.time-total tr th:first-child {
+  background-color: lightgray;
+}
+
+thead {
+  background-color: lightgray;
+}
+
+table a {
+  border: none;
+  padding: ;
+}
+
+table i {
+  border: none;
+}
+
+tr.hover:hover {
+  background-color: rgb(191, 224, 245);
+}
+
+th.hover {
+  padding: 0;
+}
+
+th.hover * {
+  padding: 0;
+}
+
+th.hover:hover {
+  background-color: lightskyblue;
 }
