@@ -98,6 +98,10 @@ body {
   color: gray;
 }
 
+.fa-exclamation-triangle {
+  color: red;
+}
+
 /* === タイムカードページ === */
 
 .timecard-wrapper {
@@ -140,6 +144,18 @@ table i {
   border: none;
 }
 
+tr.error {
+  background-color: rgb(250, 200, 200);
+}
+
+tr.error:hover {
+  background-color: rgb(255, 160, 160);
+}
+
+tr.error th.hover:hover {
+  background-color: lightgray;
+}
+
 tr.hover:hover {
   background-color: rgb(191, 224, 245);
 }
@@ -152,6 +168,6 @@ th.hover * {
   padding: 0;
 }
 
-th.hover:hover {
-  background-color: lightskyblue;
+tr.hover th.hover:hover {
+  background-color: lightgray;
 }

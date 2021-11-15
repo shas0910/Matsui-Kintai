@@ -32,7 +32,28 @@
     </div>
   </div>
 <% elsif current_user.user_type == "管理者" %>
-  
+  <div class="top-administrator-links">
+    <%= link_to "#" do %>
+      <div class="admin-link">
+        <i class="fas fa-calendar-day"></i>
+      </div>
+    <% end %>
+    <%= link_to "#" do %>
+      <div class="admin-link">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+    <% end %>
+    <%= link_to "#" do %>
+      <div class="admin-link">
+        <i class="fas fa-book"></i>
+      </div>
+    <% end %>
+  </div>
+  <div class="admin-link-title">
+    <span>日別データ</span>
+    <span>月別データ</span>
+    <span>年別データ</span>
+  </div>
 <% end %>
 
 <div class="alert-wrapper">

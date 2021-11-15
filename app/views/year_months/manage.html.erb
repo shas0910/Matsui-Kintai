@@ -252,7 +252,64 @@
           <% shotei = shotei - shoteigai %>
         <% end %>
       <% end %>
-      <tr class="hover">
+
+      <% error = false %>
+      <% if d.date < Date.today() %>
+        <% if d.day_type == "平日" %>
+          <% if d.schedules.find_by(user_id: params[:user_id]).nil? || d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).schedule_type.blank? %>
+            <% unless d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start && d.timecards.find_by(user_id: params[:user_id]).finish %>
+              <% error = true %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).schedule_type.present? %>
+          <% error = true %>
+        <% end %>
+        <% if d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).schedule_type.present? %>
+          <% if d.timecards.find_by(user_id: params[:user_id]).start.present? %>
+            <% error = true %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: params[:user_id]).finish.present? %>
+            <% error = true %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: params[:user_id]).break_start.present? %>
+            <% error = true %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: params[:user_id]).break_finish.present? %>
+            <% error = true %>
+          <% end %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start.present? && d.timecards.find_by(user_id: params[:user_id]).finish.present? %>
+          <% unless d.timecards.find_by(user_id: params[:user_id]).start < d.timecards.find_by(user_id: params[:user_id]).finish %>
+            <% error = true %>
+          <% end %>
+          <% if d.timecards.find_by(user_id: params[:user_id]).break_start.present? && d.timecards.find_by(user_id: params[:user_id]).break_finish.present? %>
+            <% unless d.timecards.find_by(user_id: params[:user_id]).start < d.timecards.find_by(user_id: params[:user_id]).break_start && d.timecards.find_by(user_id: params[:user_id]).break_start < d.timecards.find_by(user_id: params[:user_id]).break_finish && d.timecards.find_by(user_id: params[:user_id]).break_finish < d.timecards.find_by(user_id: params[:user_id]).finish %>
+              <% error = true %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start.present? && d.timecards.find_by(user_id: params[:user_id]).finish.blank? %>
+          <% error = true %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).finish.present? && d.timecards.find_by(user_id: params[:user_id]).start.blank? %>
+          <% error = true %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).break_start.present? && d.timecards.find_by(user_id: params[:user_id]).break_finish.blank? %>
+          <% error = true %>
+        <% end %>
+        <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).break_finish.present? && d.timecards.find_by(user_id: params[:user_id]).break_start.blank? %>
+          <% error = true %>
+        <% end %>
+        <% if error %>
+          <tr class="error">
+        <% else %>
+          <tr class="hover">
+        <% end %>
+      <% else %>
+        <tr class="hover">
+      <% end %>
+
         <th class="hover">
           <%= link_to "/user/#{params[:user_id]}/day/#{d.id}/edit_timecard" do %>
             <i class="far fa-clock"></i>

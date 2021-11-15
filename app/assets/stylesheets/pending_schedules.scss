@@ -1,3 +1,12 @@
 // Place all the styles related to the pending_schedules controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+// === /day/:day_id/pending_schedules ===
+.ps-new-wrapper {
+  padding: 0 20px;
+}
+
+.ps-new-wrapper div {
+  padding-bottom: 10px;
+}
