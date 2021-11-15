@@ -2,166 +2,178 @@
 
 <%= render "shared/header_common" %>
 
-<h2>申請一覧（個人）</h2>
-<h3>未承認の申請</h3>
+<div class="requests-wrapper">
 
-<div>■打刻申請</div>
-<% if @pending_timecards.exists?(status: "未承認") %>
-  <table>
-    <tr>
-      <th>申請日</th>
-      <th>対象日</th>
-      <th>打刻種別</th>
-      <th>申請元の打刻</th>
-      <th>申請された打刻</th>
-      <th>申請者メッセージ</th>
-      <th>キャンセル</th>
-    </tr>
+  <h2><i class="far fa-calendar-alt"></i>申請一覧（個人）</h2>
+  <h3>未承認の申請</h3>
+
+  <div>■打刻申請</div>
+  <% if @pending_timecards.exists?(status: "未承認") %>
+    <table>
+      <thead>
+        <th>申請日</th>
+        <th>対象日</th>
+        <th>打刻種別</th>
+        <th>申請元の打刻</th>
+        <th>申請された打刻</th>
+        <th>申請者メッセージ</th>
+        <th>キャンセル</th>
+      </thead>
+        <% @pending_timecards.each do |pt| %>
+          <tr>
+            <% if pt.status == "未承認" %>
+              <td><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</td>
+              <td><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</td>
+              <td><%= pt.timecard_type %></td>
+              <% if pt.timecard_type == "出勤" %>
+                <% if Timecard.find_by(id: pt.timecard_id).start %>
+                  <td><%= Timecard.find_by(id: pt.timecard_id).start.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% elsif pt.timecard_type == "退勤" %>
+                <% if Timecard.find_by(id: pt.timecard_id).finish %>
+                  <td><%= Timecard.find_by(id: pt.timecard_id).finish.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% elsif pt.timecard_type == "休憩開始" %>
+                <% if Timecard.find_by(id: pt.timecard_id).break_start %>
+                  <td><%= Timecard.find_by(id: pt.timecard_id).break_start.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% elsif pt.timecard_type == "休憩終了" %>
+                <% if Timecard.find_by(id: pt.timecard_id).break_finish %>
+                  <td><%= Timecard.find_by(id: pt.timecard_id).break_finish.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% end %>
+              <td><%= pt.pending_time.strftime("%R") %></td>
+              <% if pt.comment_request %>
+                <td><%= pt.comment_request %></td>
+              <% else %>
+                <td>-</td>
+              <% end %>
+              <td>
+                <%= link_to pending_timecard_path(pt.id), method: :delete do %>
+                  <i class="fas fa-trash-alt fa-lg"></i>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+    </table>
+  <% else %>
+    <div>未承認の打刻申請はありません</div>
+  <% end %>
+
+  <br>
+  <div>■日程申請</div>
+  <% if @pending_schedules.exists?(status: "未承認") %>
+    <table>
+      <thead>
+        <th>申請日</th>
+        <th>対象日</th>
+        <th>申請元の日程</th>
+        <th>申請された日程</th>
+        <th>備考</th>
+        <th>申請者メッセージ</th>
+        <th>キャンセル</th>
+      </thead>
+      <% @pending_schedules.each do |ps| %>
+        <% if ps.status == "未承認" %>
+          <tr>
+            <td><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</td>
+            <td><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</td>
+            <td><%= Schedule.find_by(id: ps.schedule_id).schedule_type %></td>
+            <td><%= ps.schedule_type %></td>
+            <td><%= ps.remark %></td>
+            <td><%= ps.comment_request %></td>
+            <td>
+              <%= link_to pending_schedule_path(ps.id), method: :delete do %>
+                <i class="fas fa-trash-alt fa-lg"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+  <% else %>
+    <div>未承認の日程申請はありません</div>
+  <% end %>
+
+  <br>
+  <h3>承認・棄却済申請</h3>
+
+  <div>■打刻申請</div>
+  <% if @pending_timecards.exists?(status: ["承認","棄却"]) %>
+    <table>
+      <thead>
+        <th>申請日</th>
+        <th>対象日</th>
+        <th>打刻種別</th>
+        <th>申請された打刻</th>
+        <th>申請者メッセージ</th>
+        <th>承認者メッセージ</th>
+        <th>承認状態</th>
+      </thead>
       <% @pending_timecards.each do |pt| %>
-        <tr>
-          <% if pt.status == "未承認" %>
+        <% if pt.status != "未承認" %>
+          <tr>
             <td><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</td>
             <td><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</td>
             <td><%= pt.timecard_type %></td>
-            <% if pt.timecard_type == "出勤" %>
-              <% if Timecard.find_by(id: pt.timecard_id).start %>
-                <td><%= Timecard.find_by(id: pt.timecard_id).start.strftime("%R") %></td>
-              <% else %>
-                <td>打刻なし</td>
-              <% end %>
-            <% elsif pt.timecard_type == "退勤" %>
-              <% if Timecard.find_by(id: pt.timecard_id).finish %>
-                <td><%= Timecard.find_by(id: pt.timecard_id).finish.strftime("%R") %></td>
-              <% else %>
-                <td>打刻なし</td>
-              <% end %>
-            <% elsif pt.timecard_type == "休憩開始" %>
-              <% if Timecard.find_by(id: pt.timecard_id).break_start %>
-                <td><%= Timecard.find_by(id: pt.timecard_id).break_start.strftime("%R") %></td>
-              <% else %>
-                <td>打刻なし</td>
-              <% end %>
-            <% elsif pt.timecard_type == "休憩終了" %>
-              <% if Timecard.find_by(id: pt.timecard_id).break_finish %>
-                <td><%= Timecard.find_by(id: pt.timecard_id).break_finish.strftime("%R") %></td>
-              <% else %>
-                <td>打刻なし</td>
-              <% end %>
-            <% end %>
-            <td><%= pt.pending_time.strftime("%R") %></td>
-            <% if pt.comment_request %>
-              <td><%= pt.comment_request %></td>
+            <% if pt.pending_time %>
+              <td><%= pt.pending_time.strftime("%R") %></td>
             <% else %>
-              <td>-</td>
+              <td>なし</td>
             <% end %>
-            <td><%= link_to "■", pending_timecard_path(pt.id), method: :delete %></td>
-          <% end %>
-        </tr>
+            <td><%= pt.comment_request %></td>
+            <td><%= pt.comment_permission %></td>
+            <td><%= pt.status %></td>
+          </tr>
+        <% end %>
       <% end %>
-  </table>
-<% else %>
-  <div>未承認の打刻申請はありません</div>
-<% end %>
+    </table>
+  <% else %>
+    <div>打刻申請履歴はありません</div>
+  <% end %>
 
-<br>
-<div>■日程申請</div>
-<% if @pending_schedules.exists?(status: "未承認") %>
-  <table>
-    <tr>
-      <th>申請日</th>
-      <th>対象日</th>
-      <th>申請元の日程</th>
-      <th>申請された日程</th>
-      <th>備考</th>
-      <th>申請者メッセージ</th>
-      <th>キャンセル</th>
-    </tr>
-    <% @pending_schedules.each do |ps| %>
-      <% if ps.status == "未承認" %>
-        <tr>
-          <td><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</td>
-          <td><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</td>
-          <td><%= Schedule.find_by(id: ps.schedule_id).schedule_type %></td>
-          <td><%= ps.schedule_type %></td>
-          <td><%= ps.remark %></td>
-          <td><%= ps.comment_request %></td>
-          <td><%= link_to "■", pending_schedule_path(ps.id), method: :delete %></td>
-        </tr>
+  <br>
+  <div>■日程申請</div>
+  <% if @pending_schedules.exists?(status: ["承認","棄却"]) %>
+    <table>
+      <thead>
+        <th>申請日</th>
+        <th>対象日</th>
+        <th>申請された日程</th>
+        <th>備考</th>
+        <th>申請者メッセージ</th>
+        <th>承認者メッセージ</th>
+        <th>承認状態</th>
+      </thead>
+      <% @pending_schedules.each do |ps| %>
+        <% if ps.status != "未承認" %>
+          <tr>
+            <td><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</td>
+            <td><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</td>
+            <% if ps.schedule_type.present? %>
+              <td><%= ps.schedule_type %></td>
+            <% else %>
+              <td>なし</td>
+            <% end %>
+            <td><%= ps.remark %></td>
+            <td><%= ps.comment_request %></td>
+            <td><%= ps.comment_permission %></td>
+            <td><%= ps.status %></td>
+          </tr>
+        <% end %>
       <% end %>
-    <% end %>
-  </table>
-<% else %>
-  <div>未承認の日程申請はありません</div>
-<% end %>
+    </table>
+  <% else %>
+    <div>日程申請履歴はありません</div>
+  <% end %>
 
-<br>
-<h3>承認・棄却済申請</h3>
-
-<div>■打刻申請</div>
-<% if @pending_timecards.exists?(status: ["承認","棄却"]) %>
-  <table>
-    <tr>
-      <th>申請日</th>
-      <th>対象日</th>
-      <th>打刻種別</th>
-      <th>申請された打刻</th>
-      <th>申請者メッセージ</th>
-      <th>承認者メッセージ</th>
-      <th>承認状態</th>
-    </tr>
-    <% @pending_timecards.each do |pt| %>
-      <% if pt.status != "未承認" %>
-        <tr>
-          <td><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</td>
-          <td><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</td>
-          <td><%= pt.timecard_type %></td>
-          <% if pt.pending_time %>
-            <td><%= pt.pending_time.strftime("%R") %></td>
-          <% else %>
-            <td>なし</td>
-          <% end %>
-          <td><%= pt.comment_request %></td>
-          <td><%= pt.comment_permission %></td>
-          <td><%= pt.status %></td>
-        </tr>
-      <% end %>
-    <% end %>
-  </table>
-<% else %>
-  <div>打刻申請履歴はありません</div>
-<% end %>
-
-<br>
-<div>■日程申請</div>
-<% if @pending_schedules.exists?(status: ["承認","棄却"]) %>
-  <table>
-    <tr>
-      <th>申請日</th>
-      <th>対象日</th>
-      <th>申請された日程</th>
-      <th>備考</th>
-      <th>申請者メッセージ</th>
-      <th>承認者メッセージ</th>
-      <th>承認状態</th>
-    </tr>
-    <% @pending_schedules.each do |ps| %>
-      <% if ps.status != "未承認" %>
-        <tr>
-          <td><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</td>
-          <td><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</td>
-          <% if ps.schedule_type.present? %>
-            <td><%= ps.schedule_type %></td>
-          <% else %>
-            <td>なし</td>
-          <% end %>
-          <td><%= ps.remark %></td>
-          <td><%= ps.comment_request %></td>
-          <td><%= ps.comment_permission %></td>
-          <td><%= ps.status %></td>
-        </tr>
-      <% end %>
-    <% end %>
-  </table>
-<% else %>
-  <div>日程申請履歴はありません</div>
-<% end %>
+</div>

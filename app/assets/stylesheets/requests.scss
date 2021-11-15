@@ -3,3 +3,15 @@
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
 // === /requests ===
+
+.requests-wrapper{
+  padding: 0 20px;
+}
+
+.requests-wrapper td{
+  text-align: center;
+}
+
+.requests-wrapper h2 i.fa-calendar-alt {
+  padding-right: 10px;
+}
