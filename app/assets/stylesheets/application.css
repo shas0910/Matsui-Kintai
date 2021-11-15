@@ -145,11 +145,11 @@ table i {
 }
 
 tr.error {
-  background-color: rgb(252, 140, 140);
+  background-color: rgb(250, 200, 200);
 }
 
 tr.error:hover {
-  background-color: rgb(255, 184, 184);
+  background-color: rgb(255, 160, 160);
 }
 
 tr.error th.hover:hover {
