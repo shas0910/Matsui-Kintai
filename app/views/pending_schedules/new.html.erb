@@ -8,7 +8,7 @@
   <h2><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</h2>
 
   <h3>■現在の日程</h3>
-  <% if @schedule && @schedule.schedule_type %>
+  <% if @schedule && @schedule.schedule_type.present? %>
     <h3><%= @schedule.schedule_type %></h3>
   <% elsif @day.timecards.find_by(user_id: current_user.id) && @day.timecards.find_by(user_id: current_user.id).start && @day.timecards.find_by(user_id: current_user.id).finish %>
     <h3>出勤</h3>
