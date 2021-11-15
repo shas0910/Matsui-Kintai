@@ -190,6 +190,58 @@ a.btn-border:active:before {
   background-color: lightgray;
 }
 
+.top-administrator-links {
+  display: flex;
+  width: 500px;
+  height: 200px;
+  margin: 20px auto 0;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.top-administrator-links a {
+  width: 150px;
+  height: 100%;
+  text-decoration: none;
+}
+
+.admin-link {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: black solid 1px;
+}
+
+.admin-link:hover {
+  background-color: lightgray;
+}
+
+.admin-link i {
+  font-size: 80px;
+  vertical-align: middle;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  color: black;
+}
+
+.admin-link-title {
+  display: flex;
+  display: flex;
+  width: 500px;
+  margin: 20px auto 0;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.admin-link-title span {
+  margin: none;
+  width: 150px;
+}
+
 // === timecards ===
 .timecards-wrapper {
   padding: 0 20px;
