@@ -7,7 +7,7 @@
   <h2><i class="far fa-calendar-alt"></i>申請一覧（メンバー）</h2>
   <h3>承認待ち申請</h3>
 
-  <div>■打刻申請</div>
+  <p>■打刻申請</p>
   <% if current_user.user_type == "上長" %>
     <% waiting_pending_timecards = @waiting_pending_timecards.where(timecard_id: Timecard.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
   <% elsif current_user.user_type == "管理者" %>
@@ -71,10 +71,10 @@
       <% end %>
     </table>
   <% else %>
-    <div>未承認の打刻申請はありません</div>
+    <p>未承認の打刻申請はありません</p>
   <% end %>
 
-  <div>■日程申請</div>
+  <p>■日程申請</p>
   <% if current_user.user_type == "上長" %>
     <% waiting_pending_schedules = @waiting_pending_schedules.where(schedule_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
   <% elsif current_user.user_type == "管理者" %>
@@ -120,13 +120,13 @@
       <% end %>
     </table>
   <% else %>
-    <div>未承認の日程申請はありません</div>
+    <p>未承認の日程申請はありません</p>
   <% end %>
 
 
   <h3>承認・棄却済申請</h3>
 
-  <div>■打刻申請</div>
+  <p>■打刻申請</p>
   <% if current_user.user_type == "上長" %>
     <% pending_timecards = @pending_timecards.where(timecard_id: Timecard.where(user_id: User.where(approver_id: current_user.id).ids).ids).where.not(status: "未承認") %>
   <% elsif current_user.user_type == "管理者" %>
@@ -170,10 +170,10 @@
       <% end %>
     </table>
   <% else %>
-    <div>打刻申請履歴はありません</div>
+    <p>打刻申請履歴はありません</p>
   <% end %>
 
-  <div>■日程申請</div>
+  <p>■日程申請</p>
   <% if current_user.user_type == "上長" %>
     <% pending_schedules = @pending_schedules.where(schedule_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids).where.not(status: "未承認") %>
   <% elsif current_user.user_type == "管理者" %>
@@ -215,7 +215,7 @@
       <% end %>
     </table>
   <% else %>
-    <div>日程申請履歴はありません</div>
+    <p>日程申請履歴はありません</p>
   <% end %>
 
 </div>

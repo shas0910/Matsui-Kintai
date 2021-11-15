@@ -7,7 +7,7 @@
   <h2><i class="far fa-calendar-alt"></i>申請一覧（個人）</h2>
   <h3>未承認の申請</h3>
 
-  <div>■打刻申請</div>
+  <p>■打刻申請</p>
   <% if @pending_timecards.exists?(status: "未承認") %>
     <table>
       <thead>
@@ -66,11 +66,11 @@
         <% end %>
     </table>
   <% else %>
-    <div>未承認の打刻申請はありません</div>
+    <p>未承認の打刻申請はありません</p>
   <% end %>
 
   <br>
-  <div>■日程申請</div>
+  <p>■日程申請</p>
   <% if @pending_schedules.exists?(status: "未承認") %>
     <table>
       <thead>
@@ -101,13 +101,13 @@
       <% end %>
     </table>
   <% else %>
-    <div>未承認の日程申請はありません</div>
+    <p>未承認の日程申請はありません</p>
   <% end %>
 
   <br>
   <h3>承認・棄却済申請</h3>
 
-  <div>■打刻申請</div>
+  <p>■打刻申請</p>
   <% if @pending_timecards.exists?(status: ["承認","棄却"]) %>
     <table>
       <thead>
@@ -138,11 +138,11 @@
       <% end %>
     </table>
   <% else %>
-    <div>打刻申請履歴はありません</div>
+    <p>打刻申請履歴はありません</p>
   <% end %>
 
   <br>
-  <div>■日程申請</div>
+  <p>■日程申請</p>
   <% if @pending_schedules.exists?(status: ["承認","棄却"]) %>
     <table>
       <thead>
@@ -173,7 +173,7 @@
       <% end %>
     </table>
   <% else %>
-    <div>日程申請履歴はありません</div>
+    <p>日程申請履歴はありません</p>
   <% end %>
 
 </div>
