@@ -51,7 +51,9 @@
                   <td>打刻なし</td>
                 <% end %>
               <% end %>
-              <td><%= pt.pending_time.strftime("%R") %></td>
+              <% if pt.pending_time.present? %>
+                <td><%= pt.pending_time.strftime("%R") %></td>
+              <% end %>
               <% if pt.comment_request %>
                 <td><%= pt.comment_request %></td>
               <% else %>
@@ -89,7 +91,9 @@
             <td><%= ps.created_at.strftime("%m/%d") %>(<%= day[ps.created_at.wday] %>)</td>
             <td><%= Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: ps.schedule_id).day_id).date.wday] %>)</td>
             <td><%= Schedule.find_by(id: ps.schedule_id).schedule_type %></td>
-            <td><%= ps.schedule_type %></td>
+            <% if ps.schedule_type.present? %>
+              <td><%= ps.schedule_type %></td>
+            <% end %>
             <td><%= ps.remark %></td>
             <td><%= ps.comment_request %></td>
             <td>
