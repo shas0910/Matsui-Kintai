@@ -19,7 +19,7 @@ class PendingTimecardsController < ApplicationController
     pending_timecard.timecard_id = timecard.id
     pending_timecard.status = "未承認"
     pending_timecard.save
-    redirect_to new_day_pending_timecard_path(params[:day_id])
+    redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}"
   end
 
   def destroy

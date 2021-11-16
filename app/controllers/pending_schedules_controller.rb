@@ -15,7 +15,7 @@ class PendingSchedulesController < ApplicationController
     pending_schedule.schedule_id = schedule.id
     pending_schedule.status = "未承認"
     pending_schedule.save
-    redirect_to new_day_pending_schedule_path(params[:day_id])
+    redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}"
   end
 
   def destroy
