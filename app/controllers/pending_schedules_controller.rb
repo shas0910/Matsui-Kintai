@@ -15,13 +15,13 @@ class PendingSchedulesController < ApplicationController
     pending_schedule.schedule_id = schedule.id
     pending_schedule.status = "未承認"
     pending_schedule.save
-    redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}"
+    redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}", notice: "日程申請しました"
   end
 
   def destroy
     pending_schedule = PendingSchedule.find_by(params[:id])
     pending_schedule.destroy
-    redirect_to requests_path
+    redirect_to requests_path, notice: "日程申請をキャンセルしました"
   end
   
   def permission
@@ -32,11 +32,12 @@ class PendingSchedulesController < ApplicationController
       schedule.update_attribute(:remark, pending_schedule.remark)
       pending_schedule.update_attribute(:status, "承認")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
+      redirect_to permissions_path, notice: "日程申請を承認しました"
     elsif params[:commit] == "棄却"
       pending_schedule.update_attribute(:status, "棄却")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
+      redirect_to permissions_path, notice: "日程申請を棄却しました"
     end
-    redirect_to permissions_path
   end
 
   private

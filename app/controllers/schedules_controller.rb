@@ -7,10 +7,6 @@ class SchedulesController < ApplicationController
   end
 
   def update
-    if params[:schedule][:schedule_type] == "" && params[:schedule][:remark] == ""
-      redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_schedule"
-      return
-    end
     schedule = Schedule.find_or_initialize_by(day_id: params[:day_id], user_id: params[:user_id])
     if schedule.new_record?
       schedule.schedule_type = params[:schedule][:schedule_type]
@@ -20,7 +16,7 @@ class SchedulesController < ApplicationController
       schedule.update_attribute(:schedule_type, params[:schedule][:schedule_type])
       schedule.update_attribute(:remark, params[:schedule][:remark])
     end
-    redirect_to "/user/#{params[:user_id]}/year_month/#{Day.find(params[:day_id]).year_month_id}"
+    redirect_to "/user/#{params[:user_id]}/year_month/#{Day.find(params[:day_id]).year_month_id}", notice: "日程編集を保存しました"
   end
 
 end

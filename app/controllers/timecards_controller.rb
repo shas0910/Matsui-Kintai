@@ -23,11 +23,10 @@ class TimecardsController < ApplicationController
     if timecard.new_record?
       timecard.start = Time.now.change(sec: 00)
       timecard.save
-      redirect_to new_timecard_path
     else
       timecard.update_attribute(:start, Time.now.change(sec: 00))
-      redirect_to new_timecard_path
     end
+    redirect_to new_timecard_path, notice: "打刻しました - 出勤"
   end
 
   def create_finish
@@ -35,11 +34,10 @@ class TimecardsController < ApplicationController
     if timecard.new_record?
       timecard.finish = Time.now.change(sec: 00)
       timecard.save
-      redirect_to new_timecard_path
     else
       timecard.update_attribute(:finish, Time.now.change(sec: 00))
-      redirect_to new_timecard_path
     end
+    redirect_to new_timecard_path, notice: "打刻しました - 退勤"
   end
 
   def create_break_start
@@ -47,11 +45,10 @@ class TimecardsController < ApplicationController
     if timecard.new_record?
       timecard.break_start = Time.now.change(sec: 00)
       timecard.save
-      redirect_to new_timecard_path
     else
       timecard.update_attribute(:break_start, Time.now.change(sec: 00))
-      redirect_to new_timecard_path
     end
+    redirect_to new_timecard_path, notice: "打刻しました - 休憩開始"
   end
 
   def create_break_finish
@@ -59,11 +56,10 @@ class TimecardsController < ApplicationController
     if timecard.new_record?
       timecard.break_finish = Time.now.change(sec: 00)
       timecard.save
-      redirect_to new_timecard_path
     else
       timecard.update_attribute(:break_finish, Time.now.change(sec: 00))
-      redirect_to new_timecard_path
     end
+    redirect_to new_timecard_path, notice: "打刻しました - 休憩終了"
   end
   
   def edit
@@ -74,7 +70,7 @@ class TimecardsController < ApplicationController
 
   def update
     if params[:timecard][:timecard_type] == ""
-      redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_timecard"
+      redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_timecard", alert: "打刻種別を入力してください"
       return
     end
     timecard = Timecard.find_or_initialize_by(day_id: params[:day_id], user_id: params[:user_id])
@@ -98,7 +94,7 @@ class TimecardsController < ApplicationController
     elsif params[:timecard][:timecard_type] = "休憩終了"
       timecard.update_attribute(:break_finish, params[:timecard][:timecard_time])
     end
-    redirect_to "/user/#{params[:user_id]}/year_month/#{Day.find(params[:day_id]).year_month_id}"
+    redirect_to "/user/#{params[:user_id]}/year_month/#{Day.find(params[:day_id]).year_month_id}", notice: "打刻編集を保存しました"
   end
 
   private

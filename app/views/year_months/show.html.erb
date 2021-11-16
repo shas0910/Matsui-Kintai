@@ -1,5 +1,6 @@
 <% day = ["日","月","火","水","木","金","土"] %>
 
+<%= render "shared/flash" %>
 <%= render "shared/header_common" %>
 
 <div class="timecard-wrapper">
@@ -398,7 +399,7 @@
         <% else %>
           <th>-</th>
         <% end %>
-        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).remark %>
+        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).remark.present? %>
           <th><%= d.schedules.find_by(user_id: current_user.id).remark %></th>
         <% else %>
           <th>-</th>

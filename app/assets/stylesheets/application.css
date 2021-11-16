@@ -18,6 +18,25 @@ body {
   overflow-y: scroll;
 }
 
+/* === flash === */
+.flash{
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+  font-size: 15px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.notice {
+  background-color: #7fbfff;
+}
+
+.alert {
+  background-color: #ff7f7f;
+}
+
 /* === header === */
 
 .header-common {

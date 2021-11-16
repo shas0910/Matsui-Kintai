@@ -10,6 +10,7 @@ import "channels"
 import "@nathanvda/cocoon"
 import "../year-months-new"
 import "../clock"
+import "../flash"
 
 Rails.start()
 Turbolinks.start()

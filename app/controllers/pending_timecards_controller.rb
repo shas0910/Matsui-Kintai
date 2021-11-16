@@ -8,7 +8,7 @@ class PendingTimecardsController < ApplicationController
 
   def create
     if params[:pending_timecard][:timecard_type] == ""
-      redirect_to new_day_pending_timecard_path(params[:day_id])
+      redirect_to new_day_pending_timecard_path(params[:day_id]), alert: "打刻種別を入力してください"
       return
     end
     timecard = Timecard.find_or_initialize_by(user_id: current_user.id, day_id: params[:day_id])
@@ -19,13 +19,13 @@ class PendingTimecardsController < ApplicationController
     pending_timecard.timecard_id = timecard.id
     pending_timecard.status = "未承認"
     pending_timecard.save
-    redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}"
+    redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}", notice: "打刻申請しました"
   end
 
   def destroy
     pending_timecard = PendingTimecard.find_by(params[:id])
     pending_timecard.destroy
-    redirect_to requests_path
+    redirect_to requests_path, notice: "打刻申請をキャンセルしました"
   end
   
   def permission
@@ -43,11 +43,12 @@ class PendingTimecardsController < ApplicationController
       end
       pending_timecard.update_attribute(:status, "承認")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
+      redirect_to permissions_path, notice: "打刻申請を承認しました"
     elsif params[:commit] == "棄却"
       pending_timecard.update_attribute(:status, "棄却")
       pending_timecard.update_attribute(:comment_permission, params[:pending_timecard][:comment_permission])
+      redirect_to permissions_path, notice: "打刻申請を棄却しました"
     end
-    redirect_to permissions_path
   end
 
   private

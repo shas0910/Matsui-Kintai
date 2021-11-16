@@ -2,6 +2,7 @@
   <% @users = @users.where(approver_id: current_user.id) %>
 <% end %>
 
+<%= render "shared/flash" %>
 <%= render "shared/header_common" %>
 
 <div class="timecards-wrapper">

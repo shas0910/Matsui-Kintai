@@ -2,3 +2,16 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
+.setting-wrapper {
+  width: 100%;
+  padding: 0 20px;
+}
+
+.setting-links {
+  width: 100%;
+  display: flex;
+}
+
+.setting-links div {
+  width: 200px;
+}
