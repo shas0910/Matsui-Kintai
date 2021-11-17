@@ -214,7 +214,6 @@
       <th>早退</th>
       <th>休憩</th>
       <th>労働合計</th>
-      <th>備考</th>
     </thead>
     <% @days.each do |d| %>
       <% shoteigai = 0 %>
@@ -396,11 +395,6 @@
         <% end %>
         <% if total_work && total_work >= 60 %>
           <th><%= Time.at(total_work.to_i).utc.strftime('%-H.%-M') %></th>
-        <% else %>
-          <th>-</th>
-        <% end %>
-        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).remark.present? %>
-          <th><%= d.schedules.find_by(user_id: current_user.id).remark %></th>
         <% else %>
           <th>-</th>
         <% end %>

@@ -53,6 +53,8 @@
               <% end %>
               <% if pt.pending_time.present? %>
                 <td><%= pt.pending_time.strftime("%R") %></td>
+              <% else %>
+                <td>打刻なし</td>
               <% end %>
               <% if pt.comment_request %>
                 <td><%= pt.comment_request %></td>
@@ -81,7 +83,6 @@
         <th>対象日</th>
         <th>申請元の日程</th>
         <th>申請された日程</th>
-        <th>備考</th>
         <th>申請者メッセージ</th>
         <th>キャンセル</th>
       </thead>
@@ -94,7 +95,6 @@
             <% if ps.schedule_type.present? %>
               <td><%= ps.schedule_type %></td>
             <% end %>
-            <td><%= ps.remark %></td>
             <td><%= ps.comment_request %></td>
             <td>
               <%= link_to pending_schedule_path(ps.id), method: :delete do %>
@@ -154,7 +154,6 @@
         <th>申請日</th>
         <th>対象日</th>
         <th>申請された日程</th>
-        <th>備考</th>
         <th>申請者メッセージ</th>
         <th>承認者メッセージ</th>
         <th>承認状態</th>
@@ -169,7 +168,6 @@
             <% else %>
               <td>なし</td>
             <% end %>
-            <td><%= ps.remark %></td>
             <td><%= ps.comment_request %></td>
             <td><%= ps.comment_permission %></td>
             <td><%= ps.status %></td>

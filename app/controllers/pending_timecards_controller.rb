@@ -23,7 +23,7 @@ class PendingTimecardsController < ApplicationController
   end
 
   def destroy
-    pending_timecard = PendingTimecard.find_by(params[:id])
+    pending_timecard = PendingTimecard.find(params[:id])
     pending_timecard.destroy
     redirect_to requests_path, notice: "打刻申請をキャンセルしました"
   end

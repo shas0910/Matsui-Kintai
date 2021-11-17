@@ -77,6 +77,7 @@
     <p>未承認の打刻申請はありません</p>
   <% end %>
 
+  <br>
   <p>■日程申請</p>
   <% if current_user.user_type == "上長" %>
     <% waiting_pending_schedules = @waiting_pending_schedules.where(schedule_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids) %>
@@ -128,7 +129,7 @@
     <p>未承認の日程申請はありません</p>
   <% end %>
 
-
+  <br>
   <h3>承認・棄却済申請</h3>
 
   <p>■打刻申請</p>
@@ -178,6 +179,7 @@
     <p>打刻申請履歴はありません</p>
   <% end %>
 
+  <br>
   <p>■日程申請</p>
   <% if current_user.user_type == "上長" %>
     <% pending_schedules = @pending_schedules.where(schedule_id: Schedule.where(user_id: User.where(approver_id: current_user.id).ids).ids).where.not(status: "未承認") %>

@@ -129,7 +129,7 @@
 <% elsif current_user.user_type == "上長" %>
   <% unapproved_count = @pending_timecards_member.count + @pending_schedules_member.count %>
   <% if unapproved_count > 0 %>
-    <%= link_to permissions_path do %>
+    <%= link_to permissions_path, data: { turbolinks: false } do %>
       <div><span><i class="far fa-hand-paper"></i><%= unapproved_count %>件の未承認の申請があります</span></div>
     <% end %>
   <% end %>
@@ -365,7 +365,7 @@
   <div>
     <% unapproved_count = @waiting_pending_timecards.count + @waiting_pending_schedules.count %>
     <% if unapproved_count > 0 %>
-      <%= link_to permissions_path do %>
+      <%= link_to permissions_path, data: { turbolinks: false } do %>
         <div><span><i class="far fa-hand-paper"></i><%= unapproved_count %>件の未承認の申請があります</span></div>
       <% end %>
     <% end %>

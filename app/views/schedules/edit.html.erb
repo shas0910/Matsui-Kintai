@@ -27,10 +27,6 @@
         <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
       </div>
       <div>
-        <%= form.label :remark, "備考：" %>
-        <%= form.text_field :remark %>
-      </div>
-      <div>
         <%= form.submit "保存" %>
       </div>
     <% end %>
@@ -39,10 +35,6 @@
       <div>
         <%= form.label :schedule_type, "日程：" %>
         <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
-      </div>
-      <div>
-        <%= form.label :remark, "備考：" %>
-        <%= form.text_field :remark %>
       </div>
       <div>
         <%= form.submit "保存" %>

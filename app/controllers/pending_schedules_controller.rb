@@ -19,7 +19,7 @@ class PendingSchedulesController < ApplicationController
   end
 
   def destroy
-    pending_schedule = PendingSchedule.find_by(params[:id])
+    pending_schedule = PendingSchedule.find(params[:id])
     pending_schedule.destroy
     redirect_to requests_path, notice: "日程申請をキャンセルしました"
   end
@@ -29,7 +29,6 @@ class PendingSchedulesController < ApplicationController
     schedule = Schedule.find_by(id: pending_schedule.schedule_id)
     if params[:commit] == "承認"
       schedule.update_attribute(:schedule_type, pending_schedule.schedule_type)
-      schedule.update_attribute(:remark, pending_schedule.remark)
       pending_schedule.update_attribute(:status, "承認")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
       redirect_to permissions_path, notice: "日程申請を承認しました"
@@ -43,7 +42,7 @@ class PendingSchedulesController < ApplicationController
   private
 
   def pending_schedule_params
-    params.require(:pending_schedule).permit(:schedule_type, :remark, :status, :comment_request, :comment_permission)
+    params.require(:pending_schedule).permit(:schedule_type, :status, :comment_request, :comment_permission)
   end
 
 end
