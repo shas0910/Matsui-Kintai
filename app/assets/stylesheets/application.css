@@ -129,6 +129,18 @@ div.field {
   color: red;
 }
 
+.fa-check {
+  color: green;
+}
+
+.fa-times {
+  color: red;
+}
+
+.fa-hand-paper {
+  color: blue;
+}
+
 /* === タイムカードページ === */
 
 .timecard-wrapper {
