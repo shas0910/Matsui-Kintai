@@ -15,62 +15,62 @@
     <% waiting_pending_timecards = @waiting_pending_timecards %>
   <% end %>
   <% if waiting_pending_timecards.present? %>
-    <table>
-      <thead>
-        <th>申請者</th>
-        <th>申請日</th>
-        <th>対象日</th>
-        <th>打刻種別</th>
-        <th>申請元の打刻</th>
-        <th>申請された打刻</th>
-        <th>申請者メッセージ</th>
-        <th>承認者メッセージ</th>
-        <th colspan="2">承認 / 棄却</th>
-      </thead>
-      <% waiting_pending_timecards.each do |wpt| %>
-        <tr>
-          <td><%= User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).last_name + " " + User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).first_name %></td>
-          <td><%= wpt.created_at.strftime("%m/%d") %>(<%= day[wpt.created_at.wday] %>)</td>
-          <td><%= Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.wday] %>)</td>
-          <td><%= wpt.timecard_type %></td>
-          <% if wpt.timecard_type == "出勤" %>
-            <% if Timecard.find_by(id: wpt.timecard_id).start %>
-              <td><%= Timecard.find_by(id: wpt.timecard_id).start.strftime("%R") %></td>
-            <% else %>
-              <td>打刻なし</td>
-            <% end %>
-          <% elsif wpt.timecard_type == "退勤" %>
-            <% if Timecard.find_by(id: wpt.timecard_id).finish %>
-              <td><%= Timecard.find_by(id: wpt.timecard_id).finish.strftime("%R") %></td>
-            <% else %>
-              <td>打刻なし</td>
-            <% end %>
-          <% elsif wpt.timecard_type == "休憩開始" %>
-            <% if Timecard.find_by(id: wpt.timecard_id).break_start %>
-              <td><%= Timecard.find_by(id: wpt.timecard_id).break_start.strftime("%R") %></td>
-            <% else %>
-              <td>打刻なし</td>
-            <% end %>
-          <% elsif wpt.timecard_type == "休憩終了" %>
-            <% if Timecard.find_by(id: wpt.timecard_id).break_finish %>
-              <td><%= Timecard.find_by(id: wpt.timecard_id).break_finish.strftime("%R") %></td>
-            <% else %>
-              <td>打刻なし</td>
-            <% end %>
-          <% end %>
-          <% if wpt.pending_time %>
-            <td><%= wpt.pending_time.strftime("%R") %></td>
-          <% else %>
-            <td>打刻なし</td>
-          <% end %>
-          <td><%= wpt.comment_request %></td>
-          <%= form_with model: wpt, url: permission_pending_timecard_path(wpt.id) do |f| %>
-            <td><%= f.text_field :comment_permission %></td>
-            <td><%= f.submit "承認" %> <%= f.submit "棄却" %></td>
-          <% end %>
-        </tr>
+    <% waiting_pending_timecards.each do |wpt| %>
+      <%= form_with model: wpt, url: permission_pending_timecard_path(wpt.id) do |f| %>
+        <table>
+          <thead>
+            <th>申請者</th>
+            <th>申請日</th>
+            <th>対象日</th>
+            <th>打刻種別</th>
+            <th>申請元の打刻</th>
+            <th>申請された打刻</th>
+            <th>申請者メッセージ</th>
+            <th>承認者メッセージ</th>
+            <th colspan="2">承認 / 棄却</th>
+          </thead>
+            <tr>
+              <td><%= User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).last_name + " " + User.find_by(id: Timecard.find_by(id: wpt.timecard_id).user_id).first_name %></td>
+              <td><%= wpt.created_at.strftime("%m/%d") %>(<%= day[wpt.created_at.wday] %>)</td>
+              <td><%= Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.wday] %>)</td>
+              <td><%= wpt.timecard_type %></td>
+              <% if wpt.timecard_type == "出勤" %>
+                <% if Timecard.find_by(id: wpt.timecard_id).start %>
+                  <td><%= Timecard.find_by(id: wpt.timecard_id).start.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% elsif wpt.timecard_type == "退勤" %>
+                <% if Timecard.find_by(id: wpt.timecard_id).finish %>
+                  <td><%= Timecard.find_by(id: wpt.timecard_id).finish.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% elsif wpt.timecard_type == "休憩開始" %>
+                <% if Timecard.find_by(id: wpt.timecard_id).break_start %>
+                  <td><%= Timecard.find_by(id: wpt.timecard_id).break_start.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% elsif wpt.timecard_type == "休憩終了" %>
+                <% if Timecard.find_by(id: wpt.timecard_id).break_finish %>
+                  <td><%= Timecard.find_by(id: wpt.timecard_id).break_finish.strftime("%R") %></td>
+                <% else %>
+                  <td>打刻なし</td>
+                <% end %>
+              <% end %>
+              <% if wpt.pending_time %>
+                <td><%= wpt.pending_time.strftime("%R") %></td>
+              <% else %>
+                <td>打刻なし</td>
+              <% end %>
+              <td><%= wpt.comment_request %></td>
+              <td><%= f.text_field :comment_permission %></td>
+              <td><%= f.submit "承認" %> <%= f.submit "棄却" %></td>
+            </tr>
+        </table>
       <% end %>
-    </table>
+    <% end %>
   <% else %>
     <p>未承認の打刻申請はありません</p>
   <% end %>
@@ -82,44 +82,44 @@
     <% waiting_pending_schedules = @waiting_pending_schedules %>
   <% end %>
   <% if waiting_pending_schedules.present? %>
-    <table>
-      <thead>
-        <th>申請者</th>
-        <th>申請日</th>
-        <th>対象日</th>
-        <th>申請元の日程</th>
-        <th>申請された日程</th>
-        <th>申請者メッセージ</th>
-        <th>承認者メッセージ</th>
-        <th colspan="2">承認 / 棄却</th>
-      </thead>
-      <% waiting_pending_schedules.each do |wps| %>
-        <tr>
-          <td><%= User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).first_name %></td>
-          <td><%= wps.created_at.strftime("%m/%d") %>(<%= day[wps.created_at.wday] %>)</td>
-          <td><%= Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).date.wday] %>)</td>
-          <% if Schedule.find_by(id: wps.schedule_id).schedule_type.present? %>
-            <td><%= Schedule.find_by(id: wps.schedule_id).schedule_type %></td>
-          <% else %>
-            <td>なし</td>
-          <% end %>
-          <% if wps.schedule_type.present? %>
-            <td><%= wps.schedule_type %></td>
-          <% else %>
-            <td>なし</td>
-          <% end %>
-          <% if wps.comment_request.present? %>
-            <td><%= wps.comment_request %></td>
-          <% else %>
-            <td>-</td>
-          <% end %>
-          <%= form_with model: wps, url: permission_pending_schedule_path(wps.id) do |f| %>
+    <% waiting_pending_schedules.each do |wps| %>
+       <%= form_with model: wps, url: permission_pending_schedule_path(wps.id) do |f| %>
+        <table>
+          <thead>
+            <th>申請者</th>
+            <th>申請日</th>
+            <th>対象日</th>
+            <th>申請元の日程</th>
+            <th>申請された日程</th>
+            <th>申請者メッセージ</th>
+            <th>承認者メッセージ</th>
+            <th colspan="2">承認 / 棄却</th>
+          </thead>
+          <tr>
+            <td><%= User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).last_name + " " + User.find_by(id: Schedule.find_by(id: wps.schedule_id).user_id).first_name %></td>
+            <td><%= wps.created_at.strftime("%m/%d") %>(<%= day[wps.created_at.wday] %>)</td>
+            <td><%= Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Schedule.find_by(id: wps.schedule_id).day_id).date.wday] %>)</td>
+            <% if Schedule.find_by(id: wps.schedule_id).schedule_type.present? %>
+              <td><%= Schedule.find_by(id: wps.schedule_id).schedule_type %></td>
+            <% else %>
+              <td>なし</td>
+            <% end %>
+            <% if wps.schedule_type.present? %>
+              <td><%= wps.schedule_type %></td>
+            <% else %>
+              <td>なし</td>
+            <% end %>
+            <% if wps.comment_request.present? %>
+              <td><%= wps.comment_request %></td>
+            <% else %>
+              <td>-</td>
+            <% end %>
             <td><%= f.text_field :comment_permission %></td>
             <td><%= f.submit "承認" %> <%= f.submit "棄却" %></td>
-          <% end %>
-        </tr>
+          </tr>
+        </table>
       <% end %>
-    </table>
+    <% end %>
   <% else %>
     <p>未承認の日程申請はありません</p>
   <% end %>
