@@ -2,4 +2,22 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
-/* === /year_months/:id === */
+/* === /year_months === */
+
+.year_month-index {
+  margin-bottom: 10px;
+}
+
+.year_month-index a {
+  text-decoration: none;
+  color: rgb(0, 170, 113);
+}
+
+.year_month-index i {
+  margin-left: 10px;
+}
+
+// === /year_month/new ===
+.year_month-new-form {
+  margin-bottom: 10px;
+}

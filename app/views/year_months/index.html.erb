@@ -1,8 +1,19 @@
-<h2>月一覧</h2>
+<%= render "shared/flash" %>
+<%= render "shared/header_common" %>
 
-<ul>
+<div class="wrapper">
+  <h2><i class="far fa-calendar"></i> カレンダー一覧</h2>
+
   <% @year_months.each do |ym| %>
-    <li><%= link_to "#{ym.year}年#{ym.month}月", edit_year_month_path(ym.id) %></li>
+    <div class="year_month-index">
+      <span><%= ym.year %>年<%= ym.month %>月</span>
+      <%= link_to edit_year_month_path(ym.id) do %>
+        <i class="fas fa-pencil-alt"></i>
+      <% end %>
+      <%= link_to year_month_path(ym.id), method: :delete,data: {confirm: "月度：#{ym.year}年#{ym.month}月 を削除しますか？"} do %>
+          <i class="fas fa-trash-alt"></i>
+      <% end %>
+    </div>
   <% end %>
-</ul>
-<%= link_to "月度カレンダー新規作成", new_year_month_path %>
+
+</div>

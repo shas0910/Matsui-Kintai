@@ -248,13 +248,21 @@ a.btn-border:active:before {
   padding: 0 20px;
 }
 
-.timecards-wrapper a {
+.timecards-user {
+  margin-bottom: 10px;
+}
+
+.timecards-user a {
   font-size: 18px;
   text-decoration: none;
 }
 
-.timecards-wrapper div i {
+.timecards-user i {
   padding-left: 10px;
+}
+
+.timecards-department div {
+  padding: 0 20px;
 }
 
 // === /user/:user_id/day/:day_id/edit_timecard ===

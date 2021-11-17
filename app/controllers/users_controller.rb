@@ -12,13 +12,13 @@ class UsersController < ApplicationController
   def update
     user = User.find(params[:id])
     user.update(user_params)
-    redirect_to users_path
+    redirect_to users_path, notice: "ユーザー編集を保存しました"
   end
 
   def destroy
     user = User.find(params[:id])
     user.destroy
-    redirect_to users_path
+    redirect_to users_path, notice: "ユーザーを削除しました"
   end
 
   private

@@ -13,7 +13,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     @approvers = User.where(user_type: "上長")
     User.create(sign_up_params)
-    redirect_to users_path
+    redirect_to setting_path, notice: "ユーザーを登録しました"
   end
 
   # GET /resource/sign_up
@@ -63,16 +63,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   redirect_to users_path
-  # end
+  def after_sign_up_path_for(resource)
+    redirect_to setting_path
+  end
 
   # The path used after sign up for inactive accounts.
   def after_inactive_sign_up_path_for(resource)
-    redirect_to users_path
+    redirect_to setting_path
   end
 
   def sign_up(resource_name, resource)
-    
+
+  end
+
+  def after_update_path_for(resource)
+    setting_path
   end
 end

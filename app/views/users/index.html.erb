@@ -1,10 +1,68 @@
-<h2>ユーザー一覧</h2>
+<%= render "shared/flash" %>
+<%= render "shared/header_common" %>
 
-<% @users.each do |user| %>
-  <div>
-    <span><%= user.department %></span>
-    <%= link_to "#{user.last_name} #{user.first_name}", edit_user_path(user.id) %>
+<div class="users-index wrapper">
+
+  <h2><i class="fas fa-users"></i> ユーザー一覧</h2>
+
+  <div class="users-index-department">
+    <h3>■営業部</h3>
+    <% @users.where(department: "営業部").each do |user| %>
+      <div class="users-index-user">
+        <span><%= user.full_name %></span>
+        <%= link_to edit_user_path(user.id) do %>
+          <i class="fas fa-pencil-alt"></i>
+        <% end %>
+        <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
+          <i class="fas fa-trash-alt"></i>
+        <% end %>
+      </div>
+    <% end %>
   </div>
-<% end %>
 
-<%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
+  <div class="users-index-department">
+    <h3>■貿易部</h3>
+    <% @users.where(department: "貿易部").each do |user| %>
+      <div class="users-index-user">
+        <span><%= user.full_name %></span>
+        <%= link_to edit_user_path(user.id) do %>
+          <i class="fas fa-pencil-alt"></i>
+        <% end %>
+        <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
+          <i class="fas fa-trash-alt"></i>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="users-index-department">
+    <h3>■システム部</h3>
+    <% @users.where(department: "システム部").each do |user| %>
+      <div class="users-index-user">
+        <span><%= user.full_name %></span>
+        <%= link_to edit_user_path(user.id) do %>
+          <i class="fas fa-pencil-alt"></i>
+        <% end %>
+        <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
+          <i class="fas fa-trash-alt"></i>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="users-index-department">
+    <h3>■その他</h3>
+    <% @users.where(department: "その他").each do |user| %>
+      <div class="users-index-user">
+        <span><%= user.full_name %></span>
+        <%= link_to edit_user_path(user.id) do %>
+          <i class="fas fa-pencil-alt"></i>
+        <% end %>
+        <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
+          <i class="fas fa-trash-alt"></i>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+</div>
