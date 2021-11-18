@@ -7,6 +7,7 @@ import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
+import "jquery"
 import "@nathanvda/cocoon"
 import "../year-months-new"
 import "../clock"
@@ -15,5 +16,3 @@ import "../flash"
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
-
-require("jquery")
