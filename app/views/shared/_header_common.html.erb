@@ -1,7 +1,11 @@
 <header class="header-common">
   <div class="header-left">
-    <span><%= current_user.department %>　</span>
-    <span><%= current_user.last_name + " " + current_user.first_name %></span>
+    <% if current_user %>
+      <span><%= current_user.department %>　</span>
+      <span><%= current_user.last_name + " " + current_user.first_name %></span>
+    <% else %>
+      <span>ログインしていません</span>
+    <% end %>
   </div>
   <div class="header-right">
     <% if current_user.user_type == "一般" %>
