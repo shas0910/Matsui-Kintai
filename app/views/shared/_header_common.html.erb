@@ -1,5 +1,5 @@
 <header class="header-common">
-  <% if current_user %>
+  <% if user_signed_in? %>
     <div class="header-left">
       <span><%= current_user.department %>　</span>
       <span><%= current_user.last_name + " " + current_user.first_name %></span>
