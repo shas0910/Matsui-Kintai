@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_19_065315) do
+ActiveRecord::Schema.define(version: 2021_11_19_065915) do
 
   create_table "commutes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -79,6 +79,18 @@ ActiveRecord::Schema.define(version: 2021_11_19_065315) do
     t.index ["user_id"], name: "index_timecards_on_user_id"
   end
 
+  create_table "travel_costs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "day_id", null: false
+    t.string "commute_type", null: false
+    t.integer "travel_cost", null: false
+    t.string "remark"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["day_id"], name: "index_travel_costs_on_day_id"
+    t.index ["user_id"], name: "index_travel_costs_on_user_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", limit: 255, default: "", null: false
     t.string "encrypted_password", limit: 255, default: "", null: false
@@ -114,4 +126,6 @@ ActiveRecord::Schema.define(version: 2021_11_19_065315) do
   add_foreign_key "schedules", "users"
   add_foreign_key "timecards", "days"
   add_foreign_key "timecards", "users"
+  add_foreign_key "travel_costs", "days"
+  add_foreign_key "travel_costs", "users"
 end

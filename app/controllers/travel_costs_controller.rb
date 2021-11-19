@@ -1,0 +1,2 @@
+class TravelCostsController < ApplicationController
+end
