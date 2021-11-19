@@ -10,12 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_25_035555) do
+ActiveRecord::Schema.define(version: 2021_11_19_065315) do
+
+  create_table "commutes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "car_type"
+    t.string "car_route"
+    t.integer "car_distance"
+    t.string "pass_route"
+    t.integer "pass_fee"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_commutes_on_user_id"
+  end
 
   create_table "days", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "year_month_id", null: false
     t.date "date", null: false
-    t.string "day_type", null: false
+    t.string "day_type", limit: 255, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["year_month_id"], name: "index_days_on_year_month_id"
@@ -23,8 +35,8 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
 
   create_table "pending_schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "schedule_id", null: false
-    t.string "schedule_type"
-    t.string "status", null: false
+    t.string "schedule_type", limit: 255
+    t.string "status", limit: 255, null: false
     t.text "comment_request"
     t.text "comment_permission"
     t.datetime "created_at", precision: 6, null: false
@@ -34,9 +46,9 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
 
   create_table "pending_timecards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "timecard_id", null: false
-    t.string "timecard_type", null: false
+    t.string "timecard_type", limit: 255, null: false
     t.time "pending_time"
-    t.string "status", null: false
+    t.string "status", limit: 255, null: false
     t.text "comment_request"
     t.text "comment_permission"
     t.datetime "created_at", precision: 6, null: false
@@ -47,7 +59,7 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
   create_table "schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "day_id", null: false
-    t.string "schedule_type"
+    t.string "schedule_type", limit: 255
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["day_id"], name: "index_schedules_on_day_id"
@@ -68,15 +80,15 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "last_name", null: false
-    t.string "first_name", null: false
-    t.string "department", null: false
-    t.string "user_type", null: false
+    t.string "email", limit: 255, default: "", null: false
+    t.string "encrypted_password", limit: 255, default: "", null: false
+    t.string "last_name", limit: 255, null: false
+    t.string "first_name", limit: 255, null: false
+    t.string "department", limit: 255, null: false
+    t.string "user_type", limit: 255, null: false
     t.date "hire_date", null: false
     t.integer "approver_id"
-    t.string "reset_password_token"
+    t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
@@ -94,6 +106,7 @@ ActiveRecord::Schema.define(version: 2021_10_25_035555) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "commutes", "users"
   add_foreign_key "days", "year_months"
   add_foreign_key "pending_schedules", "schedules"
   add_foreign_key "pending_timecards", "timecards"

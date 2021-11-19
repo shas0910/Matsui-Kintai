@@ -1,0 +1,2 @@
+class Commute < ApplicationRecord
+end
