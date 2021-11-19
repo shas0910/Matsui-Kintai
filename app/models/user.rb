@@ -6,8 +6,8 @@ class User < ApplicationRecord
 
   has_many :timecards, dependent: :destroy
   has_many :schedules, dependent: :destroy
-  has_one :commute
-  has_many :travel_costs
+  has_one :commute, dependent: :destroy
+  has_many :travel_costs, dependent: :destroy
 
   def full_name
     "#{last_name} #{first_name}"
