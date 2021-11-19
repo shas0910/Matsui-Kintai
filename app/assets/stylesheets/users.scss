@@ -9,8 +9,10 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: url(/assets/pixta_27395884_L.jpg)
-  center / cover;
+  background-image: image-url('back.jpg');
+  background-position: left top;
+  background-repeat: no-repeat;
+	background-size: 100%;
 }
 
 .login-logo {
