@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 2021_11_19_065915) do
     t.string "car_type"
     t.string "car_route"
     t.integer "car_distance"
+    t.string "train_route"
+    t.integer "train_fee"
     t.string "pass_route"
     t.integer "pass_fee"
     t.datetime "created_at", precision: 6, null: false

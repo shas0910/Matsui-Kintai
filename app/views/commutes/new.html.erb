@@ -27,7 +27,18 @@
         <%= form.number_field :car_distance %> <span>km</span>
       </div>
     </div>
-    <h3><i class="fas fa-subway"></i> 電車・バス（定期使用）</h3>
+    <h3><i class="fas fa-subway"></i> 電車・バス（往復）</h3>
+    <div class="wrapper">
+      <div>
+        <%= form.label :train_route, "経路：" %>
+        <%= form.text_field :train_route, placeholder: "例：〇〇駅〜〇〇駅" %>
+      </div>
+      <div>
+        <%= form.label :train_fee, "交通費（往復）：" %>
+        <%= form.number_field :train_fee %> <span>円</span>
+      </div>
+    </div>
+    <h3><i class="fas fa-ticket-alt"></i> 電車・バス（定期使用）</h3>
     <div class="wrapper">
       <div>
         <%= form.label :pass_route, "経路：" %>
@@ -37,6 +48,8 @@
         <%= form.label :pass_fee, "定期代（１ヶ月）：" %>
         <%= form.number_field :pass_fee %> <span>円</span>
       </div>
+    </div>
+    <div class="wrapper">
       <div>
         <br>
         <%= form.submit "登録" %>

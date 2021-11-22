@@ -5,6 +5,8 @@ class CreateCommutes < ActiveRecord::Migration[6.1]
       t.string :car_type
       t.string :car_route
       t.integer :car_distance
+      t.string :train_route
+      t.integer :train_fee
       t.string :pass_route
       t.integer :pass_fee
 

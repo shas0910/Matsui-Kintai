@@ -13,10 +13,8 @@
         <%= link_to edit_user_path(user.id) do %>
           <i class="fas fa-user-edit"></i>
         <% end %>
-        <% if user.commute %>
-          <%= link_to edit_commute_path(user.commute.id) do %>
-            <i class="fas fa-route"></i>
-          <% end %>
+        <%= link_to "/commute/#{user.id}" do %>
+          <i class="fas fa-route"></i>
         <% end %>
         <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
           <i class="fas fa-trash-alt"></i>
@@ -33,10 +31,8 @@
         <%= link_to edit_user_path(user.id) do %>
           <i class="fas fa-user-edit"></i>
         <% end %>
-        <% if user.commute %>
-          <%= link_to edit_commute_path(user.commute.id) do %>
-            <i class="fas fa-route"></i>
-          <% end %>
+        <%= link_to "/commute/#{user.id}" do %>
+          <i class="fas fa-route"></i>
         <% end %>
         <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
           <i class="fas fa-trash-alt"></i>
@@ -53,10 +49,8 @@
         <%= link_to edit_user_path(user.id) do %>
           <i class="fas fa-user-edit"></i>
         <% end %>
-        <% if user.commute %>
-          <%= link_to edit_commute_path(user.commute.id) do %>
-            <i class="fas fa-route"></i>
-          <% end %>
+        <%= link_to "/commute/#{user.id}" do %>
+          <i class="fas fa-route"></i>
         <% end %>
         <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
           <i class="fas fa-trash-alt"></i>
@@ -73,10 +67,8 @@
         <%= link_to edit_user_path(user.id) do %>
           <i class="fas fa-user-edit"></i>
         <% end %>
-        <% if user.commute %>
-          <%= link_to edit_commute_path(user.commute.id) do %>
-            <i class="fas fa-route"></i>
-          <% end %>
+        <%= link_to "/commute/#{user.id}" do %>
+          <i class="fas fa-route"></i>
         <% end %>
         <%= link_to user_path(user.id), method: :delete,data: {confirm: "ユーザー：#{user.full_name} を削除しますか？"} do %>
           <i class="fas fa-trash-alt"></i>
