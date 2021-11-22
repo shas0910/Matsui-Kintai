@@ -7,6 +7,13 @@
 
   <div class="setting-links">
     <div>
+      <% if current_user.user_type != "管理者" %>
+        <div>
+          <%= link_to new_commute_path do %>
+            <span><i class="fas fa-route"></i> 通勤経路設定</span>
+          <% end %>
+        </div>
+      <% end %>
       <div>
         <%= link_to edit_user_registration_path do %>
           <span><i class="fas fa-key"></i> パスワード変更</span>
