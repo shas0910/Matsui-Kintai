@@ -62,6 +62,6 @@ Rails.application.routes.draw do
 
   get 'setting', to: 'settings#setting'
 
-  resources :commutes, only: [:new, :create, :edit]
+  resources :commutes, only: [:new, :create, :edit, :update]
 
 end
