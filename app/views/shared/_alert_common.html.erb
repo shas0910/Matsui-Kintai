@@ -290,25 +290,25 @@
     <% end %>
     <%# 休暇日程をとっている日に打刻 %>
     <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
-      <% if d.timecards.find_by(user_id: current_user.id).start.present? %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
           <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).finish.present? %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).finish.present? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
           <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_start.present? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
           <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_start.present? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
           <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
