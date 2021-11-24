@@ -34,7 +34,6 @@
 }
 
 .btn,
-a.btn,
 button.btn {
   font-size: 20px;
   font-weight: 700;
@@ -56,7 +55,7 @@ button.btn {
   border-radius: 0.5rem;
 }
 
-a.btn-border {
+.btn-border {
   margin-bottom: 12px;
   padding: 0;
 
@@ -67,7 +66,7 @@ a.btn-border {
   border-radius: 0;
 }
 
-a.btn-border span {
+.btn-border span {
   width: 225px;
 
   position: relative;
@@ -81,23 +80,23 @@ a.btn-border span {
   border-radius: 0.5rem;
 }
 
-a.btn-start span {
+.btn-start span {
   background: #7fbfff;
 }
 
-a.btn-finish span {
+.btn-finish span {
   background: #ff7f7f;
 }
 
-a.btn-break_start span {
+.btn-break_start span {
   background: #bfff7f;
 }
 
-a.btn-break_finish span {
+.btn-break_finish span {
   background: #bfff7f;
 }
 
-a.btn-border:before {
+.btn-border:before {
   position: absolute;
   bottom: -8px;
   left: 0;
@@ -120,37 +119,37 @@ a.btn-border:before {
   backface-visibility: hidden;
 }
 
-a.btn-start:before {
+.btn-start:before {
   background: #5e8cbb;
 }
 
-a.btn-finish:before {
+.btn-finish:before {
   background: #b85b5b;
 }
 
-a.btn-break_start:before {
+.btn-break_start:before {
   background: #8cbb5d;
 }
 
-a.btn-break_finish:before {
+.btn-break_finish:before {
   background: #8cbb5d;
 }
 
-a.btn-border:hover {
+.btn-border:hover {
   -webkit-transform: translate(0, 3px);
   transform: translate(0, 3px);
 }
 
-a.btn-border:hover:before {
+.btn-border:hover:before {
   bottom: -5px;
 }
 
-a.btn-border:active {
+.btn-border:active {
   -webkit-transform: translate(0, 7px);
   transform: translate(0, 7px);
 }
 
-a.btn-border:active:before {
+.btn-border:active:before {
   bottom: -1px;
 }
 
@@ -158,9 +157,64 @@ a.btn-border:active:before {
   padding-right: 10px;
 }
 
-.alert-wrapper {
+.travel-cost-wrapper {
   width: 500px;
   margin: 30px auto;
+  text-align: center;
+}
+
+.travel-cost-inner {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.travel-cost-btn {
+  margin: 0 10px;
+}
+
+.travel-cost-btn span {
+  width: 50px;
+  height: 40px;
+  background: #bf7fff;
+}
+
+.travel-cost-btn:before {
+  background: #8156ac;
+}
+
+.travel-cost-btn span i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  color: #000;
+}
+
+.acd-check {
+  display: none;
+}
+
+.acd-content{
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.acd-content input {
+  margin: 5px;
+}
+
+.acd-check:checked + .acd-content {
+  height: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
+.alert-wrapper {
+  width: 500px;
+  margin: 0 auto;
   border: black solid 1px;
   font-size: 20px;
 }
