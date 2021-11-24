@@ -67,4 +67,16 @@ Rails.application.routes.draw do
   get 'commute/:user_id', to: 'commutes#edit'
   get 'commute/:user_id/update', to: 'commutes#update'
 
+  resources :travel_costs, only: [:edit, :update] do
+    collection do
+      post 'create_car'
+      post 'create_train'
+      post 'create_pass'
+      post 'create_walk'
+      post 'create_trip'
+      post 'create_remote'
+      post 'create_other'
+    end
+  end
+
 end

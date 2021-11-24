@@ -49,6 +49,13 @@
         <%= form.number_field :pass_fee %> <span>円</span>
       </div>
     </div>
+    <h3><i class="fas fa-walking"></i> 徒歩</h3>
+    <div class="wrapper">
+      <div>
+        <%= form.check_box :walk %>
+        <%= form.label :walk, "徒歩通勤ボタンをトップに表示する" %>
+      </div>
+    </div>
     <div class="wrapper">
       <div>
         <br>

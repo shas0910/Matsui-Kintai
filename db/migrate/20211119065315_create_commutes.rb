@@ -9,6 +9,7 @@ class CreateCommutes < ActiveRecord::Migration[6.1]
       t.integer :train_fee
       t.string :pass_route
       t.integer :pass_fee
+      t.boolean :walk, default: false, null: false
 
       t.timestamps
     end

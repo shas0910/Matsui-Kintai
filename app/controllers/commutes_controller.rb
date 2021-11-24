@@ -119,11 +119,11 @@ class CommutesController < ApplicationController
   private
 
   def commute_params
-    params.require(:commute).permit(:car_type, :car_route, :car_distance, :train_route, :train_fee, :pass_route, :pass_fee).merge(user_id: current_user.id)
+    params.require(:commute).permit(:car_type, :car_route, :car_distance, :train_route, :train_fee, :pass_route, :pass_fee, :walk).merge(user_id: current_user.id)
   end
 
   def commute_edit_params
-    params.require(:commute).permit(:car_type, :car_route, :car_distance, :train_route, :train_fee, :pass_route, :pass_fee).merge(user_id: params[:user_id])
+    params.require(:commute).permit(:car_type, :car_route, :car_distance, :train_route, :train_fee, :pass_route, :pass_fee, :walk).merge(user_id: params[:user_id])
   end
 
 end

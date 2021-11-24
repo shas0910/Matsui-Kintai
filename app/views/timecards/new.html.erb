@@ -58,6 +58,82 @@
   </div>
 <% end %>
 
+<% if current_user.user_type != "管理者" %>
+
+  <div class="travel-cost-wrapper">
+    <div class="travel-cost-inner">
+      <% if current_user.commute && current_user.commute.car_type.present? %>
+        <section>
+          <%= link_to create_car_travel_costs_path, method: :post, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-car-side"></i></span>
+          <% end %>
+        </section>
+      <% end %>
+      <% if current_user.commute && current_user.commute.train_route.present? %>
+        <section>
+          <%= link_to create_train_travel_costs_path, method: :post, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-subway"></i></span>
+          <% end %>
+        </section>
+      <% end %>
+      <% if current_user.commute && current_user.commute.pass_route.present? %>
+        <section>
+          <%= link_to create_pass_travel_costs_path, method: :post, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-ticket-alt"></i></span>
+          <% end %>
+        </section>
+      <% end %>
+      <% if current_user.commute && current_user.commute.walk == 1 %>
+        <section>
+          <%= link_to create_walk_travel_costs_path, method: :post, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-walking"></i></span>
+          <% end %>
+        </section>
+      <% end %>
+      <section>
+        <%= link_to create_trip_travel_costs_path, method: :post, class: "btn btn-border travel-cost-btn" do %>
+          <span><i class="fas fa-briefcase"></i></span>
+        <% end %>
+      </section>
+      <section>
+        <%= link_to create_remote_travel_costs_path, method: :post, class: "btn btn-border travel-cost-btn" do %>
+          <span><i class="fas fa-home"></i></span>
+        <% end %>
+      </section>
+      <section class="hidden">
+        <label class="btn btn-border travel-cost-btn hidden-form-btn acd-label" for="acd-check1">
+          <span><i class="fas fa-question"></i></span>
+        </label>
+      </section>
+    </div>
+    <input type="checkbox" class="acd-check" id="acd-check1"/>
+    <div class="acd-content">
+      <% if TravelCost.find_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id) %>
+        <% tc = TravelCost.find_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id) %>
+      <% else %>
+        <% tc = TravelCost.new %>
+      <% end %>
+      <%= form_with model: tc, url: create_other_travel_costs_path, method: :post do |f| %>
+        <span><i class="fas fa-question"></i> その他通勤手段</span>
+        <br>
+        <span>※簡潔に入力してください</span>
+        <br>
+        <%= f.label :commute_type, "手段：" %>
+        <%= f.text_field :commute_type %>
+        <br>
+        <%= f.label :remark, "経路：" %>
+        <%= f.text_field :remark %>
+        <br>
+        <%= f.label :travel_cost, "費用：" %>
+        <%= f.number_field :travel_cost %>
+        <br>
+        <%= f.submit "登録" %>
+      <% end %>
+    </div>
+  </div>
+
+<% end %>
+
 <div class="alert-wrapper">
   <div class="alert-title">
     <span>アラート一覧</span>
