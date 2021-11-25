@@ -212,6 +212,37 @@ button.btn {
   visibility: visible;
 }
 
+.balloon-hover {
+  position: relative;
+}
+
+.balloon {
+  position   : absolute;                /* 親要素を基準 */
+  display: none;                        /* 要素を非表示 */
+  padding: 5px 15px;                         /* テキストの前後の余白 */
+  background-color: rgb(150, 150, 255);       /* 背景色（透明度） */
+  left : 50%;                           /* 表示位置 */
+  transform: translate(-50%, 0%);
+  bottom :70%;                        /* 表示位置 */
+  margin-bottom : 12px;                 /* 表示位置 */
+  font-size: 100%;                       /* 文字サイズ */
+  width: max-content;
+}
+.balloon:after{
+  border-top: 10px solid rgb(150, 150, 255);    /* 吹き出し口の高さ・色 */
+  border-left: 10px solid transparent;    /* 吹き出し口の幅１／２ */
+  border-right: 10px solid transparent;   /* 吹き出し口の幅１／２ */
+  bottom: -12px;                          /* 吹き出し口の位置調整 */
+  left : 50%;                              /* 吹き出し口の横位置 */
+  transform: translate(-50%, -50%);
+  content: "";                       /* コンテンツの挿入 */
+  position: absolute;                /* 親要素を基準 */
+}
+
+.balloon-hover:hover .balloon {
+  display: inline;  
+}
+
 .alert-wrapper {
   width: 500px;
   margin: 0 auto;
@@ -313,6 +344,15 @@ button.btn {
 
 .timecards-user i {
   padding-left: 10px;
+}
+
+.timecards-user i.fa-calendar-alt {
+  color: blue;
+}
+
+.timecards-user i.fa-exclamation-triangle {
+  margin-left: -25px;
+  font-size: 12px;
 }
 
 .timecards-department div {

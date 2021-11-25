@@ -1,0 +1,115 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<%= render "shared/flash" %>
+<%= render "shared/header_common" %>
+
+<div class="wrapper">
+
+  <h2><i class="fas fa-yen-sign"></i> <%= User.find(params[:user_id]).full_name %>さんの交通費</h2>
+  <%= form_with model: @year_month, url: "/travel_cost/index/#{params[:user_id]}/#{params[:year_month_id]}/to_index", method: :get do |form| %>
+    <div>
+      <span class="timecard-current"><%= @year_month.first_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.first_date.wday] %>) 〜 <%= @year_month.last_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.last_date.wday] %>)</span>
+      <%= form.select :year, Date.today.year-2 .. Date.today.year+2 %>
+      <span>年</span>
+      <%= form.select :month, 01 .. 12 %>
+      <span>月</span>
+      <%= form.submit "表示" %>
+    </div>
+  <% end %>
+
+
+
+  <h3>■当月分交通費合計</h3>
+  
+  <% travel_cost_total = 0 %>
+  <% pass_fee = 0 %>
+
+  <% @days.each do |d| %>
+    <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
+      <% if d.travel_costs.find_by(user_id: params[:user_id]).commute_type == "電車・バス（定期使用）" %>
+        <% pass_fee = d.travel_costs.find_by(user_id: params[:user_id]).travel_cost %>
+      <% else %>
+        <% travel_cost_total += d.travel_costs.find_by(user_id: params[:user_id]).travel_cost %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% travel_cost_total += pass_fee %>
+
+  <h3><%= travel_cost_total %>円</h3>
+
+
+  <h3>■日別交通費データ</h3>
+
+  <table>
+    <thead>
+      <th>編集</th>
+      <th>日付</th>
+      <th>種別</th>
+      <th>日程</th>
+      <th>通勤手段</th>
+      <th>通勤費用</th>
+      <th>経路・備考</th>
+    </thead>
+    <% @days.each do |d| %>
+      <% if d.date < Date.today() %>
+        <% if d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start.present? && d.timecards.find_by(user_id: params[:user_id]).finish.present? %>
+          <% unless d.travel_costs.find_by(user_id: params[:user_id]) %>
+            <tr class="error">
+          <% else %>
+            <tr class="hover">
+          <% end %>
+        <% else %>
+          <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
+            <tr class="error">
+          <% else %>
+            <tr class="hover">
+          <% end %>
+        <% end %>
+      <% else %>
+        <tr class="hover">
+      <% end %>
+        <th class="hover">
+          <%= link_to "#" do %>
+            <i class="fas fa-pencil-alt"></i>
+          <% end %>
+        </th>
+        <th><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</th>
+        <th><%= d.day_type %></th>
+        <% if d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).schedule_type.present? %>
+          <th><%= d.schedules.find_by(user_id: params[:user_id]).schedule_type %></th>
+        <% elsif d.timecards.find_by(user_id: params[:user_id]) && d.timecards.find_by(user_id: params[:user_id]).start && d.timecards.find_by(user_id: params[:user_id]).finish %>
+          <th>出勤</th>
+        <% elsif d.day_type.include?("休日") %>
+          <th>休日</th>
+        <% else %>
+          <th>-</th>
+        <% end %>
+        <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
+          <th><%= d.travel_costs.find_by(user_id: params[:user_id]).commute_type %></th>
+        <% else %>
+          <th>-</th>
+        <% end %>
+        <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
+          <% if d.travel_costs.find_by(user_id: params[:user_id]).commute_type == "電車・バス（定期使用）" %>
+            <th>( <%= d.travel_costs.find_by(user_id: params[:user_id]).travel_cost %> )</th>
+          <% else %>
+            <th><%= d.travel_costs.find_by(user_id: params[:user_id]).travel_cost %></th>
+          <% end %>
+        <% else %>
+          <th>-</th>
+        <% end %>
+        <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
+          <% if d.travel_costs.find_by(user_id: params[:user_id]).remark.present? %>
+            <th><%= d.travel_costs.find_by(user_id: params[:user_id]).remark %></th>
+          <% else %>
+            <th>-</th>
+          <% end %>
+        <% else %>
+          <th>-</th>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+
+</div>

@@ -45,11 +45,11 @@ class TravelCostsController < ApplicationController
     travel_cost = TravelCost.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if travel_cost.new_record?
       travel_cost.commute_type = "電車・バス（定期使用）"
-      travel_cost.travel_cost = 0
+      travel_cost.travel_cost = current_user.commute.pass_fee
       travel_cost.remark = current_user.commute.pass_route
       travel_cost.save
     else
-      travel_cost.update(commute_type: "電車・バス（定期使用）", travel_cost: 0, remark: current_user.commute.pass_route)
+      travel_cost.update(commute_type: "電車・バス（定期使用）", travel_cost: current_user.commute.pass_fee, remark: current_user.commute.pass_route)
     end
     redirect_to new_timecard_path, notice: "本日の通勤設定をしました：電車・バス（定期使用）"
   end
@@ -93,12 +93,32 @@ class TravelCostsController < ApplicationController
   def create_other
     travel_cost = TravelCost.find_or_initialize_by(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
     if travel_cost.new_record?
+      if params[:travel_cost][:travel_cost].blank?
+        params[:travel_cost][:travel_cost] = 0
+      end
       travel_cost = TravelCost.new(travel_cost_params)
       travel_cost.save
     else
+      if params[:travel_cost][:travel_cost].blank?
+        params[:travel_cost][:travel_cost] = 0
+      end
       travel_cost.update(travel_cost_params)
     end
     redirect_to new_timecard_path, notice: "本日の通勤設定をしました：その他"
+  end
+
+  def index
+    @year_month = YearMonth.find(params[:year_month_id])
+    @days = Day.where(year_month_id: params[:year_month_id])
+  end
+
+  def to_index
+    year_month = YearMonth.find_by(year: params[:year_month][:year], month: params[:year_month][:month])
+    if year_month
+      redirect_to "/travel_cost/index/#{params[:user_id]}/#{year_month.id}"
+    else
+      redirect_to "/travel_cost/index/#{params[:user_id]}/#{params[:year_month_id]}"
+    end
   end
 
   private

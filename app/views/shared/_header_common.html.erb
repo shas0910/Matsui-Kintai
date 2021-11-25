@@ -7,35 +7,38 @@
     <div class="header-right">
       <% if current_user.user_type == "一般" %>
         <%= link_to new_timecard_path do %>
-          <i class="far fa-clock"></i>
+          <i class="fas fa-home"></i>
         <% end %>
         <%= link_to "/year_months/#{Day.find_by(date: Date.today).year_month_id}" do %>
           <i class="far fa-calendar-alt"></i>
         <% end %>
         <%= link_to requests_path do %>
           <i class="far fa-list-alt"></i>
+        <% end %>
+        <%= link_to "/travel_cost/index/#{current_user.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
+          <i class="fas fa-yen-sign"></i>
         <% end %>
         <%= link_to setting_path do %>
           <i class="fas fa-cog"></i>
         <% end %>
       <% elsif current_user.user_type == "上長" %>
         <%= link_to new_timecard_path do %>
-          <i class="far fa-clock"></i>
+          <i class="fas fa-home"></i>
         <% end %>
         <%= link_to "/year_months/#{Day.find_by(date: Date.today).year_month_id}" do %>
           <i class="far fa-calendar-alt"></i>
         <% end %>
-        <%= link_to requests_path do %>
-          <i class="far fa-list-alt"></i>
+        <%= link_to "/travel_cost/index/#{current_user.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
+          <i class="fas fa-yen-sign"></i>
         <% end %>
         <%= link_to timecards_path do %>
-          <i class="fas fa-user-clock"></i>
+          <i class="fas fa-user-friends"></i>
         <% end %>
         <%= link_to permissions_path, data: { turbolinks: false } do %>
           <i class="far fa-check-square"></i>
         <% end %>
-        <%= link_to "#" do %>
-          <i class="fas fa-chart-bar"></i>
+        <%# <%= link_to "#" do %>
+          <%# <i class="fas fa-chart-bar"></i>
         <% end %>
         <%= link_to setting_path do %>
           <i class="fas fa-cog"></i>
@@ -45,13 +48,13 @@
           <i class="fas fa-home"></i>
         <% end %>
         <%= link_to timecards_path do %>
-          <i class="fas fa-user-clock"></i>
+          <i class="fas fa-user-friends"></i>
         <% end %>
         <%= link_to permissions_path, data: { turbolinks: false } do %>
           <i class="far fa-check-square"></i>
         <% end %>
-        <%= link_to "#" do %>
-          <i class="fas fa-chart-bar"></i>
+        <%# <%= link_to "#" do %>
+          <%# <i class="fas fa-chart-bar"></i>
         <% end %>
         <%= link_to setting_path do %>
           <i class="fas fa-cog"></i>

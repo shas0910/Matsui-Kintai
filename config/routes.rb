@@ -79,4 +79,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'travel_cost/index/:user_id/:year_month_id', to: 'travel_costs#index'
+  get 'travel_cost/index/:user_id/:year_month_id/to_index', to: 'travel_costs#to_index'
+
 end

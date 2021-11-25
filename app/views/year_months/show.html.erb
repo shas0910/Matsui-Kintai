@@ -197,8 +197,13 @@
 
   <table class="day-data">
     <thead>
-      <th>打刻申請</th>
-      <th>日程申請</th>
+      <% if current_user.user_type == "上長" %>
+        <th>打刻編集</th>
+        <th>日程編集</th>
+      <% else %>
+        <th>打刻申請</th>
+        <th>日程申請</th>
+      <% end %>
       <th>日付</th>
       <th>種別</th>
       <th>日程</th>
@@ -311,13 +316,25 @@
       <% end %>
 
         <th class="hover">
-          <%= link_to new_day_pending_timecard_path(d.id) do %>
-            <i class="far fa-clock"></i>
+          <% if current_user.user_type == "上長" %>
+            <%= link_to "/user/#{current_user.id}/day/#{d.id}/edit_timecard" do %>
+              <i class="far fa-clock"></i>
+            <% end %>
+          <% else %>
+            <%= link_to new_day_pending_timecard_path(d.id) do %>
+              <i class="far fa-clock"></i>
+            <% end %>
           <% end %>
         </th>
         <th class="hover">
-          <%= link_to new_day_pending_schedule_path(d.id) do %>
-            <i class="far fa-calendar-alt"></i>
+          <% if current_user.user_type == "上長" %>
+            <%= link_to "/user/#{current_user.id}/day/#{d.id}/edit_schedule" do %>
+              <i class="far fa-calendar-alt"></i>
+            <% end %>
+          <% else %>
+            <%= link_to new_day_pending_schedule_path(d.id) do %>
+              <i class="far fa-calendar-alt"></i>
+            <% end %>
           <% end %>
         </th>
         <th><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</th>

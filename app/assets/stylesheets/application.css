@@ -109,7 +109,7 @@ div.field {
   color: purple;
 }
 
-.fa-user-clock {
+.fa-user-friends {
   color: orange;
 }
 
@@ -139,6 +139,10 @@ div.field {
 
 .fa-hand-paper {
   color: blue;
+}
+
+.fa-yen-sign {
+  color: rgb(83, 128, 0);
 }
 
 /* === タイムカードページ === */
