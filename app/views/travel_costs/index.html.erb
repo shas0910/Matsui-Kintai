@@ -5,7 +5,7 @@
 
 <div class="wrapper travel-cost-index">
 
-  <h2><i class="fas fa-yen-sign"></i> <%= User.find(params[:user_id]).full_name %>さんの交通費</h2>
+  <h2><i class="fas fa-yen-sign"></i> <%= User.find(params[:user_id]).full_name %>さんの通勤費</h2>
   <%= form_with model: @year_month, url: "/travel_cost/index/#{params[:user_id]}/#{params[:year_month_id]}/to_index", method: :get do |form| %>
     <div>
       <span class="timecard-current"><%= @year_month.first_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.first_date.wday] %>) 〜 <%= @year_month.last_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.last_date.wday] %>)</span>
@@ -19,7 +19,7 @@
 
 
 
-  <h3>■当月分交通費合計</h3>
+  <h3>■当月分通勤費合計</h3>
   
   <% travel_cost_total = 0 %>
   <% pass_fee = 0 %>
@@ -39,7 +39,7 @@
   <h3><%= travel_cost_total.to_s(:delimited) %> 円</h3>
 
 
-  <h3>■日別交通費データ</h3>
+  <h3>■日別通勤費データ</h3>
 
   <table>
     <thead>
@@ -77,7 +77,7 @@
         </th>
         <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
           <th class="hover">
-            <%= link_to travel_cost_path(d.travel_costs.find_by(user_id: params[:user_id]).id), method: :delete, data: {confirm: "#{d.date.strftime("%m/%d")} の交通費を削除しますか？"} do %>
+            <%= link_to travel_cost_path(d.travel_costs.find_by(user_id: params[:user_id]).id), method: :delete, data: {confirm: "#{d.date.strftime("%m/%d")} の通勤費を削除しますか？"} do %>
               <i class="fas fa-trash-alt"></i>
             <% end %>
           </th>

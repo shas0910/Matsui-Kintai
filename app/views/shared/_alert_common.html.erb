@@ -130,28 +130,28 @@
     <% end %>
   </div>
   
-  <%# 交通費エラー（当日） %>
+  <%# 通勤費エラー（当日） %>
   <div>
     <% if Day.find_by(date: Date.today) && Day.find_by(date: Date.today).travel_costs.find_by(user_id: current_user.id).nil? %>
-      <div><span><i class="fas fa-exclamation-triangle"></i>本日分の交通費が未登録です</span></div>
+      <div><span><i class="fas fa-exclamation-triangle"></i>本日分の通勤費が未登録です</span></div>
     <% end %>
   </div>
 
-  <%# 交通費エラー %>
+  <%# 通勤費エラー %>
   <div>
     <% days = @days.where(date: current_user.hire_date..) %>
     <% days.each do |d| %>
       <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.present? %>
         <% unless d.travel_costs.find_by(user_id: current_user.id) %>
           <%= link_to "/travel_cost/index/#{current_user.id}/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります</span></div>
           <% end %>
           <% break %>
         <% end %>
       <% else %>
         <% if d.travel_costs.find_by(user_id: current_user.id) %>
           <%= link_to "/travel_cost/index/#{current_user.id}/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります</span></div>
           <% end %>
           <% break %>
         <% end %>
@@ -285,7 +285,7 @@
     <% end %>
   </div>
 
-  <%# 交通費エラー（メンバー） %>
+  <%# 通勤費エラー（メンバー） %>
   <div>
     <% isBreak = false %>
     <% @members.each do |m| %>
@@ -294,7 +294,7 @@
         <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
           <% unless d.travel_costs.find_by(user_id: m.id) %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります（メンバー）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
@@ -302,7 +302,7 @@
         <% else %>
           <% if d.travel_costs.find_by(user_id: m.id) %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります（メンバー）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
@@ -410,28 +410,28 @@
     <% end %>
   </div>
 
-  <%# 交通費エラー（当日）（個人） %>
+  <%# 通勤費エラー（当日）（個人） %>
   <div>
     <% if Day.find_by(date: Date.today) && Day.find_by(date: Date.today).travel_costs.find_by(user_id: current_user.id).nil? %>
-      <div><span><i class="fas fa-exclamation-triangle"></i>本日分の交通費が未登録です（個人）</span></div>
+      <div><span><i class="fas fa-exclamation-triangle"></i>本日分の通勤費が未登録です（個人）</span></div>
     <% end %>
   </div>
 
-  <%# 交通費エラー（個人） %>
+  <%# 通勤費エラー（個人） %>
   <div>
     <% days = @days.where(date: current_user.hire_date..) %>
     <% days.each do |d| %>
       <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.present? %>
         <% unless d.travel_costs.find_by(user_id: current_user.id) %>
           <%= link_to "/travel_cost/index/#{current_user.id}/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります（個人）</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
       <% else %>
         <% if d.travel_costs.find_by(user_id: current_user.id) %>
           <%= link_to "/travel_cost/index/#{current_user.id}/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります（個人）</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
@@ -563,7 +563,7 @@
     <% end %>
   </div>
 
-  <%# 交通費エラー（全社員） %>
+  <%# 通勤費エラー（全社員） %>
   <div>
     <% isBreak = false %>
     <% @users.each do |m| %>
@@ -572,7 +572,7 @@
         <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
           <% unless d.travel_costs.find_by(user_id: m.id) %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります（全社員）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
@@ -580,7 +580,7 @@
         <% else %>
           <% if d.travel_costs.find_by(user_id: m.id) %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>交通費エラーがあります（全社員）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>通勤費エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>

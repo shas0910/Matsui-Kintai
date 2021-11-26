@@ -4,10 +4,10 @@
 <%= render "shared/header_common" %>
 
 <div class="wrapper">
-  <h2><i class="fas fa-pencil-alt"></i> 交通費編集</h2>
+  <h2><i class="fas fa-pencil-alt"></i> 通勤費編集</h2>
   <h3><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</h3>
 
-  <h3>■現在の交通費</h3>
+  <h3>■現在の通勤費</h3>
   <table>
     <thead>
       <th>通勤手段</th>
@@ -35,7 +35,7 @@
     </tr>
   </table>
 
-  <h3>■交通費編集</h3>
+  <h3>■通勤費編集</h3>
   <div class="travel-cost-edit-btns">
     <div class="travel-cost-inner">
       <% if @user.commute && @user.commute.car_type.present? %>
