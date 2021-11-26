@@ -478,28 +478,28 @@
         <% end %>
         <%# 休暇日程をとっている日に打刻 %>
         <% if d.schedules.find_by(user_id: m.id) && d.schedules.find_by(user_id: m.id).schedule_type.present? %>
-          <% if d.timecards.find_by(user_id: m.id).start.present? %>
+          <% if d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).start.present? %>
             <%= link_to timecards_path do %>
               <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
           <% end %>
-          <% if d.timecards.find_by(user_id: m.id).finish.present? %>
+          <% if d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).finish.present? %>
             <%= link_to timecards_path do %>
               <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
           <% end %>
-          <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+          <% if d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).break_start.present? %>
             <%= link_to timecards_path do %>
               <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
           <% end %>
-          <% if d.timecards.find_by(user_id: m.id).break_start.present? %>
+          <% if d.timecards.find_by(user_id: m.id).start && d.timecards.find_by(user_id: m.id).break_start.present? %>
             <%= link_to timecards_path do %>
               <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
