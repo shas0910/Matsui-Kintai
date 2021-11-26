@@ -117,8 +117,10 @@
     <% if late && late >= 60 %>
       <% late_total += late %>
     <% end %>
-    <% if early && late >= 60 %>
-      <% early_total += early %>
+    <% if early %>
+      <% if late == nil || late >= 60 %>
+        <% early_total += early %>
+      <% end %>
     <% end %>
     <% if total_break && total_break >= 60 %>
       <% total_break_total += total_break %>
