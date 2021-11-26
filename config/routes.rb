@@ -67,7 +67,7 @@ Rails.application.routes.draw do
   get 'commute/:user_id', to: 'commutes#edit'
   get 'commute/:user_id/update', to: 'commutes#update'
 
-  resources :travel_costs, only: [:edit, :update] do
+  resources :travel_costs, only: [:destroy] do
     collection do
       post 'create_car'
       post 'create_train'
@@ -82,4 +82,14 @@ Rails.application.routes.draw do
   get 'travel_cost/index/:user_id/:year_month_id', to: 'travel_costs#index'
   get 'travel_cost/index/:user_id/:year_month_id/to_index', to: 'travel_costs#to_index'
 
+  get 'travel_cost/edit/:user_id/:day_id', to: 'travel_costs#edit'
+
+  get 'travel_cost/update_car/:user_id/:day_id', to: 'travel_costs#update_car'
+  get 'travel_cost/update_train/:user_id/:day_id', to: 'travel_costs#update_train'
+  get 'travel_cost/update_pass/:user_id/:day_id', to: 'travel_costs#update_pass'
+  get 'travel_cost/update_walk/:user_id/:day_id', to: 'travel_costs#update_walk'
+  get 'travel_cost/update_trip/:user_id/:day_id', to: 'travel_costs#update_trip'
+  get 'travel_cost/update_remote/:user_id/:day_id', to: 'travel_costs#update_remote'
+  get 'travel_cost/update_other/:user_id/:day_id', to: 'travel_costs#update_other'
+  
 end

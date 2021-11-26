@@ -1,0 +1,119 @@
+<% day = ["日","月","火","水","木","金","土"] %>
+
+<%= render "shared/flash" %>
+<%= render "shared/header_common" %>
+
+<div class="wrapper">
+  <h2><i class="fas fa-pencil-alt"></i> 交通費編集</h2>
+  <h3><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</h3>
+
+  <h3>■現在の交通費</h3>
+  <table>
+    <thead>
+      <th>通勤手段</th>
+      <th>通勤費用</th>
+      <th>経路・備考</th>
+    </thead>
+    <tr>
+      <% if @travel_cost %>
+        <th><%= @travel_cost.commute_type %></th>
+        <% if @travel_cost.commute_type == "電車・バス（定期使用）" %>
+          <th>( <%= @travel_cost.travel_cost.to_s(:delimited) %> )</th>
+        <% else %>
+          <th><%= @travel_cost.travel_cost.to_s(:delimited) %></th>
+        <% end %>
+        <% if @travel_cost.remark.present? %>
+          <th><%= @travel_cost.remark %></th>
+        <% else %>
+          <th>-</th>
+        <% end %>
+      <% else %>
+        <th>-</th>
+        <th>-</th>
+        <th>-</th>
+      <% end %>
+    </tr>
+  </table>
+
+  <h3>■交通費編集</h3>
+  <div class="travel-cost-edit-btns">
+    <div class="travel-cost-inner">
+      <% if @user.commute && @user.commute.car_type.present? %>
+        <section class="balloon-hover">
+          <%= link_to "/travel_cost/update_car/#{params[:user_id]}/#{params[:day_id]}", method: :get, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-car-side"></i></span>
+          <% end %>
+          <p class="balloon">車・バイク</p>
+        </section>
+      <% end %>
+      <% if @user.commute && @user.commute.train_route.present? %>
+        <section class="balloon-hover">
+          <%= link_to "/travel_cost/update_train/#{params[:user_id]}/#{params[:day_id]}", method: :get, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-subway"></i></span>
+          <% end %>
+          <p class="balloon">電車・バス（往復）</p>
+        </section>
+      <% end %>
+      <% if @user.commute && @user.commute.pass_route.present? %>
+        <section class="balloon-hover">
+          <%= link_to "/travel_cost/update_pass/#{params[:user_id]}/#{params[:day_id]}", method: :get, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-ticket-alt"></i></span>
+          <% end %>
+          <p class="balloon">電車・バス（定期使用）</p>
+        </section>
+      <% end %>
+      <% if @user.commute && @user.commute.walk %>
+        <section class="balloon-hover">
+          <%= link_to "/travel_cost/update_walk/#{params[:user_id]}/#{params[:day_id]}", method: :get, class: "btn btn-border travel-cost-btn" do %>
+            <span><i class="fas fa-walking"></i></span>
+          <% end %>
+          <p class="balloon">徒歩</p>
+        </section>
+      <% end %>
+      <section class="balloon-hover">
+        <%= link_to "/travel_cost/update_trip/#{params[:user_id]}/#{params[:day_id]}", method: :get, class: "btn btn-border travel-cost-btn" do %>
+          <span><i class="fas fa-briefcase"></i></span>
+        <% end %>
+        <p class="balloon">出張</p>
+      </section>
+      <section class="balloon-hover">
+        <%= link_to "/travel_cost/update_remote/#{params[:user_id]}/#{params[:day_id]}", method: :get, class: "btn btn-border travel-cost-btn" do %>
+          <span><i class="fas fa-home"></i></span>
+        <% end %>
+        <p class="balloon">リモートワーク</p>
+      </section>
+      <section class="hidden balloon-hover">
+        <label class="btn btn-border travel-cost-btn hidden-form-btn acd-label" for="acd-check1">
+          <span><i class="fas fa-question"></i></span>
+        </label>
+        <p class="balloon">その他</p>
+      </section>
+    </div>
+    <input type="checkbox" class="acd-check" id="acd-check1"/>
+    <div class="acd-content">
+      <% if @travel_cost %>
+        <% tc = @travel_cost %>
+      <% else %>
+        <% tc = TravelCost.new %>
+      <% end %>
+      <%= form_with model: tc, url: "/travel_cost/update_other/#{params[:user_id]}/#{params[:day_id]}", method: :get do |f| %>
+        <span><i class="fas fa-question"></i> その他通勤手段</span>
+        <br>
+        <span>※簡潔に入力してください</span>
+        <br>
+        <%= f.label :commute_type, "手段：" %>
+        <%= f.text_field :commute_type %><span>　</span>
+        <br>
+        <%= f.label :remark, "経路：" %>
+        <%= f.text_field :remark %><span>　</span>
+        <br>
+        <%= f.label :travel_cost, "費用：" %>
+        <%= f.number_field :travel_cost %><span>円</span>
+        <br>
+        <%= f.submit "登録" %>
+      <% end %>
+    </div>
+  </div>
+
+
+</div>

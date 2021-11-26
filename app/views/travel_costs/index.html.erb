@@ -36,7 +36,7 @@
 
   <% travel_cost_total += pass_fee %>
 
-  <h3><%= travel_cost_total %>円</h3>
+  <h3><%= travel_cost_total.to_s(:delimited) %> 円</h3>
 
 
   <h3>■日別交通費データ</h3>
@@ -70,7 +70,7 @@
         <tr class="hover">
       <% end %>
         <th class="hover">
-          <%= link_to "#" do %>
+          <%= link_to "/travel_cost/edit/#{params[:user_id]}/#{d.id}" do %>
             <i class="fas fa-pencil-alt"></i>
           <% end %>
         </th>
@@ -92,9 +92,9 @@
         <% end %>
         <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
           <% if d.travel_costs.find_by(user_id: params[:user_id]).commute_type == "電車・バス（定期使用）" %>
-            <th>( <%= d.travel_costs.find_by(user_id: params[:user_id]).travel_cost %> )</th>
+            <th>( <%= d.travel_costs.find_by(user_id: params[:user_id]).travel_cost.to_s(:delimited) %> )</th>
           <% else %>
-            <th><%= d.travel_costs.find_by(user_id: params[:user_id]).travel_cost %></th>
+            <th><%= d.travel_costs.find_by(user_id: params[:user_id]).travel_cost.to_s(:delimited) %></th>
           <% end %>
         <% else %>
           <th>-</th>
