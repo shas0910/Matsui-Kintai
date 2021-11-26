@@ -224,15 +224,21 @@ class TravelCostsController < ApplicationController
       if params[:travel_cost][:travel_cost].blank?
         params[:travel_cost][:travel_cost] = 0
       end
-      travel_cost = TravelCost.new(travel_cost_params)
+      travel_cost = TravelCost.new(travel_cost_update_params)
       travel_cost.save
     else
       if params[:travel_cost][:travel_cost].blank?
         params[:travel_cost][:travel_cost] = 0
       end
-      travel_cost.update(travel_cost_params)
+      travel_cost.update(travel_cost_update_params)
     end
     redirect_to "/travel_cost/index/#{params[:user_id]}/#{Day.find(params[:day_id]).year_month_id}", notice: "通勤設定をしました：その他"
+  end
+
+  def destroy
+    travel_cost = TravelCost.find(params[:id])
+    travel_cost.destroy
+    redirect_to "/travel_cost/index/#{travel_cost.user_id}/#{Day.find(travel_cost.day_id).year_month_id}", notice: "通勤設定を削除しました"
   end
 
   private
@@ -241,4 +247,7 @@ class TravelCostsController < ApplicationController
     params.require(:travel_cost).permit(:commute_type, :travel_cost, :remark).merge(user_id: current_user.id, day_id: Day.find_by(date: Date.today).id)
   end
 
+  def travel_cost_update_params
+    params.require(:travel_cost).permit(:commute_type, :travel_cost, :remark).merge(user_id: params[:user_id], day_id: params[:day_id])
+  end
 end

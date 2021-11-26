@@ -3,7 +3,7 @@
 <%= render "shared/flash" %>
 <%= render "shared/header_common" %>
 
-<div class="wrapper">
+<div class="wrapper travel-cost-index">
 
   <h2><i class="fas fa-yen-sign"></i> <%= User.find(params[:user_id]).full_name %>さんの交通費</h2>
   <%= form_with model: @year_month, url: "/travel_cost/index/#{params[:user_id]}/#{params[:year_month_id]}/to_index", method: :get do |form| %>
@@ -44,6 +44,7 @@
   <table>
     <thead>
       <th>編集</th>
+      <th>削除</th>
       <th>日付</th>
       <th>種別</th>
       <th>日程</th>
@@ -74,6 +75,16 @@
             <i class="fas fa-pencil-alt"></i>
           <% end %>
         </th>
+        <% if d.travel_costs.find_by(user_id: params[:user_id]) %>
+          <th class="hover">
+            <%= link_to travel_cost_path(d.travel_costs.find_by(user_id: params[:user_id]).id), method: :delete, data: {confirm: "#{d.date.strftime("%m/%d")} の交通費を削除しますか？"} do %>
+              <i class="fas fa-trash-alt"></i>
+            <% end %>
+          </th>
+        <% else %>
+          <th>-</th>
+        <% end %>
+        
         <th><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</th>
         <th><%= d.day_type %></th>
         <% if d.schedules.find_by(user_id: params[:user_id]) && d.schedules.find_by(user_id: params[:user_id]).schedule_type.present? %>
