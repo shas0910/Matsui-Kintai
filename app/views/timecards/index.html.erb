@@ -87,8 +87,23 @@
             <% end %>
           <% end %>
         <% end %>
+
         <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
           <i class="fas fa-yen-sign"></i>
+          <% days_members = @days.where(date: m.hire_date..) %>
+          <% days_members.each do |d| %>
+            <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+              <% unless d.travel_costs.find_by(user_id: m.id) %>
+                <i class="fas fa-exclamation-triangle"></i>
+                <% break %>
+              <% end %>
+            <% else %>
+              <% if d.travel_costs.find_by(user_id: m.id) %>
+                <i class="fas fa-exclamation-triangle"></i>
+                <% break %>
+              <% end %>
+            <% end %>
+          <% end %>
         <% end %>
       </div>
     <% end %>
@@ -174,6 +189,20 @@
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
+            <% days_members = @days.where(date: m.hire_date..) %>
+            <% days_members.each do |d| %>
+              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+                <% unless d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% else %>
+                <% if d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% end %>
+            <% end %>
           <% end %>
         </div>
       <% end %>
@@ -259,6 +288,20 @@
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
+            <% days_members = @days.where(date: m.hire_date..) %>
+            <% days_members.each do |d| %>
+              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+                <% unless d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% else %>
+                <% if d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% end %>
+            <% end %>
           <% end %>
         </div>
       <% end %>
@@ -344,6 +387,20 @@
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
+            <% days_members = @days.where(date: m.hire_date..) %>
+            <% days_members.each do |d| %>
+              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+                <% unless d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% else %>
+                <% if d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% end %>
+            <% end %>
           <% end %>
         </div>
       <% end %>
@@ -429,6 +486,20 @@
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
+            <% days_members = @days.where(date: m.hire_date..) %>
+            <% days_members.each do |d| %>
+              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
+                <% unless d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% else %>
+                <% if d.travel_costs.find_by(user_id: m.id) %>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <% break %>
+                <% end %>
+              <% end %>
+            <% end %>
           <% end %>
         </div>
       <% end %>
