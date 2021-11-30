@@ -48,12 +48,20 @@
   <% if @timecard %>
     <%= form_with model: @timecard, url: "/user/#{params[:user_id]}/day/#{params[:day_id]}/update_timecard", method: :get do |form| %>
       <div>
-        <%= form.label :timecard_type, "打刻種別：" %>
-        <%= form.select :timecard_type, ["出勤", "退勤", "休憩開始", "休憩終了"], include_blank: "選択して下さい" %>
+        <%= form.label :start, "出勤：" %>
+        <%= form.time_field :start %>
       </div>
       <div>
-        <%= form.label :timecard_time, "打刻時間：" %>
-        <%= form.time_field :timecard_time %>
+        <%= form.label :finish, "退勤：" %>
+        <%= form.time_field :finish %>
+      </div>
+      <div>
+        <%= form.label :break_start, "休憩開始：" %>
+        <%= form.time_field :break_start %>
+      </div>
+      <div>
+        <%= form.label :break_finish, "休憩終了：" %>
+        <%= form.time_field :break_finish %>
       </div>
       <div>
         <%= form.submit "保存" %>
@@ -62,12 +70,20 @@
   <% else %>
     <%= form_with model: @timecard_new, url: "/user/#{params[:user_id]}/day/#{params[:day_id]}/update_timecard", method: :get do |form| %>
       <div>
-        <%= form.label :timecard_type, "打刻種別：" %>
-        <%= form.select :timecard_type, ["出勤", "退勤", "休憩開始", "休憩終了"], include_blank: "選択して下さい" %>
+        <%= form.label :start, "出勤：" %>
+        <%= form.time_field :start %>
       </div>
       <div>
-        <%= form.label :timecard_time, "打刻時間：" %>
-        <%= form.time_field :timecard_time %>
+        <%= form.label :finish, "退勤：" %>
+        <%= form.time_field :finish %>
+      </div>
+      <div>
+        <%= form.label :break_start, "休憩開始：" %>
+        <%= form.time_field :break_start %>
+      </div>
+      <div>
+        <%= form.label :break_finish, "休憩終了：" %>
+        <%= form.time_field :break_finish %>
       </div>
       <div>
         <%= form.submit "保存" %>
