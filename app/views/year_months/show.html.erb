@@ -146,28 +146,28 @@
     </thead>
     <tr>
       <th>平日</th>
-      <th><%= (shotei_total_weekday / 3600).floor %>.<%= (shotei_total_weekday.modulo(3600) / 60).floor %></th>
-      <th><%= (shoteigai_total_weekday / 3600).floor %>.<%= (shoteigai_total_weekday.modulo(3600) / 60).floor %></th>
-      <th><%= (overtime_total_weekday / 3600).floor %>.<%= (overtime_total_weekday.modulo(3600) / 60).floor %></th>
-      <th><%= (overtime_midnight_total_weekday / 3600).floor %>.<%= (overtime_midnight_total_weekday.modulo(3600) / 60).floor %></th>
-      <th rowspan="3"><%= (late_total / 3600).floor %>.<%= (late_total.modulo(3600) / 60).floor %></th>
-      <th rowspan="3"><%= (early_total / 3600).floor %>.<%= (early_total.modulo(3600) / 60).floor %></th>
-      <th rowspan="3"><%= (total_break_total / 3600).floor %>.<%= (total_break_total.modulo(3600) / 60).floor %></th>
-      <th rowspan="3"><%= (total_work_total / 3600).floor %>.<%= (total_work_total.modulo(3600) / 60).floor %></th>
+      <th><%= (shotei_total_weekday / 3600).floor %>.<%= sprintf("%02d", (shotei_total_weekday.modulo(3600) / 60).floor) %></th>
+      <th><%= (shoteigai_total_weekday / 3600).floor %>.<%= sprintf("%02d", (shoteigai_total_weekday.modulo(3600) / 60).floor) %></th>
+      <th><%= (overtime_total_weekday / 3600).floor %>.<%= sprintf("%02d", (overtime_total_weekday.modulo(3600) / 60).floor) %></th>
+      <th><%= (overtime_midnight_total_weekday / 3600).floor %>.<%= sprintf("%02d", (overtime_midnight_total_weekday.modulo(3600) / 60).floor) %></th>
+      <th rowspan="3"><%= (late_total / 3600).floor %>.<%= sprintf("%02d", (late_total.modulo(3600) / 60).floor) %></th>
+      <th rowspan="3"><%= (early_total / 3600).floor %>.<%= sprintf("%02d", (early_total.modulo(3600) / 60).floor) %></th>
+      <th rowspan="3"><%= (total_break_total / 3600).floor %>.<%= sprintf("%02d", (total_break_total.modulo(3600) / 60).floor) %></th>
+      <th rowspan="3"><%= (total_work_total / 3600).floor %>.<%= sprintf("%02d", (total_work_total.modulo(3600) / 60).floor) %></th>
     </tr>
     <tr>
       <th>法定休日</th>
-      <th><%= (shotei_total_houtei / 3600).floor %>.<%= (shotei_total_houtei.modulo(3600) / 60).floor %></th>
-      <th><%= (shoteigai_total_houtei / 3600).floor %>.<%= (shoteigai_total_houtei.modulo(3600) / 60).floor %></th>
-      <th><%= (overtime_total_houtei / 3600).floor %>.<%= (overtime_total_houtei.modulo(3600) / 60).floor %></th>
-      <th><%= (overtime_midnight_total_houtei / 3600).floor %>.<%= (overtime_midnight_total_houtei.modulo(3600) / 60).floor %></th>
+      <th><%= (shotei_total_houtei / 3600).floor %>.<%= sprintf("%02d", (shotei_total_houtei.modulo(3600) / 60).floor) %></th>
+      <th><%= (shoteigai_total_houtei / 3600).floor %>.<%= sprintf("%02d", (shoteigai_total_houtei.modulo(3600) / 60).floor) %></th>
+      <th><%= (overtime_total_houtei / 3600).floor %>.<%= sprintf("%02d", (overtime_total_houtei.modulo(3600) / 60).floor) %></th>
+      <th><%= (overtime_midnight_total_houtei / 3600).floor %>.<%= sprintf("%02d", (overtime_midnight_total_houtei.modulo(3600) / 60).floor) %></th>
     </tr>
     <tr>
       <th>法定外休日</th>
-      <th><%= (shotei_total_houteigai / 3600).floor %>.<%= (shotei_total_houteigai.modulo(3600) / 60).floor %></th>
-      <th><%= (shoteigai_total_houteigai / 3600).floor %>.<%= (shoteigai_total_houteigai.modulo(3600) / 60).floor %></th>
-      <th><%= (overtime_total_houteigai / 3600).floor %>.<%= (overtime_total_houteigai.modulo(3600) / 60).floor %></th>
-      <th><%= (overtime_midnight_total_houteigai / 3600).floor %>.<%= (overtime_midnight_total_houteigai.modulo(3600) / 60).floor %></th>
+      <th><%= (shotei_total_houteigai / 3600).floor %>.<%= sprintf("%02d", (shotei_total_houteigai.modulo(3600) / 60).floor) %></th>
+      <th><%= (shoteigai_total_houteigai / 3600).floor %>.<%= sprintf("%02d", (shoteigai_total_houteigai.modulo(3600) / 60).floor) %></th>
+      <th><%= (overtime_total_houteigai / 3600).floor %>.<%= sprintf("%02d", (overtime_total_houteigai.modulo(3600) / 60).floor) %></th>
+      <th><%= (overtime_midnight_total_houteigai / 3600).floor %>.<%= sprintf("%02d", (overtime_midnight_total_houteigai.modulo(3600) / 60).floor) %></th>
     </tr>
   </table>
 
@@ -261,7 +261,7 @@
       <% end %>
 
       <% error = false %>
-      <% if d.date < Date.today() %>
+      <% if User.find(current_user.id).hire_date <= d.date && d.date < Date.today() %>
         <% if d.day_type == "平日" %>
           <% if d.schedules.find_by(user_id: current_user.id).nil? || d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.blank? %>
             <% unless d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
@@ -308,11 +308,18 @@
         <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_finish.present? && d.timecards.find_by(user_id: current_user.id).break_start.blank? %>
           <% error = true %>
         <% end %>
-        <% if error %>
-          <tr class="error">
-        <% else %>
-          <tr class="hover">
+      <% elsif User.find(current_user.id).hire_date > d.date %>
+        <% if d.timecards.find_by(user_id: current_user.id) %>
+          <% if d.timecards.find_by(user_id: current_user.id).start.present? || d.timecards.find_by(user_id: current_user.id).finish.present? || d.timecards.find_by(user_id: current_user.id).break_start.present? || d.timecards.find_by(user_id: current_user.id).break_finish.present? %>
+            <% error = true %>
+          <% end %>
         <% end %>
+        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+          <% error = true %>
+        <% end %>
+      <% end %>
+      <% if error %>
+        <tr class="error">
       <% else %>
         <tr class="hover">
       <% end %>
@@ -378,42 +385,42 @@
           <th>--:--</th>
         <% end %>
         <% if shotei && shotei >= 60 %>
-          <th><%= Time.at(shotei.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(shotei.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if shoteigai && shoteigai >= 60 %>
-          <th><%= Time.at(shoteigai.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(shoteigai.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if overtime && overtime >= 60 %>
-          <th><%= Time.at(overtime.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(overtime.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if overtime_midnight && overtime_midnight >= 60 %>
-          <th><%= Time.at(overtime_midnight.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(overtime_midnight.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if late && late >= 60 %>
-          <th><%= Time.at(late.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(late.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if early && early >= 60 %>
-          <th><%= Time.at(early.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(early.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if total_break && total_break >= 60 %>
-          <th><%= Time.at(total_break.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(total_break.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
         <% if total_work && total_work >= 60 %>
-          <th><%= Time.at(total_work.to_i).utc.strftime('%-H.%-M') %></th>
+          <th><%= Time.at(total_work.to_i).utc.strftime('%-H.%M') %></th>
         <% else %>
           <th>-</th>
         <% end %>
