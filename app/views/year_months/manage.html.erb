@@ -395,6 +395,7 @@
 
       <% error = false %>
       <% if User.find(params[:user_id]).hire_date <= d.date && d.date < Date.today() %>
+        <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
         <% if d.day_type == "平日" %>
           <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
             <% unless timecard && timecard.start && timecard.finish %>
@@ -402,9 +403,11 @@
             <% end %>
           <% end %>
         <% end %>
+        <%# 休日に休暇日程をとっている %>
         <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
           <% error = true %>
         <% end %>
+        <%# 半休以外の休暇取得日に打刻している %>
         <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
           <% if timecard && timecard.start.present? %>
             <% error = true %>
@@ -419,6 +422,7 @@
             <% error = true %>
           <% end %>
         <% end %>
+        <%# 休暇日程をとっている日に打刻 %>
         <% if timecard && timecard.start.present? && timecard.finish.present? %>
           <% unless timecard.start < timecard.finish %>
             <% error = true %>
