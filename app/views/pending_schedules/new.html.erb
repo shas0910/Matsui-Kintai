@@ -23,7 +23,7 @@
   <%= form_with model: @pending_schedule, url: day_pending_schedules_path do |form| %>
   <div>
     <%= form.label :schedule_type, "日程：" %>
-    <%= form.select :schedule_type, ["有休", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
+    <%= form.select :schedule_type, ["有休", "有休(AM)", "有休(PM)", "代休", "特別休暇", "欠勤"], include_blank: "-" %>
   </div>
   <div>
     <%= form.label :comment_request, "申請メッセージ：" %>

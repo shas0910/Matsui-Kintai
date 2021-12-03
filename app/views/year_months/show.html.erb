@@ -37,47 +37,121 @@
   <% weekday_count = 0 %>
   <% holiday_count = 0 %>
   <% @days.each do |d| %>
+    <% timecard = d.timecards.find_by(user_id: current_user.id) %>
+    <% schedule = d.schedules.find_by(user_id: current_user.id) %>
     <% shoteigai = 0 %>
-    <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
-      <% total_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
-      <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
-        <% total_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
-        <% total_work = total_work - total_break %>
-      <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).start >= Time.parse('2000-01-01 09:01') %>
-        <% late = d.timecards.find_by(user_id: current_user.id).start - Time.parse('2000-01-01 09:00') %>
-        <% if total_work.to_i < 28800 %>
-          <% shoteigai = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 18:00') %>
-        <% else %>
-          <% shoteigai = late %>
+    <% if schedule && schedule.schedule_type.blank? || schedule.nil? %>
+        <% if timecard && timecard.start && timecard.finish %>
+          <% total_work = (timecard.finish - timecard.start) %>
+          <% if timecard.break_start && timecard.break_finish %>
+            <% total_break = timecard.break_finish - timecard.break_start %>
+            <% total_work = total_work - total_break %>
+          <% end %>
+          <% if timecard.start >= Time.parse('2000-01-01 09:01') %>
+            <% late = timecard.start - Time.parse('2000-01-01 09:00') %>
+            <% if total_work.to_i < 28800 %>
+              <% shoteigai = timecard.finish - Time.parse('2000-01-01 18:00') %>
+            <% else %>
+              <% shoteigai = late %>
+            <% end %>
+          <% else %>
+            <% shoteigai = Time.parse('2000-01-01 09:00') - timecard.start %>
+          <% end %>
+          <% if timecard.finish < Time.parse('2000-01-01 18:00') %>
+            <% early = Time.parse('2000-01-01 18:00') - timecard.finish %>
+          <% end %>
+          <% overtime = total_work - 28800 %>
+          <% if timecard.finish > Time.parse('2000-01-01 22:00') %>
+            <% overtime_midnight = timecard.finish - Time.parse('2000-01-01 22:00') %>
+            <% overtime = overtime - overtime_midnight %>
+          <% end %>
+          <% shotei = total_work %>
+          <% if overtime && overtime >= 60 %>
+            <% shotei = shotei - overtime %>
+          <% end %>
+          <% if overtime_midnight && overtime_midnight >= 60 %>
+            <% shotei = shotei - overtime_midnight %>
+          <% end %>
+          <% if shoteigai >= 60 %>
+            <% shotei = shotei - shoteigai %>
+          <% end %>
+          <% if d.day_type == "平日" %>
+            <% weekday_count += 1 %>
+          <% else %>
+            <% holiday_count += 1 %>
+          <% end %>
         <% end %>
-      <% else %>
-        <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: current_user.id).start %>
+      <% elsif schedule && schedule.schedule_type == "有休(PM)" %>
+        <% if timecard && timecard.start && timecard.finish %>
+          <% total_work = (timecard.finish - timecard.start) %>
+          <% if timecard.break_start && timecard.break_finish %>
+            <% total_break = timecard.break_finish - timecard.break_start %>
+            <% total_work = total_work - total_break %>
+          <% end %>
+          <% if timecard.start >= Time.parse('2000-01-01 09:01') %>
+            <% late = timecard.start - Time.parse('2000-01-01 09:00') %>
+          <% else %>
+            <% shoteigai = Time.parse('2000-01-01 09:00') - timecard.start %>
+          <% end %>
+          <% if timecard.finish < Time.parse('2000-01-01 12:00') %>
+            <% early = Time.parse('2000-01-01 12:00') - timecard.finish %>
+          <% end %>
+          <% overtime = total_work - 28800 %>
+          <% if timecard.finish > Time.parse('2000-01-01 12:00') %>
+            <% shoteigai += timecard.finish - Time.parse('2000-01-01 12:00') %>
+          <% end %>
+          <% shotei = total_work %>
+          <% if overtime && overtime >= 60 %>
+            <% shotei = shotei - overtime %>
+          <% end %>
+          <% if overtime_midnight && overtime_midnight >= 60 %>
+            <% shotei = shotei - overtime_midnight %>
+          <% end %>
+          <% if shoteigai >= 60 %>
+            <% shotei = shotei - shoteigai %>
+          <% end %>
+          <% if d.day_type == "平日" %>
+            <% weekday_count += 1 %>
+          <% else %>
+            <% holiday_count += 1 %>
+          <% end %>
+        <% end %>
+      <% elsif schedule && schedule.schedule_type == "有休(AM)" %>
+        <% if timecard && timecard.start && timecard.finish %>
+          <% total_work = (timecard.finish - timecard.start) %>
+          <% if timecard.break_start && timecard.break_finish %>
+            <% total_break = timecard.break_finish - timecard.break_start %>
+            <% total_work = total_work - total_break %>
+          <% end %>
+          <% if timecard.start >= Time.parse('2000-01-01 13:01') %>
+            <% late = timecard.start - Time.parse('2000-01-01 13:00') %>
+          <% else %>
+            <% shoteigai = Time.parse('2000-01-01 13:00') - timecard.start %>
+          <% end %>
+          <% if timecard.finish < Time.parse('2000-01-01 18:00') %>
+            <% early = Time.parse('2000-01-01 18:00') - timecard.finish %>
+          <% end %>
+          <% overtime = total_work - 28800 %>
+          <% if timecard.finish > Time.parse('2000-01-01 18:00') %>
+            <% shoteigai += timecard.finish - Time.parse('2000-01-01 18:00') %>
+          <% end %>
+          <% shotei = total_work %>
+          <% if overtime && overtime >= 60 %>
+            <% shotei = shotei - overtime %>
+          <% end %>
+          <% if overtime_midnight && overtime_midnight >= 60 %>
+            <% shotei = shotei - overtime_midnight %>
+          <% end %>
+          <% if shoteigai >= 60 %>
+            <% shotei = shotei - shoteigai %>
+          <% end %>
+          <% if d.day_type == "平日" %>
+            <% weekday_count += 1 %>
+          <% else %>
+            <% holiday_count += 1 %>
+          <% end %>
+        <% end %>
       <% end %>
-      <% if d.timecards.find_by(user_id: current_user.id).finish < Time.parse('2000-01-01 18:00') %>
-        <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: current_user.id).finish %>
-      <% end %>
-      <% overtime = total_work - 28800 %>
-      <% if d.timecards.find_by(user_id: current_user.id).finish > Time.parse('2000-01-01 22:00') %>
-        <% overtime_midnight = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 22:00') %>
-        <% overtime = overtime - overtime_midnight %>
-      <% end %>
-      <% shotei = total_work %>
-      <% if overtime && overtime >= 60 %>
-        <% shotei = shotei - overtime %>
-      <% end %>
-      <% if overtime_midnight && overtime_midnight >= 60 %>
-        <% shotei = shotei - overtime_midnight %>
-      <% end %>
-      <% if shoteigai >= 60 %>
-        <% shotei = shotei - shoteigai %>
-      <% end %>
-      <% if d.day_type == "平日" %>
-        <% weekday_count += 1 %>
-      <% else %>
-        <% holiday_count += 1 %>
-      <% end %>
-    <% end %>
     <% if shotei && shotei >= 60 %>
       <% if d.day_type == "平日" %>
         <% shotei_total_weekday += shotei %>
@@ -184,14 +258,14 @@
       <th>欠勤</th>
     </thead>
     <tr>
-      <th><%= weekday_count %></th>
-      <th><%= holiday_count %></th>
-      <th><%= @timecards.where(start: Time.parse('2000-01-01 09:01')..).count %></th>
-      <th><%= @timecards.where(finish: ...Time.parse('2000-01-01 18:00')).count %></th>
-      <th><%= @schedules.where(schedule_type: "有休").count %></th>
-      <th><%= @schedules.where(schedule_type: "代休").count %></th>
-      <th><%= @schedules.where(schedule_type: "特別休暇").count %></th>
-      <th><%= @schedules.where(schedule_type: "欠勤").count %></th>
+      <th><%= weekday_count.to_f %></th>
+      <th><%= holiday_count.to_f %></th>
+      <th><%= @timecards.where(start: Time.parse('2000-01-01 09:01')..).count.to_f %></th>
+      <th><%= @timecards.where(finish: ...Time.parse('2000-01-01 18:00')).count.to_f %></th>
+      <th><%= @schedules.where(schedule_type: "有休").count.to_f + (@schedules.where(schedule_type: "有休(AM)").count.to_f / 2).to_f + (@schedules.where(schedule_type: "有休(PM)").count.to_f / 2).to_f %></th>
+      <th><%= @schedules.where(schedule_type: "代休").count.to_f %></th>
+      <th><%= @schedules.where(schedule_type: "特別休暇").count.to_f %></th>
+      <th><%= @schedules.where(schedule_type: "欠勤").count.to_f %></th>
     </tr>
   </table>
 
@@ -223,98 +297,162 @@
       <th>労働合計</th>
     </thead>
     <% @days.each do |d| %>
+      <% timecard = d.timecards.find_by(user_id: current_user.id) %>
+      <% schedule = d.schedules.find_by(user_id: current_user.id) %>
       <% shoteigai = 0 %>
-      <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
-        <% total_work = (d.timecards.find_by(user_id: current_user.id).finish - d.timecards.find_by(user_id: current_user.id).start) %>
-        <% if d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_finish %>
-          <% total_break = d.timecards.find_by(user_id: current_user.id).break_finish - d.timecards.find_by(user_id: current_user.id).break_start %>
-          <% total_work = total_work - total_break %>
-        <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id).start >= Time.parse('2000-01-01 09:01') %>
-          <% late = d.timecards.find_by(user_id: current_user.id).start - Time.parse('2000-01-01 09:00') %>
-          <% if total_work.to_i < 28800 %>
-            <% shoteigai = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 18:00') %>
-          <% else %>
-            <% shoteigai = late %>
+      <% if schedule && schedule.schedule_type.blank? || schedule.nil? %>
+        <% if timecard && timecard.start && timecard.finish %>
+          <% total_work = (timecard.finish - timecard.start) %>
+          <% if timecard.break_start && timecard.break_finish %>
+            <% total_break = timecard.break_finish - timecard.break_start %>
+            <% total_work = total_work - total_break %>
           <% end %>
-        <% else %>
-          <% shoteigai = Time.parse('2000-01-01 09:00') - d.timecards.find_by(user_id: current_user.id).start %>
+          <% if timecard.start >= Time.parse('2000-01-01 09:01') %>
+            <% late = timecard.start - Time.parse('2000-01-01 09:00') %>
+            <% if total_work.to_i < 28800 %>
+              <% shoteigai = timecard.finish - Time.parse('2000-01-01 18:00') %>
+            <% else %>
+              <% shoteigai = late %>
+            <% end %>
+          <% else %>
+            <% shoteigai = Time.parse('2000-01-01 09:00') - timecard.start %>
+          <% end %>
+          <% if timecard.finish < Time.parse('2000-01-01 18:00') %>
+            <% early = Time.parse('2000-01-01 18:00') - timecard.finish %>
+          <% end %>
+          <% overtime = total_work - 28800 %>
+          <% if timecard.finish > Time.parse('2000-01-01 22:00') %>
+            <% overtime_midnight = timecard.finish - Time.parse('2000-01-01 22:00') %>
+            <% overtime = overtime - overtime_midnight %>
+          <% end %>
+          <% shotei = total_work %>
+          <% if overtime && overtime >= 60 %>
+            <% shotei = shotei - overtime %>
+          <% end %>
+          <% if overtime_midnight && overtime_midnight >= 60 %>
+            <% shotei = shotei - overtime_midnight %>
+          <% end %>
+          <% if shoteigai >= 60 %>
+            <% shotei = shotei - shoteigai %>
+          <% end %>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id).finish < Time.parse('2000-01-01 18:00') %>
-          <% early = Time.parse('2000-01-01 18:00') - d.timecards.find_by(user_id: current_user.id).finish %>
+      <% elsif schedule && schedule.schedule_type == "有休(PM)" %>
+        <% if timecard && timecard.start && timecard.finish %>
+          <% total_work = (timecard.finish - timecard.start) %>
+          <% if timecard.break_start && timecard.break_finish %>
+            <% total_break = timecard.break_finish - timecard.break_start %>
+            <% total_work = total_work - total_break %>
+          <% end %>
+          <% if timecard.start >= Time.parse('2000-01-01 09:01') %>
+            <% late = timecard.start - Time.parse('2000-01-01 09:00') %>
+          <% else %>
+            <% shoteigai = Time.parse('2000-01-01 09:00') - timecard.start %>
+          <% end %>
+          <% if timecard.finish < Time.parse('2000-01-01 12:00') %>
+            <% early = Time.parse('2000-01-01 12:00') - timecard.finish %>
+          <% end %>
+          <% overtime = total_work - 28800 %>
+          <% if timecard.finish > Time.parse('2000-01-01 12:00') %>
+            <% shoteigai += timecard.finish - Time.parse('2000-01-01 12:00') %>
+          <% end %>
+          <% shotei = total_work %>
+          <% if overtime && overtime >= 60 %>
+            <% shotei = shotei - overtime %>
+          <% end %>
+          <% if overtime_midnight && overtime_midnight >= 60 %>
+            <% shotei = shotei - overtime_midnight %>
+          <% end %>
+          <% if shoteigai >= 60 %>
+            <% shotei = shotei - shoteigai %>
+          <% end %>
         <% end %>
-        <% overtime = total_work - 28800 %>
-        <% if d.timecards.find_by(user_id: current_user.id).finish > Time.parse('2000-01-01 22:00') %>
-          <% overtime_midnight = d.timecards.find_by(user_id: current_user.id).finish - Time.parse('2000-01-01 22:00') %>
-          <% overtime = overtime - overtime_midnight %>
-        <% end %>
-        <% shotei = total_work %>
-        <% if overtime && overtime >= 60 %>
-          <% shotei = shotei - overtime %>
-        <% end %>
-        <% if overtime_midnight && overtime_midnight >= 60 %>
-          <% shotei = shotei - overtime_midnight %>
-        <% end %>
-        <% if shoteigai >= 60 %>
-          <% shotei = shotei - shoteigai %>
+      <% elsif schedule && schedule.schedule_type == "有休(AM)" %>
+        <% if timecard && timecard.start && timecard.finish %>
+          <% total_work = (timecard.finish - timecard.start) %>
+          <% if timecard.break_start && timecard.break_finish %>
+            <% total_break = timecard.break_finish - timecard.break_start %>
+            <% total_work = total_work - total_break %>
+          <% end %>
+          <% if timecard.start >= Time.parse('2000-01-01 13:01') %>
+            <% late = timecard.start - Time.parse('2000-01-01 13:00') %>
+          <% else %>
+            <% shoteigai = Time.parse('2000-01-01 13:00') - timecard.start %>
+          <% end %>
+          <% if timecard.finish < Time.parse('2000-01-01 18:00') %>
+            <% early = Time.parse('2000-01-01 18:00') - timecard.finish %>
+          <% end %>
+          <% overtime = total_work - 28800 %>
+          <% if timecard.finish > Time.parse('2000-01-01 18:00') %>
+            <% shoteigai += timecard.finish - Time.parse('2000-01-01 18:00') %>
+          <% end %>
+          <% shotei = total_work %>
+          <% if overtime && overtime >= 60 %>
+            <% shotei = shotei - overtime %>
+          <% end %>
+          <% if overtime_midnight && overtime_midnight >= 60 %>
+            <% shotei = shotei - overtime_midnight %>
+          <% end %>
+          <% if shoteigai >= 60 %>
+            <% shotei = shotei - shoteigai %>
+          <% end %>
         <% end %>
       <% end %>
 
       <% error = false %>
       <% if User.find(current_user.id).hire_date <= d.date && d.date < Date.today() %>
         <% if d.day_type == "平日" %>
-          <% if d.schedules.find_by(user_id: current_user.id).nil? || d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.blank? %>
-            <% unless d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+          <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
+            <% unless timecard && timecard.start && timecard.finish %>
               <% error = true %>
             <% end %>
           <% end %>
         <% end %>
-        <% if d.day_type.include?("休日") && d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+        <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
           <% error = true %>
         <% end %>
-        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
-          <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? %>
+        <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
+          <% if timecard && timecard.start.present? %>
             <% error = true %>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).finish.present? %>
+          <% if timecard && timecard.finish.present? %>
             <% error = true %>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_start.present? %>
+          <% if timecard && timecard.break_start.present? %>
             <% error = true %>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_finish.present? %>
+          <% if timecard && timecard.break_finish.present? %>
             <% error = true %>
           <% end %>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.present? %>
-          <% unless d.timecards.find_by(user_id: current_user.id).start < d.timecards.find_by(user_id: current_user.id).finish %>
+        <% if timecard && timecard.start.present? && timecard.finish.present? %>
+          <% unless timecard.start < timecard.finish %>
             <% error = true %>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id).break_start.present? && d.timecards.find_by(user_id: current_user.id).break_finish.present? %>
-            <% unless d.timecards.find_by(user_id: current_user.id).start < d.timecards.find_by(user_id: current_user.id).break_start && d.timecards.find_by(user_id: current_user.id).break_start < d.timecards.find_by(user_id: current_user.id).break_finish && d.timecards.find_by(user_id: current_user.id).break_finish < d.timecards.find_by(user_id: current_user.id).finish %>
+          <% if timecard.break_start.present? && timecard.break_finish.present? %>
+            <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
               <% error = true %>
             <% end %>
           <% end %>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start.present? && d.timecards.find_by(user_id: current_user.id).finish.blank? %>
+        <% if timecard && timecard.start.present? && timecard.finish.blank? %>
           <% error = true %>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).finish.present? && d.timecards.find_by(user_id: current_user.id).start.blank? %>
+        <% if timecard && timecard.finish.present? && timecard.start.blank? %>
           <% error = true %>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_start.present? && d.timecards.find_by(user_id: current_user.id).break_finish.blank? %>
+        <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
           <% error = true %>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).break_finish.present? && d.timecards.find_by(user_id: current_user.id).break_start.blank? %>
+        <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
           <% error = true %>
         <% end %>
       <% elsif User.find(current_user.id).hire_date > d.date %>
-        <% if d.timecards.find_by(user_id: current_user.id) %>
-          <% if d.timecards.find_by(user_id: current_user.id).start.present? || d.timecards.find_by(user_id: current_user.id).finish.present? || d.timecards.find_by(user_id: current_user.id).break_start.present? || d.timecards.find_by(user_id: current_user.id).break_finish.present? %>
+        <% if timecard %>
+          <% if timecard.start.present? || timecard.finish.present? || timecard.break_start.present? || timecard.break_finish.present? %>
             <% error = true %>
           <% end %>
         <% end %>
-        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
+        <% if schedule && schedule.schedule_type.present? %>
           <% error = true %>
         <% end %>
       <% end %>
@@ -348,33 +486,33 @@
         </th>
         <th><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</th>
         <th><%= d.day_type %></th>
-        <% if d.schedules.find_by(user_id: current_user.id) && d.schedules.find_by(user_id: current_user.id).schedule_type.present? %>
-          <th><%= d.schedules.find_by(user_id: current_user.id).schedule_type %></th>
-        <% elsif d.timecards.find_by(user_id: current_user.id) && d.timecards.find_by(user_id: current_user.id).start && d.timecards.find_by(user_id: current_user.id).finish %>
+        <% if schedule && schedule.schedule_type.present? %>
+          <th><%= schedule.schedule_type %></th>
+        <% elsif timecard && timecard.start && timecard.finish %>
           <th>出勤</th>
         <% elsif d.day_type.include?("休日") %>
           <th>休日</th>
         <% else %>
           <th>-</th>
         <% end %>
-        <% if d.timecards.find_by(user_id: current_user.id) %>
-          <% if d.timecards.find_by(user_id: current_user.id).start %>
-            <th><%= d.timecards.find_by(user_id: current_user.id).start.strftime("%R") %></th>
+        <% if timecard %>
+          <% if timecard.start %>
+            <th><%= timecard.start.strftime("%R") %></th>
           <% else %>
             <th>--:--</th>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id).finish %>
-            <th><%= d.timecards.find_by(user_id: current_user.id).finish.strftime("%R") %></th>
+          <% if timecard.finish %>
+            <th><%= timecard.finish.strftime("%R") %></th>
           <% else %>
             <th>--:--</th>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id).break_start %>
-            <th><%= d.timecards.find_by(user_id: current_user.id).break_start.strftime("%R") %></th>
+          <% if timecard.break_start %>
+            <th><%= timecard.break_start.strftime("%R") %></th>
           <% else %>
             <th>--:--</th>
           <% end %>
-          <% if d.timecards.find_by(user_id: current_user.id).break_finish %>
-            <th><%= d.timecards.find_by(user_id: current_user.id).break_finish.strftime("%R") %></th>
+          <% if timecard.break_finish %>
+            <th><%= timecard.break_finish.strftime("%R") %></th>
           <% else %>
             <th>--:--</th>
           <% end %>
