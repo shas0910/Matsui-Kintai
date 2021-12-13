@@ -407,7 +407,7 @@
         <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
           <% error = true %>
         <% end %>
-        <%# 半休以外の休暇取得日に打刻している %>
+        <%# 半休以外の休暇取得日に打刻 %>
         <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
           <% if timecard && timecard.start.present? %>
             <% error = true %>
@@ -422,7 +422,7 @@
             <% error = true %>
           <% end %>
         <% end %>
-        <%# 休暇日程をとっている日に打刻 %>
+        <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
         <% if timecard && timecard.start.present? && timecard.finish.present? %>
           <% unless timecard.start < timecard.finish %>
             <% error = true %>
@@ -433,18 +433,23 @@
             <% end %>
           <% end %>
         <% end %>
+        <%# 出勤があって退勤がない %>
         <% if timecard && timecard.start.present? && timecard.finish.blank? %>
           <% error = true %>
         <% end %>
+        <%# 退勤があって出勤がない %>
         <% if timecard && timecard.finish.present? && timecard.start.blank? %>
           <% error = true %>
         <% end %>
+        <%# 休始があって休終がない %>
         <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
           <% error = true %>
         <% end %>
+        <%# 休終があって休始がない %>
         <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
           <% error = true %>
         <% end %>
+        
       <% elsif User.find(params[:user_id]).hire_date > d.date %>
         <% if timecard %>
           <% if timecard.start.present? || timecard.finish.present? || timecard.break_start.present? || timecard.break_finish.present? %>

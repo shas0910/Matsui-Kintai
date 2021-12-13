@@ -60,16 +60,24 @@
       <%# 半休以外の休暇取得日に打刻している %>
       <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
         <% if timecard && timecard.start.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <% end %>
         <% end %>
         <% if timecard && timecard.finish.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <% end %>
         <% end %>
         <% if timecard && timecard.break_start.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <% end %>
         <% end %>
         <% if timecard && timecard.break_finish.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <% end %>
         <% end %>
       <% end %>
       <%# 休暇日程をとっている日に打刻 %>
@@ -220,16 +228,32 @@
         <%# 半休以外の休暇取得日に打刻している %>
         <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
           <% if timecard && timecard.start.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
           <% if timecard && timecard.finish.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
           <% if timecard && timecard.break_start.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
           <% if timecard && timecard.break_finish.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
         <% end %>
         <%# 休暇日程をとっている日に打刻 %>
@@ -358,7 +382,7 @@
         <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
           <% unless timecard && timecard.start && timecard.finish %>
             <%= link_to "/year_months/#{d.year_month_id}" do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
             <% end %>
             <% break %>
           <% end %>
@@ -367,48 +391,60 @@
       <%# 休日に休暇日程をとっている %>
       <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
-          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
       <%# 半休以外の休暇取得日に打刻している %>
       <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
         <% if timecard && timecard.start.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
+          <% end %>
+          <% break %>
         <% end %>
         <% if timecard && timecard.finish.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
+          <% end %>
+          <% break %>
         <% end %>
         <% if timecard && timecard.break_start.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
+          <% end %>
+          <% break %>
         <% end %>
         <% if timecard && timecard.break_finish.present? %>
-          <% error = true %>
+          <%= link_to "/year_months/#{d.year_month_id}" do %>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
+          <% end %>
+          <% break %>
         <% end %>
       <% end %>
-      <%# 休暇日程をとっている日に打刻 %>
-      <% if schedule && schedule.schedule_type.present? %>
+      <%# 半休以外の休暇取得日に打刻 %>
+      <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
         <% if timecard && timecard.start.present? %>
           <%= link_to "/year_months/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
         <% if timecard && timecard.finish.present? %>
           <%= link_to "/year_months/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
         <% if timecard && timecard.break_start.present? %>
           <%= link_to "/year_months/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
         <% if timecard && timecard.break_start.present? %>
           <%= link_to "/year_months/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
@@ -417,14 +453,14 @@
       <% if timecard && timecard.start.present? && timecard.finish.present? %>
         <% unless timecard.start < timecard.finish %>
           <%= link_to "/year_months/#{d.year_month_id}" do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
           <% end %>
           <% break %>
         <% end %>
         <% if timecard.break_start.present? && timecard.break_finish.present? %>
           <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
             <%= link_to "/year_months/#{d.year_month_id}" do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
             <% end %>
             <% break %>
           <% end %>
@@ -433,28 +469,28 @@
       <%# 出勤があって退勤がない %>
       <% if timecard && timecard.start.present? && timecard.finish.blank? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
-          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
       <%# 退勤があって出勤がない %>
       <% if timecard && timecard.finish.present? && timecard.start.blank? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
-          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
       <%# 休始があって休終がない %>
       <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
-          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
       <%# 休終があって休始がない %>
       <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
         <%= link_to "/year_months/#{d.year_month_id}" do %>
-          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります</span></div>
+          <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（個人）</span></div>
         <% end %>
         <% break %>
       <% end %>
@@ -514,7 +550,7 @@
           <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
             <% unless timecard && timecard.start && timecard.finish %>
               <%= link_to timecards_path do %>
-                <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+                <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
               <% end %>
               <% isBreak = true %>
               <% break %>
@@ -524,7 +560,7 @@
         <%# 休日に休暇日程をとっている %>
         <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
           <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
           <% isBreak = true %>
           <% break %>
@@ -532,44 +568,60 @@
         <%# 半休以外の休暇取得日に打刻している %>
         <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
           <% if timecard && timecard.start.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
           <% if timecard && timecard.finish.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
           <% if timecard && timecard.break_start.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
           <% if timecard && timecard.break_finish.present? %>
-            <% error = true %>
+            <%= link_to timecards_path do %>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
+            <% end %>
+            <% isBreak = true %>
+            <% break %>
           <% end %>
         <% end %>
         <%# 休暇日程をとっている日に打刻 %>
         <% if schedule && schedule.schedule_type.present? %>
           <% if timecard && timecard.start.present? %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
           <% end %>
           <% if timecard && timecard.finish.present? %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
           <% end %>
           <% if timecard && timecard.break_start.present? %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
           <% end %>
           <% if timecard && timecard.break_start.present? %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
@@ -579,7 +631,7 @@
         <% if timecard && timecard.start.present? && timecard.finish.present? %>
           <% unless timecard.start < timecard.finish %>
             <%= link_to timecards_path do %>
-              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+              <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
             <% end %>
             <% isBreak = true %>
             <% break %>
@@ -587,7 +639,7 @@
           <% if timecard.break_start.present? && timecard.break_finish.present? %>
             <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
               <%= link_to timecards_path do %>
-                <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+                <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
               <% end %>
               <% isBreak = true %>
               <% break %>
@@ -597,7 +649,7 @@
         <%# 出勤があって退勤がない %>
         <% if timecard && timecard.start.present? && timecard.finish.blank? %>
           <%= link_to timecards_path do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
           <% end %>
           <% isBreak = true %>
           <% break %>
@@ -605,7 +657,7 @@
         <%# 退勤があって出勤がない %>
         <% if timecard && timecard.finish.present? && timecard.start.blank? %>
           <%= link_to timecards_path do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
           <% end %>
           <% isBreak = true %>
           <% break %>
@@ -613,7 +665,7 @@
         <%# 休始があって休終がない %>
         <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
           <%= link_to timecards_path do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
           <% end %>
           <% isBreak = true %>
           <% break %>
@@ -621,7 +673,7 @@
         <%# 休終があって休始がない %>
         <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
           <%= link_to timecards_path do %>
-            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（メンバー）</span></div>
+            <div><span><i class="fas fa-exclamation-triangle"></i>打刻エラーがあります（全社員）</span></div>
           <% end %>
           <% isBreak = true %>
           <% break %>
