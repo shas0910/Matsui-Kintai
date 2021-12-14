@@ -35,36 +35,40 @@
             <td><%= Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: wpt.timecard_id).day_id).date.wday] %>)</td>
             <td><%= wpt.timecard_type %></td>
             <% if wpt.timecard_type == "出勤" %>
-              <% if Timecard.find_by(id: wpt.timecard_id).start %>
+              <% if Timecard.find_by(id: wpt.timecard_id).start.present? %>
                 <td><%= Timecard.find_by(id: wpt.timecard_id).start.strftime("%R") %></td>
               <% else %>
-                <td>打刻なし</td>
+                <td>--:--</td>
               <% end %>
             <% elsif wpt.timecard_type == "退勤" %>
-              <% if Timecard.find_by(id: wpt.timecard_id).finish %>
+              <% if Timecard.find_by(id: wpt.timecard_id).finish.present? %>
                 <td><%= Timecard.find_by(id: wpt.timecard_id).finish.strftime("%R") %></td>
               <% else %>
-                <td>打刻なし</td>
+                <td>--:--</td>
               <% end %>
             <% elsif wpt.timecard_type == "休憩開始" %>
-              <% if Timecard.find_by(id: wpt.timecard_id).break_start %>
+              <% if Timecard.find_by(id: wpt.timecard_id).break_start.present? %>
                 <td><%= Timecard.find_by(id: wpt.timecard_id).break_start.strftime("%R") %></td>
               <% else %>
-                <td>打刻なし</td>
+                <td>--:--</td>
               <% end %>
             <% elsif wpt.timecard_type == "休憩終了" %>
-              <% if Timecard.find_by(id: wpt.timecard_id).break_finish %>
+              <% if Timecard.find_by(id: wpt.timecard_id).break_finish.present? %>
                 <td><%= Timecard.find_by(id: wpt.timecard_id).break_finish.strftime("%R") %></td>
               <% else %>
-                <td>打刻なし</td>
+                <td>--:--</td>
               <% end %>
             <% end %>
-            <% if wpt.pending_time %>
+            <% if wpt.pending_time.present? %>
               <td><%= wpt.pending_time.strftime("%R") %></td>
             <% else %>
-              <td>打刻なし</td>
+              <td>--:--</td>
             <% end %>
-            <td><%= wpt.comment_request %></td>
+            <% if wpt.comment_request.present? %>
+              <td><%= wpt.comment_request %></td>
+            <% else %>
+              <td>-</td>
+            <% end %>
             <%= form_with model: wpt, url: permission_pending_timecard_path(wpt.id) do |f| %>
               <td><%= f.text_field :comment_permission %></td>
               <td><%= f.submit "承認" %> <%= f.submit "棄却" %></td>
@@ -156,10 +160,10 @@
           <td><%= pt.created_at.strftime("%m/%d") %>(<%= day[pt.created_at.wday] %>)</td>
           <td><%= Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.strftime("%m/%d") %>(<%= day[Day.find_by(id: Timecard.find_by(id: pt.timecard_id).day_id).date.wday] %>)</td>
           <td><%= pt.timecard_type %></td>
-          <% if pt.pending_time %>
+          <% if pt.pending_time.present? %>
             <td><%= pt.pending_time.strftime("%R") %></td>
           <% else %>
-            <td>打刻なし</td>
+            <td>--:--</td>
           <% end %>
           <% if pt.comment_request.present? %>
             <td><%= pt.comment_request %></td>
