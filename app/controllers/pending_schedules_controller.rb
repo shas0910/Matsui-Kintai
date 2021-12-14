@@ -11,10 +11,15 @@ class PendingSchedulesController < ApplicationController
     if schedule.new_record?
       schedule.save
     end
-    pending_schedule = PendingSchedule.new(pending_schedule_params)
-    pending_schedule.schedule_id = schedule.id
-    pending_schedule.status = "未承認"
-    pending_schedule.save
+    pending_schedule = PendingSchedule.find_or_initialize_by(schedule_id: schedule.id, status: "未承認")
+    if pending_schedule.new_record?
+      pending_schedule = PendingSchedule.new(pending_schedule_params)
+      pending_schedule.schedule_id = schedule.id
+      pending_schedule.status = "未承認"
+      pending_schedule.save
+    else
+      pending_schedule.update(pending_schedule_params)
+    end
     redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}", notice: "日程申請しました"
   end
 

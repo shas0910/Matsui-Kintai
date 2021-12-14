@@ -15,10 +15,51 @@ class PendingTimecardsController < ApplicationController
     if timecard.new_record?
       timecard.save
     end
-    pending_timecard = PendingTimecard.new(pending_timecard_params)
-    pending_timecard.timecard_id = timecard.id
-    pending_timecard.status = "未承認"
-    pending_timecard.save
+    if params[:pending_timecard][:timecard_type] == "出勤"
+      pending_timecard = PendingTimecard.find_or_initialize_by(timecard_id: timecard.id, timecard_type: "出勤", status: "未承認")
+      if pending_timecard.new_record?
+        pending_timecard = PendingTimecard.new(pending_timecard_params)
+        pending_timecard.timecard_id = timecard.id
+        pending_timecard.timecard_type = "出勤"
+        pending_timecard.status = "未承認"
+        pending_timecard.save
+      else
+        pending_timecard.update(pending_timecard_params)
+      end
+    elsif params[:pending_timecard][:timecard_type] == "退勤"
+      pending_timecard = PendingTimecard.find_or_initialize_by(timecard_id: timecard.id, timecard_type: "退勤", status: "未承認")
+      if pending_timecard.new_record?
+        pending_timecard = PendingTimecard.new(pending_timecard_params)
+        pending_timecard.timecard_id = timecard.id
+        pending_timecard.timecard_type = "退勤"
+        pending_timecard.status = "未承認"
+        pending_timecard.save
+      else
+        pending_timecard.update(pending_timecard_params)
+      end
+    elsif params[:pending_timecard][:timecard_type] == "休憩開始"
+      pending_timecard = PendingTimecard.find_or_initialize_by(timecard_id: timecard.id, timecard_type: "休憩開始", status: "未承認")
+      if pending_timecard.new_record?
+        pending_timecard = PendingTimecard.new(pending_timecard_params)
+        pending_timecard.timecard_id = timecard.id
+        pending_timecard.timecard_type = "休憩開始"
+        pending_timecard.status = "未承認"
+        pending_timecard.save
+      else
+        pending_timecard.update(pending_timecard_params)
+      end
+    elsif params[:pending_timecard][:timecard_type] == "休憩終了"
+      pending_timecard = PendingTimecard.find_or_initialize_by(timecard_id: timecard.id, timecard_type: "休憩終了", status: "未承認")
+      if pending_timecard.new_record?
+        pending_timecard = PendingTimecard.new(pending_timecard_params)
+        pending_timecard.timecard_id = timecard.id
+        pending_timecard.timecard_type = "休憩終了"
+        pending_timecard.status = "未承認"
+        pending_timecard.save
+      else
+        pending_timecard.update(pending_timecard_params)
+      end
+    end
     redirect_to "/year_months/#{Day.find(params[:day_id]).year_month_id}", notice: "打刻申請しました"
   end
 
