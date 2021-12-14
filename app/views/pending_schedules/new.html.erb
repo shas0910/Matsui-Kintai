@@ -1,4 +1,5 @@
 <% day = ["日","月","火","水","木","金","土"] %>
+<% timecard = @day.timecards.find_by(user_id: current_user.id) %>
 
 <%= render "shared/flash" %>
 <%= render "shared/header_common" %>
@@ -9,14 +10,32 @@
   <h2><%= @day.date.strftime("%Y/%m/%d") %>(<%= day[@day.date.wday] %>)</h2>
 
   <h3>■現在の日程</h3>
-  <% if @schedule && @schedule.schedule_type.present? %>
-    <h3><%= @schedule.schedule_type %></h3>
-  <% elsif @day.timecards.find_by(user_id: current_user.id) && @day.timecards.find_by(user_id: current_user.id).start && @day.timecards.find_by(user_id: current_user.id).finish %>
-    <h3>出勤</h3>
-  <% elsif @day.day_type.include?("休日") %>
-    <h3>休日</h3>
+  <% if @schedule %>
+    <% if @schedule.schedule_type.present? %>
+      <% if PendingSchedule.find_by(schedule_id: @schedule.id, status: "未承認") %>
+        <th><%= @schedule.schedule_type %><br>(<%= PendingSchedule.find_by(schedule_id: @schedule.id, status: "未承認").schedule_type %>)</th>
+      <% else %>
+        <th><%= @schedule.schedule_type %></th>
+      <% end %>
+    <% elsif timecard && timecard.start && timecard.finish %>
+      <% if PendingSchedule.find_by(schedule_id: @schedule.id, status: "未承認") %>
+        <th>出勤<br>(<%= PendingSchedule.find_by(schedule_id: @schedule.id, status: "未承認").schedule_type %>)</th>
+      <% else %>
+        <th>出勤</th>
+      <% end %>
+    <% else %>
+      <% if PendingSchedule.find_by(schedule_id: @schedule.id, status: "未承認") %>
+        <th>(<%= PendingSchedule.find_by(schedule_id: @schedule.id, status: "未承認").schedule_type %>)</th>
+      <% else %>
+        <th>-</th>
+      <% end %>
+    <% end %>
   <% else %>
-    <h3>-</h3>
+    <% if timecard && timecard.start && timecard.finish %>
+      <th>出勤</th>
+    <% else %>
+      <th>-</th>
+    <% end %>
   <% end %>
 
   <h3>■日程申請</h3>

@@ -495,35 +495,117 @@
         </th>
         <th><%= d.date.strftime("%m/%d") %>(<%= day[d.date.wday] %>)</th>
         <th><%= d.day_type %></th>
-        <% if schedule && schedule.schedule_type.present? %>
-          <th><%= schedule.schedule_type %></th>
-        <% elsif timecard && timecard.start && timecard.finish %>
-          <th>出勤</th>
-        <% elsif d.day_type.include?("休日") %>
-          <th>休日</th>
+        <% if schedule %>
+          <% if schedule.schedule_type.present? %>
+            <% if PendingSchedule.find_by(schedule_id: schedule.id, status: "未承認") %>
+              <th><%= schedule.schedule_type %><br>(<%= PendingSchedule.find_by(schedule_id: schedule.id, status: "未承認").schedule_type %>)</th>
+            <% else %>
+              <th><%= schedule.schedule_type %></th>
+            <% end %>
+          <% elsif timecard && timecard.start && timecard.finish %>
+            <% if PendingSchedule.find_by(schedule_id: schedule.id, status: "未承認") %>
+              <th>出勤<br>(<%= PendingSchedule.find_by(schedule_id: schedule.id, status: "未承認").schedule_type %>)</th>
+            <% else %>
+              <th>出勤</th>
+            <% end %>
+          <% else %>
+            <% if PendingSchedule.find_by(schedule_id: schedule.id, status: "未承認") %>
+              <th>(<%= PendingSchedule.find_by(schedule_id: schedule.id, status: "未承認").schedule_type %>)</th>
+            <% else %>
+              <th>-</th>
+            <% end %>
+          <% end %>
         <% else %>
-          <th>-</th>
+          <% if timecard && timecard.start && timecard.finish %>
+            <th>出勤</th>
+          <% else %>
+            <th>-</th>
+          <% end %>
         <% end %>
         <% if timecard %>
           <% if timecard.start %>
-            <th><%= timecard.start.strftime("%R") %></th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "出勤",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "出勤",status: "未承認").pending_time.present? %>
+                <th><%= timecard.start.strftime("%R") %><br>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "出勤",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th><%= timecard.start.strftime("%R") %><br>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th><%= timecard.start.strftime("%R") %></th>
+            <% end %>
           <% else %>
-            <th>--:--</th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "出勤",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "出勤",status: "未承認").pending_time.present? %>
+                <th>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "出勤",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th>--:--</th>
+            <% end %>
           <% end %>
           <% if timecard.finish %>
-            <th><%= timecard.finish.strftime("%R") %></th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "退勤",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "退勤",status: "未承認").pending_time.present? %>
+                <th><%= timecard.finish.strftime("%R") %><br>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "退勤",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th><%= timecard.finish.strftime("%R") %><br>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th><%= timecard.finish.strftime("%R") %></th>
+            <% end %>
           <% else %>
-            <th>--:--</th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "退勤",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "退勤",status: "未承認").pending_time.present? %>
+                <th>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "退勤",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th>--:--</th>
+            <% end %>
           <% end %>
           <% if timecard.break_start %>
-            <th><%= timecard.break_start.strftime("%R") %></th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩開始",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩開始",status: "未承認").pending_time.present? %>
+                <th><%= timecard.break_start.strftime("%R") %><br>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩開始",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th><%= timecard.break_start.strftime("%R") %><br>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th><%= timecard.break_start.strftime("%R") %></th>
+            <% end %>
           <% else %>
-            <th>--:--</th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩開始",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩開始",status: "未承認").pending_time.present? %>
+                <th>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩開始",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th>--:--</th>
+            <% end %>
           <% end %>
           <% if timecard.break_finish %>
-            <th><%= timecard.break_finish.strftime("%R") %></th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩終了",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩終了",status: "未承認").pending_time.present? %>
+                <th><%= timecard.break_finish.strftime("%R") %><br>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩終了",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th><%= timecard.break_finish.strftime("%R") %><br>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th><%= timecard.break_finish.strftime("%R") %></th>
+            <% end %>
           <% else %>
-            <th>--:--</th>
+            <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩終了",status: "未承認") %>
+              <% if PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩終了",status: "未承認").pending_time.present? %>
+                <th>(<%= PendingTimecard.find_by(timecard_id: timecard.id, timecard_type: "休憩終了",status: "未承認").pending_time.strftime("%R") %>)</th>
+              <% else %>
+                <th>(--:--)</th>
+              <% end %>
+            <% else %>
+              <th>--:--</th>
+            <% end %>
           <% end %>
         <% else %>
           <th>--:--</th>
