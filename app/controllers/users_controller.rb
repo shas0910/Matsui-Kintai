@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   def update
     user = User.find(params[:id])
     user.update(user_params)
+    user.update(password: params[:password], password_confirmation: params[:password_confirmation])
     redirect_to users_path, notice: "ユーザー編集を保存しました"
   end
 
@@ -24,7 +25,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :last_name, :first_name, :department, :user_type, :hire_date, :approver_id, :last_name_kana, :first_name_kana)
+    params.require(:user).permit(:email, :last_name, :first_name, :department, :user_type, :hire_date, :approver_id, :last_name_kana, :first_name_kana, :password, :password_confirmation)
   end
 
 end
