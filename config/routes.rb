@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :year_months, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
     member do
       get 'to_show'
+      get 'total'
     end
   end
 

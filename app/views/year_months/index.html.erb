@@ -13,6 +13,11 @@
       <%= link_to year_month_path(ym.id), method: :delete,data: {confirm: "月度：#{ym.year}年#{ym.month}月 を削除しますか？"} do %>
           <i class="fas fa-trash-alt"></i>
       <% end %>
+      <% if Date.today >= ym.last_date %>
+        <%= link_to total_year_month_path(ym.id, format: :xlsx) do %>
+          <i class="fas fa-file-download"></i>
+        <% end %>
+      <% end %>
     </div>
   <% end %>
 
