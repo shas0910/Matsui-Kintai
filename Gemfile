@@ -69,4 +69,6 @@ gem 'devise'
 
 gem 'axlsx'
 gem 'axlsx_rails'
+gem 'caxlsx'
+gem 'caxlsx_rails'
 gem 'zip-zip'
