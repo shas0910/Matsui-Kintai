@@ -89,7 +89,7 @@ class YearMonthsController < ApplicationController
 
   def generate_xlsx
     Axlsx::Package.new do |p|
-      p.workbook.add_worksheet(name: "シート名") do |sheet|
+      p.workbook.add_worksheet(name: "勤怠集計") do |sheet|
         sheet.add_row ["部署" ,"氏名", "平日出勤", "休日出勤", "遅刻", "早退", "有給", "代休", "特別休暇", "欠勤"]
         @users.where.not(department: "その他").each do |u|
           @timecards = Timecard.where(user_id: u.id).where(day_id: Day.where(year_month_id: params[:id]).ids)
@@ -293,9 +293,31 @@ class YearMonthsController < ApplicationController
           ]
         end
       end
+      p.workbook.add_worksheet(name: "通勤費") do |sheet|
+        sheet.add_row ["部署", "氏名", "通勤費"]
+        @users.where.not(department: "その他").each do |u|
+          travel_cost_total = 0
+          pass_fee = 0
+          @days.each do |d|
+            if d.travel_costs.find_by(user_id: u.id)
+              if d.travel_costs.find_by(user_id: u.id).commute_type == "電車・バス（定期使用）"
+                pass_fee = d.travel_costs.find_by(user_id: u.id).travel_cost
+              else
+                travel_cost_total += d.travel_costs.find_by(user_id: u.id).travel_cost
+              end
+            end
+          end
+          travel_cost_total += pass_fee
+          sheet.add_row [
+            u.department,
+            u.last_name + " " + u.first_name,
+            travel_cost_total.to_s(:delimited)
+          ]
+        end
+      end
       send_data(p.to_stream.read,
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                filename: @year_month.year.to_s + "年" + @year_month.month.to_s + "月度" + " 勤怠日数集計.xlsx")
+                filename: @year_month.year.to_s + "年" + @year_month.month.to_s + "月度" + " 勤怠・通勤費集計.xlsx")
     end
   end
 
