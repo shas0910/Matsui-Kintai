@@ -108,6 +108,8 @@ class YearMonthsController < ApplicationController
           overtime_midnight_total_houteigai = 0
           late_total = 0
           early_total = 0
+          late_count = 0
+          early_count = 0
           total_break_total = 0
           total_work_total = 0
           weekday_count = 0
@@ -125,6 +127,7 @@ class YearMonthsController < ApplicationController
                   end
                   if timecard.start >= Time.parse('2000-01-01 09:01')
                     late = timecard.start - Time.parse('2000-01-01 09:00')
+                    late_count += 1
                     if total_work.to_i < 28800
                       shoteigai = timecard.finish - Time.parse('2000-01-01 18:00')
                     else
@@ -135,6 +138,7 @@ class YearMonthsController < ApplicationController
                   end
                   if timecard.finish < Time.parse('2000-01-01 18:00')
                     early = Time.parse('2000-01-01 18:00') - timecard.finish
+                    early_count += 1
                   end
                   overtime = total_work - 28800
                   if timecard.finish > Time.parse('2000-01-01 22:00')
@@ -166,11 +170,13 @@ class YearMonthsController < ApplicationController
                   end
                   if timecard.start >= Time.parse('2000-01-01 09:01')
                     late = timecard.start - Time.parse('2000-01-01 09:00')
+                    late_count += 1
                   else
                     shoteigai = Time.parse('2000-01-01 09:00') - timecard.start
                   end
                   if timecard.finish < Time.parse('2000-01-01 12:00')
                     early = Time.parse('2000-01-01 12:00') - timecard.finish
+                    early_count += 1
                   end
                   overtime = total_work - 28800
                   if timecard.finish > Time.parse('2000-01-01 12:00')
@@ -201,11 +207,13 @@ class YearMonthsController < ApplicationController
                   end
                   if timecard.start >= Time.parse('2000-01-01 13:01')
                     late = timecard.start - Time.parse('2000-01-01 13:00')
+                    late_count += 1
                   else
                     shoteigai = Time.parse('2000-01-01 13:00') - timecard.start
                   end
                   if timecard.finish < Time.parse('2000-01-01 18:00')
                     early = Time.parse('2000-01-01 18:00') - timecard.finish
+                    early_count += 1
                   end
                   overtime = total_work - 28800
                   if timecard.finish > Time.parse('2000-01-01 18:00')
@@ -284,8 +292,8 @@ class YearMonthsController < ApplicationController
             u.last_name + " " + u.first_name,
             weekday_count.to_f,
             holiday_count.to_f,
-            @timecards.where(start: Time.parse('2000-01-01 09:01')..).count.to_f,
-            @timecards.where(finish: ...Time.parse('2000-01-01 18:00')).count.to_f,
+            late_count.to_f,
+            early_count.to_f,
             @schedules.where(schedule_type: "有休").count.to_f + (@schedules.where(schedule_type: "有休(AM)").count.to_f / 2).to_f + (@schedules.where(schedule_type: "有休(PM)").count.to_f / 2).to_f,
             @schedules.where(schedule_type: "代休").count.to_f,
             @schedules.where(schedule_type: "特別休暇").count.to_f,
