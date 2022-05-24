@@ -157,7 +157,13 @@ div.field {
 
 .timecard-current {
   font-size: 30px;
-  padding-right: 20px;
+}
+
+.timecard-prev-next-btn {
+  padding: 0 20px;
+  font-size: 30px;
+  text-decoration: none;
+  color: grey;
 }
 
 table {

@@ -8,7 +8,21 @@
   <h2><i class="far fa-calendar-alt"></i><%= User.find_by(id: current_user.id).last_name + " " + User.find_by(id: current_user.id).first_name %>さんのタイムカード</h2>
   <%= form_with model: @year_month, url: to_show_year_month_path(params[:id]), method: :get do |form| %>
     <div>
+      <% if YearMonth.find_by(last_date: @year_month.first_date - 1) %>
+        <%= link_to year_month_path(YearMonth.find_by(last_date: @year_month.first_date - 1).id), class: "timecard-prev-next-btn" do %>
+          <i class="fas fa-angle-left"></i>
+        <% end %>
+      <% else %>
+        <span style="padding-right:65px;"></span>
+      <% end %>
       <span class="timecard-current"><%= @year_month.first_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.first_date.wday] %>) 〜 <%= @year_month.last_date.strftime("%Y/%m/%d") %>(<%= day[@year_month.last_date.wday] %>)</span>
+      <% if YearMonth.find_by(first_date: @year_month.last_date + 1) %>
+        <%= link_to year_month_path(YearMonth.find_by(first_date: @year_month.last_date + 1).id), class: "timecard-prev-next-btn" do %>
+          <i class="fas fa-angle-right"></i>
+        <% end %>
+      <% else %>
+        <span style="padding-right:65px;"></span>
+      <% end %>
       <%= form.select :year, Date.today.year-2 .. Date.today.year+2 %>
       <span>年</span>
       <%= form.select :month, 01 .. 12 %>
