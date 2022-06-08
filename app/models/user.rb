@@ -13,4 +13,12 @@ class User < ApplicationRecord
   def full_name
     "#{last_name} #{first_name}"
   end
+
+  def grant_date
+    grant_date = hire_date >> 6
+    if grant_date.month == 2 && grant_date.day == 29
+      grant_date = grant_date - 1
+    end
+    return grant_date
+  end
 end
