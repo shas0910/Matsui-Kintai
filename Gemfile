@@ -67,8 +67,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'devise'
 
-gem 'axlsx'
-gem 'axlsx_rails'
+# 月次集計Excel出力用
 gem 'caxlsx'
 gem 'caxlsx_rails'
 gem 'zip-zip'
