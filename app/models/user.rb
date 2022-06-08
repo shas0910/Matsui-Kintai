@@ -10,10 +10,12 @@ class User < ApplicationRecord
   has_many :travel_costs, dependent: :destroy
   has_one :paid_vacation, dependent: :destroy
 
+  # フルネーム表示
   def full_name
     "#{last_name} #{first_name}"
   end
 
+  # 有給付与日
   def grant_date
     grant_date = hire_date >> 6
     if grant_date.month == 2 && grant_date.day == 29
