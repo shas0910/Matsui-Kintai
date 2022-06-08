@@ -71,3 +71,6 @@ gem 'devise'
 gem 'caxlsx'
 gem 'caxlsx_rails'
 gem 'zip-zip'
+
+# 有給管理用
+gem 'whenever', require: false
