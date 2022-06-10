@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_08_055648) do
+ActiveRecord::Schema.define(version: 2022_06_10_070708) do
 
   create_table "commutes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -38,9 +38,10 @@ ActiveRecord::Schema.define(version: 2022_06_08_055648) do
 
   create_table "paid_vacations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.integer "remain"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "grant"
+    t.integer "carry"
     t.index ["user_id"], name: "index_paid_vacations_on_user_id"
   end
 
