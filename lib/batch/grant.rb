@@ -34,8 +34,7 @@ class Batch::Grant
         end
         paid_vacation.update_attribute(:carry, PaidVacation.find_by(user_id: u.id).grant)
         paid_vacation.update_attribute(:grant, g)
-      else
-        puts "no grant day for " + u.full_name
+        puts "grant days to " + u.full_name
       end
     end
   end
