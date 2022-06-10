@@ -37,5 +37,6 @@ class Batch::Grant
         puts "grant days to " + u.full_name
       end
     end
+    puts "all granted"
   end
 end
