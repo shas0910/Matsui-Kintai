@@ -78,7 +78,6 @@ class SchedulesController < ApplicationController
         end
       end
     end
-    if 
     schedule = Schedule.find_or_initialize_by(day_id: params[:day_id], user_id: params[:user_id])
     if schedule.new_record?
       schedule.schedule_type = params[:schedule][:schedule_type]
