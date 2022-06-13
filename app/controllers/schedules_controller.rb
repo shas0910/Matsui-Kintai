@@ -14,7 +14,7 @@ class SchedulesController < ApplicationController
         if paid_vacation.nil? || paid_vacation.remain < 1
           redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_schedule", alert: "有休残日数が不足しています"
           return
-        elsif Day.find(params[:day_id]).date > User.find(params[:user_id]).grant_date.change(year: grant_year) && Date.today < User.find(params[:user_id]).grant_date.change(year: grant_year)
+        elsif Day.find(params[:day_id]).date >= User.find(params[:user_id]).grant_date.change(year: grant_year) && Date.today < User.find(params[:user_id]).grant_date.change(year: grant_year)
           redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_schedule", alert: "次の有休付与日以降の日は有休に設定できません"
           return
         elsif paid_vacation.carry >= 1
@@ -31,7 +31,7 @@ class SchedulesController < ApplicationController
         if paid_vacation.nil? || paid_vacation.remain < 0.5
           redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_schedule", alert: "有休残日数が不足しています"
           return
-        elsif Day.find(params[:day_id]).date > User.find(params[:user_id]).grant_date.change(year: grant_year) && Date.today < User.find(params[:user_id]).grant_date.change(year: grant_year)
+        elsif Day.find(params[:day_id]).date >= User.find(params[:user_id]).grant_date.change(year: grant_year) && Date.today < User.find(params[:user_id]).grant_date.change(year: grant_year)
           redirect_to "/user/#{params[:user_id]}/day/#{params[:day_id]}/edit_schedule", alert: "次の有休付与日以降の日は有休に設定できません"
           return
         elsif paid_vacation.carry >= 0.5
