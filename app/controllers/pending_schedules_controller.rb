@@ -33,11 +33,15 @@ class PendingSchedulesController < ApplicationController
     pending_schedule = PendingSchedule.find_by(id: params[:id])
     schedule = Schedule.find_by(id: pending_schedule.schedule_id)
     paid_vacation = PaidVacation.find_by(user_id: schedule.user_id)
+    grant_year = User.find(schedule.user_id).grant_date.year + User.find(schedule.user_id).years_of_service
     if params[:commit] == "承認"
       if schedule.schedule_type.exclude?("有休")
         if pending_schedule.schedule_type == "有休"
           if paid_vacation.nil? || paid_vacation.remain < 1
             redirect_to permissions_path, alert: "有休残日数が不足しています"
+            return
+          elsif Day.find(schedule.day_id).date > User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
+            redirect_to permissions_path, alert: "次の有休付与日以降の日は有休に設定できません"
             return
           elsif paid_vacation.carry >= 1
             v = paid_vacation.carry - 1
@@ -52,6 +56,9 @@ class PendingSchedulesController < ApplicationController
         elsif pending_schedule.schedule_type == "有休(AM)" || pending_schedule.schedule_type == "有休(PM)"
           if paid_vacation.nil? || paid_vacation.remain < 0.5
             redirect_to permissions_path, alert: "有休残日数が不足しています"
+            return
+          elsif Day.find(schedule.day_id).date > User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
+            redirect_to permissions_path, alert: "次の有休付与日以降の日は有休に設定できません"
             return
           elsif paid_vacation.carry >= 0.5
             v = paid_vacation.carry - 0.5

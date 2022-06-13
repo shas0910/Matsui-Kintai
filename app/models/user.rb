@@ -24,13 +24,18 @@ class User < ApplicationRecord
     return grant_date
   end
 
-  # PaidVacationのgrant上限
-  def grant_limit
+  # 勤続年
+  def years_of_service
     if Date.today.month - hire_date.month >= 0
       years_of_service = Date.today.year - hire_date.year
     else
       years_of_service = Date.today.year - hire_date.year - 1
     end
+    return years_of_service
+  end
+
+  # PaidVacationのgrant上限
+  def grant_limit
     if years_of_service == 0
       grant_limit = 10
     elsif years_of_service == 1
