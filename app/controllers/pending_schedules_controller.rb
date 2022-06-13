@@ -32,7 +32,78 @@ class PendingSchedulesController < ApplicationController
   def permission
     pending_schedule = PendingSchedule.find_by(id: params[:id])
     schedule = Schedule.find_by(id: pending_schedule.schedule_id)
+    paid_vacation = PaidVacation.find_by(user_id: schedule.user_id)
     if params[:commit] == "承認"
+      if schedule.schedule_type.exclude?("有休")
+        if pending_schedule.schedule_type == "有休"
+          if paid_vacation.nil? || paid_vacation.remain < 1
+            redirect_to permissions_path, alert: "有休残日数が不足しています"
+            return
+          elsif paid_vacation.carry >= 1
+            v = paid_vacation.carry - 1
+            paid_vacation.update(carry: v)
+          elsif paid_vacation.carry == 0.5
+            v = paid_vacation.grant - 0.5
+            paid_vacation.update(carry: 0, grant: v)
+          elsif paid_vacation.grant >= 1
+            v = paid_vacation.grant - 1
+            paid_vacation.update(grant: v)
+          end
+        elsif pending_schedule.schedule_type == "有休(AM)" || pending_schedule.schedule_type == "有休(PM)"
+          if paid_vacation.nil? || paid_vacation.remain < 0.5
+            redirect_to permissions_path, alert: "有休残日数が不足しています"
+            return
+          elsif paid_vacation.carry >= 0.5
+            v = paid_vacation.carry - 0.5
+            paid_vacation.update(carry: v)
+          elsif paid_vacation.grant >= 0.5
+            v = paid_vacation.grant - 0.5
+            paid_vacation.update(grant: v)
+          end
+        end
+      elsif schedule.schedule_type == "有休"
+        if pending_schedule.schedule_type == "有休(AM)" || pending_schedule.schedule_type == "有休(PM)"
+          if paid_vacation.grant <= User.find(params[:user_id]).grant_limit - 0.5
+            v = paid_vacation.grant + 0.5
+            paid_vacation.update(grant: v)
+          else
+            v = paid_vacation.carry + 0.5
+            paid_vacation.update(carry: v)
+          end
+        elsif pending_schedule.schedule_type.exclude?("有休")
+          if paid_vacation.grant <= User.find(schedule.user_id).grant_limit - 1
+            v = paid_vacation.grant + 1
+            paid_vacation.update(grant: v)
+          elsif paid_vacation.grant == User.find(schedule.user_id).grant_limit - 0.5
+            v = paid_vacation.grant + 0.5
+            paid_vacation.update(grant: v, carry: 0.5)
+          else
+            v = paid_vacation.carry + 1
+            paid_vacation.update(carry: v)
+          end
+        end
+      elsif schedule.schedule_type == "有休(AM)" || schedule.schedule_type == "有休(PM)"
+        if pending_schedule.schedule_type == "有休"
+          if paid_vacation.remain < 0.5
+            redirect_to permissions_path, alert: "有休残日数が不足しています"
+            return
+          elsif paid_vacation.carry >= 0.5
+            v = paid_vacation.carry - 0.5
+            paid_vacation.update(carry: v)
+          elsif paid_vacation.grant >= 0.5
+            v = paid_vacation.grant - 0.5
+            paid_vacation.update(grant: v)
+          end
+        elsif pending_schedule.schedule_type.exclude?("有休")
+          if paid_vacation.grant <= User.find(schedule.user_id).grant_limit - 0.5
+            v = paid_vacation.grant + 0.5
+            paid_vacation.update(grant: v)
+          else
+            v = paid_vacation.carry + 0.5
+            paid_vacation.update(carry: v)
+          end
+        end
+      end
       schedule.update_attribute(:schedule_type, pending_schedule.schedule_type)
       pending_schedule.update_attribute(:status, "承認")
       pending_schedule.update_attribute(:comment_permission, params[:pending_schedule][:comment_permission])
