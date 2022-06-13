@@ -40,7 +40,7 @@ class PendingSchedulesController < ApplicationController
           if paid_vacation.nil? || paid_vacation.remain < 1
             redirect_to permissions_path, alert: "有休残日数が不足しています"
             return
-          elsif Day.find(schedule.day_id).date > User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
+          elsif Day.find(schedule.day_id).date >= User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
             redirect_to permissions_path, alert: "次の有休付与日以降の日は有休に設定できません"
             return
           elsif paid_vacation.carry >= 1
@@ -57,7 +57,7 @@ class PendingSchedulesController < ApplicationController
           if paid_vacation.nil? || paid_vacation.remain < 0.5
             redirect_to permissions_path, alert: "有休残日数が不足しています"
             return
-          elsif Day.find(schedule.day_id).date > User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
+          elsif Day.find(schedule.day_id).date >= User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
             redirect_to permissions_path, alert: "次の有休付与日以降の日は有休に設定できません"
             return
           elsif paid_vacation.carry >= 0.5
