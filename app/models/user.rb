@@ -8,7 +8,7 @@ class User < ApplicationRecord
   has_many :schedules, dependent: :destroy
   has_one :commute, dependent: :destroy
   has_many :travel_costs, dependent: :destroy
-  has_one :paid_vacation, dependent: :destroy
+  has_many :paid_vacation, dependent: :destroy
 
   # フルネーム表示
   def full_name
@@ -34,7 +34,7 @@ class User < ApplicationRecord
     return years_of_service
   end
 
-  # PaidVacationのgrant上限
+  # 勤続年数ごとの付与日上限
   def grant_limit
     if years_of_service == 0
       grant_limit = 10
