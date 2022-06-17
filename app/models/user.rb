@@ -53,4 +53,9 @@ class User < ApplicationRecord
     end
     return grant_limit
   end
+
+  # 残有休トータル
+  def remain_total
+    PaidVacation.where(user_id: id).sum(:remain)
+  end
 end
