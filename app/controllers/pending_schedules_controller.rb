@@ -30,84 +30,118 @@ class PendingSchedulesController < ApplicationController
   end
   
   def permission
+    
     pending_schedule = PendingSchedule.find_by(id: params[:id])
     schedule = Schedule.find_by(id: pending_schedule.schedule_id)
-    paid_vacation = PaidVacation.find_by(user_id: schedule.user_id)
-    grant_year = User.find(schedule.user_id).grant_date.year + User.find(schedule.user_id).years_of_service
+    user = User.find(schedule.user_id)
+    paid_vacation = PaidVacation.where(user_id: user.id)
+    oldest_paid_vacation = PaidVacation.find_by(granted_date: paid_vacation.minimum(:granted_date))
+    second_oldest_paid_vacation = PaidVacation.find(paid_vacation.order(granted_date: :ASC).to_a[1].id)
+    third_oldest_paid_vacation = PaidVacation.find(paid_vacation.order(granted_date: :ASC).to_a[2].id)
+    newest_paid_vacation = PaidVacation.find_by(granted_date: paid_vacation.maximum(:granted_date))
+    second_newest_paid_vacation = PaidVacation.find(paid_vacation.order(granted_date: :DESC).to_a[1].id)
+    third_newest_paid_vacation = PaidVacation.find(paid_vacation.order(granted_date: :DESC).to_a[2].id)
+    grant_year = user.grant_date.year + user.years_of_service
     if params[:commit] == "承認"
-      if schedule.schedule_type.exclude?("有休")
+      if schedule.schedule_type.nil? || schedule.schedule_type.exclude?("有休")
         if pending_schedule.schedule_type == "有休"
-          if paid_vacation.nil? || paid_vacation.remain < 1
+          if paid_vacation.nil? || user.remain_total < 1
             redirect_to permissions_path, alert: "有休残日数が不足しています"
             return
-          elsif Day.find(schedule.day_id).date >= User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
+          elsif day.date >= user.grant_date.change(year: grant_year) && Date.today < user.grant_date.change(year: grant_year)
             redirect_to permissions_path, alert: "次の有休付与日以降の日は有休に設定できません"
             return
-          elsif paid_vacation.carry >= 1
-            v = paid_vacation.carry - 1
-            paid_vacation.update(carry: v)
-          elsif paid_vacation.carry == 0.5
-            v = paid_vacation.grant - 0.5
-            paid_vacation.update(carry: 0, grant: v)
-          elsif paid_vacation.grant >= 1
-            v = paid_vacation.grant - 1
-            paid_vacation.update(grant: v)
+          elsif oldest_paid_vacation.remain >= 1
+            v = oldest_paid_vacation.remain - 1
+            oldest_paid_vacation.update(remain: v)
+          elsif oldest_paid_vacation.remain == 0.5
+            oldest_paid_vacation.update(remain: 0)
+            v = second_oldest_paid_vacation.remain - 0.5
+            second_oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain >= 1
+            v = second_oldest_paid_vacation.remain - 1
+            second_oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain == 0.5
+            second_oldest_paid_vacation.update(remain: 0)
+            v = third_oldest_paid_vacation.remain - 0.5
+            third_oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain == 0
+            v = third_oldest_paid_vacation.remain - 1
+            third_oldest_paid_vacation.update(remain: v)
           end
         elsif pending_schedule.schedule_type == "有休(AM)" || pending_schedule.schedule_type == "有休(PM)"
-          if paid_vacation.nil? || paid_vacation.remain < 0.5
+          if paid_vacation.nil? || user.remain_total < 0.5
             redirect_to permissions_path, alert: "有休残日数が不足しています"
             return
-          elsif Day.find(schedule.day_id).date >= User.find(schedule.user_id).grant_date.change(year: grant_year) && Date.today < User.find(schedule.user_id).grant_date.change(year: grant_year)
+          elsif day.date >= user.grant_date.change(year: grant_year) && Date.today < user.grant_date.change(year: grant_year)
             redirect_to permissions_path, alert: "次の有休付与日以降の日は有休に設定できません"
             return
-          elsif paid_vacation.carry >= 0.5
-            v = paid_vacation.carry - 0.5
-            paid_vacation.update(carry: v)
-          elsif paid_vacation.grant >= 0.5
-            v = paid_vacation.grant - 0.5
-            paid_vacation.update(grant: v)
+          elsif oldest_paid_vacation.remain >= 0.5
+            v = oldest_paid_vacation.remain - 0.5
+            oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain >= 0.5
+            v = second_oldest_paid_vacation.remain - 0.5
+            second_oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain == 0
+            v = third_oldest_paid_vacation.remain - 0.5
+            third_oldest_paid_vacation.update(remain: v)
           end
         end
       elsif schedule.schedule_type == "有休"
         if pending_schedule.schedule_type == "有休(AM)" || pending_schedule.schedule_type == "有休(PM)"
-          if paid_vacation.grant <= User.find(params[:user_id]).grant_limit - 0.5
-            v = paid_vacation.grant + 0.5
-            paid_vacation.update(grant: v)
-          else
-            v = paid_vacation.carry + 0.5
-            paid_vacation.update(carry: v)
+          if newest_paid_vacation.remain <= newest_paid_vacation.remain_limit - 0.5
+            v = newest_paid_vacation.remain + 0.5
+            newest_paid_vacation.update(remain: v)
+          elsif second_newest_paid_vacation.remain <= second_oldest_paid_vacation.remain_limit - 0.5
+            v = second_newest_paid_vacation.remain + 0.5
+            second_newest_paid_vacation.update(remain: v)
+          elsif second_newest_paid_vacation.remain > second_oldest_paid_vacation.remain_limit - 0.5
+            v = third_newest_paid_vacation.remain + 0.5
+            third_newest_paid_vacation.update(remain: v)
           end
         elsif pending_schedule.schedule_type.exclude?("有休")
-          if paid_vacation.grant <= User.find(schedule.user_id).grant_limit - 1
-            v = paid_vacation.grant + 1
-            paid_vacation.update(grant: v)
-          elsif paid_vacation.grant == User.find(schedule.user_id).grant_limit - 0.5
-            v = paid_vacation.grant + 0.5
-            paid_vacation.update(grant: v, carry: 0.5)
+          if newest_paid_vacation.remain <= newest_paid_vacation.remain_limit - 1
+            v = newest_paid_vacation.remain + 1
+            newest_paid_vacation.update(remain: v)
+          elsif newest_paid_vacation.remain == newest_paid_vacation.remain_limit - 0.5
+            newest_paid_vacation.update(remain: newest_paid_vacation.remain_limit)
+            second_newest_paid_vacation.update(remain: 0.5)
+          elsif second_newest_paid_vacation.remain <= second_newest_paid_vacation.remain_limit - 1
+            v = second_newest_paid_vacation.remain + 1
+            second_newest_paid_vacation.update(remain: v)
+          elsif second_newest_paid_vacation.remain == second_newest_paid_vacation.remain_limit - 0.5
+            second_newest_paid_vacation.update(remain:  second_newest_paid_vacation.remain_limit)
+            third_newest_paid_vacation.update(remain: 0.5)
           else
-            v = paid_vacation.carry + 1
-            paid_vacation.update(carry: v)
+            v = third_newest_paid_vacation.remain + 1
+            third_newest_paid_vacation.update(remain: v)
           end
         end
       elsif schedule.schedule_type == "有休(AM)" || schedule.schedule_type == "有休(PM)"
         if pending_schedule.schedule_type == "有休"
-          if paid_vacation.remain < 0.5
+          if user.remain_total < 0.5
             redirect_to permissions_path, alert: "有休残日数が不足しています"
             return
-          elsif paid_vacation.carry >= 0.5
-            v = paid_vacation.carry - 0.5
-            paid_vacation.update(carry: v)
-          elsif paid_vacation.grant >= 0.5
-            v = paid_vacation.grant - 0.5
-            paid_vacation.update(grant: v)
+          elsif oldest_paid_vacation.remain >= 0.5
+            v = oldest_paid_vacation.remain - 0.5
+            oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain >= 0.5
+            v = second_oldest_paid_vacation.remain - 0.5
+            second_oldest_paid_vacation.update(remain: v)
+          elsif second_oldest_paid_vacation.remain == 0
+            v = third_oldest_paid_vacation.remain - 0.5
+            third_oldest_paid_vacation.update(remain: v)
           end
         elsif pending_schedule.schedule_type.exclude?("有休")
-          if paid_vacation.grant <= User.find(schedule.user_id).grant_limit - 0.5
-            v = paid_vacation.grant + 0.5
-            paid_vacation.update(grant: v)
-          else
-            v = paid_vacation.carry + 0.5
-            paid_vacation.update(carry: v)
+          if newest_paid_vacation.remain <= newest_paid_vacation.remain_limit - 0.5
+            v = newest_paid_vacation.remain + 0.5
+            newest_paid_vacation.update(remain: v)
+          elsif second_newest_paid_vacation.remain <= second_oldest_paid_vacation.remain_limit - 0.5
+            v = second_newest_paid_vacation.remain + 0.5
+            second_newest_paid_vacation.update(remain: v)
+          elsif second_newest_paid_vacation.remain > second_oldest_paid_vacation.remain_limit - 0.5
+            v = third_newest_paid_vacation.remain + 0.5
+            third_newest_paid_vacation.update(remain: v)
           end
         end
       end
