@@ -13,522 +13,117 @@
 
   <% if current_user.user_type == "上長" %>
     <% @users = @users.where(approver_id: current_user.id) %>
+
     <% @users.each do |m| %>
+
       <div class="timecards-user">
         <span><%= m.full_name %></span>
         <%= link_to "/user/#{m.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" do %>
           <i class="far fa-calendar-alt"></i>
-          <% if m.hire_date <= YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date %>
-            <% days_members = @days.where(date: YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date..) %>
-          <% else %>
-            <% days_members = @days.where(date: m.hire_date..) %>
-          <% end %>
-          <% days_members.each do |d| %>
-            <% timecard = d.timecards.find_by(user_id: m.id) %>
-            <% schedule = d.schedules.find_by(user_id: m.id) %>
-            <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
-            <% if d.day_type == "平日" %>
-              <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
-                <% unless timecard && timecard.start && timecard.finish %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
-            <% end %>
-            <%# 休日に休暇日程をとっている %>
-            <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
-              <i class="fas fa-exclamation-triangle"></i>
-              <% break %>
-            <% end %>
-            <%# 半休以外の休暇取得日に打刻している %>
-            <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
-              <% if timecard && timecard.start.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <% if timecard && timecard.finish.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <% if timecard && timecard.break_start.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <% if timecard && timecard.break_finish.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-            <% end %>
-            <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
-            <% if timecard && timecard.start.present? && timecard.finish.present? %>
-              <% unless timecard.start < timecard.finish %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <% if timecard.break_start.present? && timecard.break_finish.present? %>
-                <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
-            <% end %>
-            <%# 出勤があって退勤がない %>
-            <% if timecard && timecard.start.present? && timecard.finish.blank? %>
-              <i class="fas fa-exclamation-triangle"></i>
-              <% break %>
-            <% end %>
-            <%# 退勤があって出勤がない %>
-            <% if timecard && timecard.finish.present? && timecard.start.blank? %>
-              <i class="fas fa-exclamation-triangle"></i>
-              <% break %>
-            <% end %>
-            <%# 休始があって休終がない %>
-            <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
-              <i class="fas fa-exclamation-triangle"></i>
-              <% break %>
-            <% end %>
-            <%# 休終があって休始がない %>
-            <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
-              <i class="fas fa-exclamation-triangle"></i>
-              <% break %>
-            <% end %>
+          <% if m.timecard_error %>
+            <i class="fas fa-exclamation-triangle"></i>
           <% end %>
         <% end %>
-
         <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
           <i class="fas fa-yen-sign"></i>
-          <% days_members = @days.where(date: m.hire_date..) %>
-          <% days_members.each do |d| %>
-            <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
-              <% unless d.travel_costs.find_by(user_id: m.id) %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-            <% else %>
-              <% if d.travel_costs.find_by(user_id: m.id) %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-            <% end %>
+          <% if m.travel_cost_error %>
+            <i class="fas fa-exclamation-triangle"></i>
           <% end %>
         <% end %>
       </div>
+
     <% end %>
 
   <% elsif current_user.user_type == "管理者" %>
     <div class="timecards-department">
       <h3>■営業部</h3>
       <% @users.where(department: "営業部").each do |m| %>
+
         <div class="timecards-user">
           <span><%= m.full_name %></span>
           <%= link_to "/user/#{m.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="far fa-calendar-alt"></i>
-            <% if m.hire_date <= YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date %>
-              <% days_members = @days.where(date: YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date..) %>
-            <% else %>
-              <% days_members = @days.where(date: m.hire_date..) %>
-            <% end %>
-            <% days_members.each do |d| %>
-              <% timecard = d.timecards.find_by(user_id: m.id) %>
-              <% schedule = d.schedules.find_by(user_id: m.id) %>
-              <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
-              <% if d.day_type == "平日" %>
-                <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
-                  <% unless timecard && timecard.start && timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 休日に休暇日程をとっている %>
-              <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 半休以外の休暇取得日に打刻している %>
-              <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
-                <% if timecard && timecard.start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
-              <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
-              <% if timecard && timecard.start.present? && timecard.finish.present? %>
-                <% unless timecard.start < timecard.finish %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard.break_start.present? && timecard.break_finish.present? %>
-                  <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 出勤があって退勤がない %>
-              <% if timecard && timecard.start.present? && timecard.finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 退勤があって出勤がない %>
-              <% if timecard && timecard.finish.present? && timecard.start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休始があって休終がない %>
-              <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休終があって休始がない %>
-              <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
+            <% if m.timecard_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
-            <% days_members = @days.where(date: m.hire_date..) %>
-            <% days_members.each do |d| %>
-              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
-                <% unless d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% else %>
-                <% if d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
+            <% if m.travel_cost_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
         </div>
+
       <% end %>
     </div>
 
     <div class="timecards-department">
       <h3>■貿易部</h3>
       <% @users.where(department: "貿易部").each do |m| %>
+
         <div class="timecards-user">
           <span><%= m.full_name %></span>
           <%= link_to "/user/#{m.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="far fa-calendar-alt"></i>
-            <% if m.hire_date <= YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date %>
-              <% days_members = @days.where(date: YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date..) %>
-            <% else %>
-              <% days_members = @days.where(date: m.hire_date..) %>
-            <% end %>
-            <% days_members.each do |d| %>
-              <% timecard = d.timecards.find_by(user_id: m.id) %>
-              <% schedule = d.schedules.find_by(user_id: m.id) %>
-              <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
-              <% if d.day_type == "平日" %>
-                <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
-                  <% unless timecard && timecard.start && timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 休日に休暇日程をとっている %>
-              <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 半休以外の休暇取得日に打刻している %>
-              <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
-                <% if timecard && timecard.start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
-              <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
-              <% if timecard && timecard.start.present? && timecard.finish.present? %>
-                <% unless timecard.start < timecard.finish %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard.break_start.present? && timecard.break_finish.present? %>
-                  <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 出勤があって退勤がない %>
-              <% if timecard && timecard.start.present? && timecard.finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 退勤があって出勤がない %>
-              <% if timecard && timecard.finish.present? && timecard.start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休始があって休終がない %>
-              <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休終があって休始がない %>
-              <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
+            <% if m.timecard_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
-            <% days_members = @days.where(date: m.hire_date..) %>
-            <% days_members.each do |d| %>
-              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
-                <% unless d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% else %>
-                <% if d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
+            <% if m.travel_cost_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
         </div>
+
       <% end %>
     </div>
 
     <div class="timecards-department">
       <h3>■システム部</h3>
       <% @users.where(department: "システム部").each do |m| %>
+
         <div class="timecards-user">
           <span><%= m.full_name %></span>
           <%= link_to "/user/#{m.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="far fa-calendar-alt"></i>
-            <% if m.hire_date <= YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date %>
-              <% days_members = @days.where(date: YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date..) %>
-            <% else %>
-              <% days_members = @days.where(date: m.hire_date..) %>
-            <% end %>
-            <% days_members.each do |d| %>
-              <% timecard = d.timecards.find_by(user_id: m.id) %>
-              <% schedule = d.schedules.find_by(user_id: m.id) %>
-              <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
-              <% if d.day_type == "平日" %>
-                <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
-                  <% unless timecard && timecard.start && timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 休日に休暇日程をとっている %>
-              <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 半休以外の休暇取得日に打刻している %>
-              <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
-                <% if timecard && timecard.start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
-              <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
-              <% if timecard && timecard.start.present? && timecard.finish.present? %>
-                <% unless timecard.start < timecard.finish %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard.break_start.present? && timecard.break_finish.present? %>
-                  <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 出勤があって退勤がない %>
-              <% if timecard && timecard.start.present? && timecard.finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 退勤があって出勤がない %>
-              <% if timecard && timecard.finish.present? && timecard.start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休始があって休終がない %>
-              <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休終があって休始がない %>
-              <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
+            <% if m.timecard_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
-            <% days_members = @days.where(date: m.hire_date..) %>
-            <% days_members.each do |d| %>
-              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
-                <% unless d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% else %>
-                <% if d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
+            <% if m.travel_cost_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
         </div>
+        
       <% end %>
     </div>
 
     <div class="timecards-department">
       <h3>■その他</h3>
       <% @users.where(department: "その他").each do |m| %>
+      
         <div class="timecards-user">
           <span><%= m.full_name %></span>
           <%= link_to "/user/#{m.id}/year_month/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="far fa-calendar-alt"></i>
-            <% if m.hire_date <= YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date %>
-              <% days_members = @days.where(date: YearMonth.find(Day.find_by(date: 1.month.ago).year_month_id).first_date..) %>
-            <% else %>
-              <% days_members = @days.where(date: m.hire_date..) %>
-            <% end %>
-            <% days_members.each do |d| %>
-              <% timecard = d.timecards.find_by(user_id: m.id) %>
-              <% schedule = d.schedules.find_by(user_id: m.id) %>
-              <%# 平日で休暇日程もない日で、出退勤がそろっていない %>
-              <% if d.day_type == "平日" %>
-                <% if schedule.nil? || schedule && schedule.schedule_type.blank? || schedule && schedule.schedule_type == "有休(AM)" || schedule && schedule.schedule_type == "有休(PM)" %>
-                  <% unless timecard && timecard.start && timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 休日に休暇日程をとっている %>
-              <% if d.day_type.include?("休日") && schedule && schedule.schedule_type.present? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 半休以外の休暇取得日に打刻している %>
-              <% if schedule && schedule.schedule_type.present? && schedule.schedule_type != "有休(AM)" && schedule.schedule_type != "有休(PM)" %>
-                <% if timecard && timecard.start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_start.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard && timecard.break_finish.present? %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
-              <%# 出勤 < 休始 < 休終 < 退勤 になっていない %>
-              <% if timecard && timecard.start.present? && timecard.finish.present? %>
-                <% unless timecard.start < timecard.finish %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-                <% if timecard.break_start.present? && timecard.break_finish.present? %>
-                  <% unless timecard.start < timecard.break_start && timecard.break_start < timecard.break_finish && timecard.break_finish < timecard.finish %>
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <% break %>
-                  <% end %>
-                <% end %>
-              <% end %>
-              <%# 出勤があって退勤がない %>
-              <% if timecard && timecard.start.present? && timecard.finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 退勤があって出勤がない %>
-              <% if timecard && timecard.finish.present? && timecard.start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休始があって休終がない %>
-              <% if timecard && timecard.break_start.present? && timecard.break_finish.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
-              <%# 休終があって休始がない %>
-              <% if timecard && timecard.break_finish.present? && timecard.break_start.blank? %>
-                <i class="fas fa-exclamation-triangle"></i>
-                <% break %>
-              <% end %>
+            <% if m.timecard_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
           <%= link_to "/travel_cost/index/#{m.id}/#{Day.find_by(date: Date.today).year_month_id}" do %>
             <i class="fas fa-yen-sign"></i>
-            <% days_members = @days.where(date: m.hire_date..) %>
-            <% days_members.each do |d| %>
-              <% if d.timecards.find_by(user_id: m.id) && d.timecards.find_by(user_id: m.id).start.present? && d.timecards.find_by(user_id: m.id).finish.present? %>
-                <% unless d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% else %>
-                <% if d.travel_costs.find_by(user_id: m.id) %>
-                  <i class="fas fa-exclamation-triangle"></i>
-                  <% break %>
-                <% end %>
-              <% end %>
+            <% if m.travel_cost_error %>
+              <i class="fas fa-exclamation-triangle"></i>
             <% end %>
           <% end %>
         </div>
+
       <% end %>
     </div>
   <% end %>
